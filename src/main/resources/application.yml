@@ -8,6 +8,6 @@ spring:
     password:
 
 mybatis:
-  mapper-locations: classpath:mapper/*.xml # ????mybatis?xml??
+  mapper-locations: classpath:mapper/*.xml # 扫描所有mybatis的xml文件
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # ??sql??
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 打印sql语句
