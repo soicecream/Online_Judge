@@ -1,22 +1,16 @@
 package com.example.demo.mapper;
 
 import com.example.demo.entity.User;
-import org.apache.ibatis.annotations.*;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
-import java.util.List;
+/**
+ * <p>
+ *  Mapper 接口
+ * </p>
+ *
+ * @author 作者
+ * @since 2022-09-24
+ */
+public interface UserMapper extends BaseMapper<User> {
 
-@Mapper
-public interface UserMapper {
-
-    @Select("select * from user")
-    List<User> findAll();
-
-    @Insert("insert into user(username, password, nickname, email, phone) " +
-                     "values (#{username}, #{password}, #{nickname}, #{email}, #{phone})")
-    int insert(User user);
-
-    int update(User user);
-
-    @Delete("delete from user where id = #{id}")
-    Integer deleteById(@Param("id") Integer id);
 }
