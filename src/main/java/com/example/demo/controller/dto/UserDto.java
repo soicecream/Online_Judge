@@ -8,8 +8,10 @@ import lombok.Data;
 
 @Data
 public class UserDto {
-    private String username;
-    private String password;
+    private String username; // 用户名
+    private String password; // 密码
+    private String nickname; // 昵称
+    private String head_portrait; // 头像
 
 
 }

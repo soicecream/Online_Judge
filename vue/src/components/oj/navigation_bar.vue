@@ -26,7 +26,8 @@
         <div v-else>
           <el-dropdown trigger="click">
             <el-button type="text">
-              <el-avatar :size="30" :src="circleUrl" style="display: block; margin-right: 10%; margin-top: -20%; float: left;"/>
+              <el-avatar icon="el-icon-user-solid" :src="user.head_portrait"
+                  :size="30" style="display: block; margin-right: 10%; margin-top: -20%; float: left;"/>
               <i class="el-icon-caret-bottom"/>
             </el-button>
             <el-dropdown-menu>
@@ -37,9 +38,9 @@
 
               <el-dropdown-item divided> 我的设置</el-dropdown-item>
 
-              <el-dropdown-item v-if="is_admin" divided @click="to_admin_page"> <el-link type="text" :underline="false" @click="to_admin_page" >后台管理</el-link> </el-dropdown-item>
+              <el-dropdown-item v-if="is_admin" divided ><el-link type="text" :underline="false" @click="to_admin_page">后台管理</el-link></el-dropdown-item>
 
-              <el-dropdown-item divided> 退出</el-dropdown-item>
+              <el-dropdown-item divided><el-link type="text" :underline="false" @click="logout">退出</el-link></el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -178,19 +179,20 @@ export default {
         ],
       },
 
+      // 登录后存储的用户信息
+      user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+
       // 图片验证码
       identifyCode: '',
       // 验证码规则
       identifyCodes: '3456789abcdefghjkmnpqrstuvwxyABCDEFGHJKMNPQRSTUVWXY',
 
-      // 头像
-      // circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-      circleUrl: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
-
     }
   },
 
   created() {
+    if(localStorage.getItem("user") != null)
+      this.user_login_check = false
     this.get_verification_code()
   },
 
@@ -208,6 +210,8 @@ export default {
       this.user_login = true
       this.user_register = false
       this.clear_data()
+      this.login_form.username = "admin"
+      this.login_form.password = "admin"
     },
     open_register_user() {
       this.user_login = false
@@ -219,18 +223,26 @@ export default {
     submit_login_form() {
       this.$refs["login_user_form"].validate((valid) => {
         if (valid) {
-          this.user_login = false
+          this.request.post("/user/login", this.login_form).then(res => {
+            console.log(res)
+            if (res.code === "200") {
+              // 存储用户信息到浏览器中
+              localStorage.setItem("user", JSON.stringify(res.data))
 
-          this.user_login_check = false
-          console.log('submit!');
-        } else {
-          console.log('error submit!!');
-          return false;
+              // 关闭框
+              this.user_login = false
+              this.user_login_check = false
+
+              this.$message.success("登陆成功")
+
+            } else {
+              this.$message.error(res.message)
+            }
+          })
         }
       });
     },
     submit_register_form() {
-      // console.log(this.register_form.verification_code + " " + this.identifyCode)
       this.$refs["register_user_form"].validate((valid) => {
         if (valid) {
           let form = this.register_form
@@ -275,6 +287,14 @@ export default {
     to_admin_page() {
       // console.log("123")
       this.$router.push('admin')
+    },
+
+    // 退出用户
+    logout() {
+      localStorage.removeItem("user")
+      this.user_login_check = true
+      this.$router.push('/home')
+      this.$message.success("退出成功")
     }
 
   }
