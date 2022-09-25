@@ -3,16 +3,15 @@
 
     <!-- 搜索栏 -->
     <div class="pd-10">
-      <el-input style="width: 200px;" placeholder="请输入用户名" suffix-icon="el-icon-user" v-model="search_username"/>
-      <el-select v-model="search_sex" placeholder="请选择性别" style="width: 150px;" class="ml-5">
-        <el-option label="男" value="0"></el-option>
-        <el-option label="女" value="1"></el-option>
+      <el-input style="width: 150px;" placeholder="请输入用户名" suffix-icon="el-icon-user" v-model="search_message.username"/>
+      <el-input style="width: 150px;" placeholder="请输入姓名" suffix-icon="el-icon-user" class="ml-5" v-model="search_message.realname"/>
+      <el-select v-model="search_message.sex" placeholder="请选择性别" style="width: 150px;" class="ml-5">
+        <el-option label="男" value="1"></el-option>
+        <el-option label="女" value="0"></el-option>
       </el-select>
-      <el-input style="width: 200px;" placeholder="请输入邮箱" suffix-icon="el-icon-message" class="ml-5"
-                v-model="search_email"/>
       <el-input style="width: 200px;" placeholder="请输入地址" suffix-icon="el-icon-position" class="mrl-5"
-                v-model="search_address"/>
-      <el-select v-model="search_deactivate" placeholder="请选择用户状态" style="width: 150px;" class="ml-5">
+                v-model="search_message.residence"/>
+      <el-select v-model="search_message.deactivate" placeholder="请选择用户状态" style="width: 150px;" class="mrl-5">
         <el-option label="启用" value="1"></el-option>
         <el-option label="禁用" value="0"></el-option>
       </el-select>
@@ -22,7 +21,7 @@
 
     <!-- 操作 -->
     <div style="margin: 10px 0">
-      <el-button @click="handleAdd" type="primary"> 新增用户<i class="el-icon-circle-plus"/></el-button>
+      <el-button @click="handleAdd" type="primary"> 新增用户 <i class="el-icon-circle-plus"/></el-button>
 
       <el-popconfirm
           confirm-button-text="确定"
@@ -32,7 +31,7 @@
           title="您确定批量删除这些数据吗?"
           @confirm="handlerDelBatch"
           @cancel="cancelEvent"
-          class="ml-10"
+          class="mrl-10"
           width="100px;"
       >
         <template #reference>
@@ -45,10 +44,10 @@
       <!--                 :accept="xlsx"-->
       <!--                 :on-success="handleExcelImportSuccess"-->
       <!--                 style="display: inline-block">-->
-      <el-button type="primary" class="ml-10"> 导入 <i class="el-icon-folder-add"></i></el-button>
+      <el-button type="primary" class="mrl-10"> 导入 <i class="el-icon-folder-add"></i></el-button>
       <!--      </el-upload>-->
-      <el-button type="primary"> 导出 <i class="el-icon-folder-checked"></i></el-button>
-      <el-button type="primary" @click="reverse_order" class="ml-10"> {{ reverse_order_value }}
+      <el-button type="primary" > 导出 <i class="el-icon-folder-checked"></i></el-button>
+      <el-button type="primary" @click="reverse_order" class="ml-10"> {{ 'id ' + reverse_order_value }}
         <i :class=reverse_order_btncls /></el-button>
 
       <el-button type="primary" class="ml-10"> 启用 <i class="el-icon-success"/></el-button>
@@ -59,9 +58,9 @@
     <!-- 用户信息 -->
     <el-table :data="tableData" border stripe @selection-change="handleSelectionChange" max-height="50rpx">
       <el-table-column fixed type="selection" align="center" width="50"/>
-      <el-table-column fixed prop="id" sortable label="id" width="80"/>
+      <el-table-column fixed prop="id" label="id" width="80"/>
       <el-table-column fixed prop="username" label="用户名" width="130"/>
-      <el-table-column prop="realname" label="真实姓名" width="130"/>
+      <el-table-column prop="realname" label="姓名" width="130"/>
       <el-table-column prop="nickname" label="昵称" width="130"/>
       <el-table-column prop="residence" label="地址" width="150"/>
 
@@ -155,7 +154,7 @@
           v-model:page-size="pageSize"
           :page-sizes="[5, 10, 15, 20]"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="1"
+          :total="total"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
       />
@@ -172,102 +171,19 @@ export default {
 
   data() {
     return {
-      tableData: [
-        {
-          id: 1,
-          username: "1",
-          nickname: "1",
-          realname: "11",
-          phone: "123",
-          email: "123@qq.com",
-          sex: 1,
-          school: "123",
-          residence: "asd",
-          create_time: "2022-01-11",
-          last_login_time: "2022-01-11",
-          deactivate: 1,
-        },
-        {
-          id: 2,
-          username: "12",
-          nickname: "1",
-          realname: "11",
-          phone: "123",
-          email: "123@qq.com",
-          sex: 0,
-          school: "123",
-          residence: "asd",
-          create_time: "2022-01-11",
-          last_login_time: "2022-01-11",
-          deactivate: 1,
-        },
-        {
-          id: 3,
-          username: "123",
-          nickname: "1",
-          realname: "11",
-          phone: "123",
-          email: "123@qq.com",
-          sex: 1,
-          school: "123",
-          residence: "asd",
-          create_time: "2022-01-11",
-          last_login_time: "2022-01-11",
-          deactivate: 1,
-        },
-        {
-          id: 4,
-          username: "1234",
-          nickname: "1",
-          realname: "11",
-          phone: "123",
-          email: "123@qq.com",
-          sex: 1,
-          school: "123",
-          residence: "asd",
-          create_time: "2022-01-11",
-          last_login_time: "2022-01-11",
-          deactivate: 0,
-        },
-        {
-          id: 5,
-          username: "12345",
-          nickname: "1",
-          realname: "11",
-          phone: "123",
-          email: "123@qq.com",
-          sex: 0,
-          school: "123",
-          residence: "asd",
-          create_time: "2022-01-11",
-          last_login_time: "2022-01-11",
-          deactivate: 1,
-        },
-        {
-          id: 6,
-          username: "123456",
-          nickname: "1",
-          realname: "11",
-          phone: "123",
-          email: "123@qq.com",
-          sex: 1,
-          school: "123",
-          residence: "asd",
-          create_time: "2022-01-11",
-          last_login_time: "2022-01-11",
-          deactivate: 0,
-        },
-
-      ],
+      tableData: [],
       total: 0,
       pageNum: 1,
       pageSize: 5,
 
-      search_username: "",
-      search_sex: "",
-      search_email: "",
-      search_address: "",
-      search_deactivate: "",
+      // 搜索的信息
+      search_message: {
+        username: "", // 用户名
+        realname: "", // 姓名
+        sex: "", // 性别
+        residence: "", // 地址
+        deactivate: "", // 状态
+      },
 
       reverse_order_value: "正序",
       reverse_order_desc: false,
@@ -285,57 +201,46 @@ export default {
   methods: {
     // 加载用户
     load_user() {
-      // index.get("https://localhost:9090/user").then(res => {
-      //   console.log(res)
-      // })
+      this.request.get("/user/page", {
+        params: {
+          pageNum: this.pageNum,
+          pageSize: this.pageSize,
+          username: this.search_message.username,
+          realname: this.search_message.realname,
+          sex: this.search_message.sex,
+          residence: this.search_message.residence,
+          deactivate: this.search_message.deactivate,
+          desc: this.reverse_order_desc
+        }
+      }).then(res => {
+        console.log(res)
 
-      // const axios = require('axios').default
-      // axios.get('/user')
-      //     .then(function (res) {
-      //       console.log(res)
-      //     })
-      //     .catch(function (err) {
-      //       console.log('错误')
-      //       console.log(err)
-      //     })
-
-
-      // axios.get('http://localhost:9090/user')
-      //     .then(res => {
-      //       console.log(res)
-      //     })
-      //     .catch(res => {
-      //       console.log('错误')
-      //       console.log(res)
-      //     })
-
-
+        this.tableData = res.records
+        this.total = res.total
+      })
     },
 
     // 搜索
     search() {
-
+      this.load_user()
+      this.pageNum = 1
     },
 
     // 重置搜索
     reset() {
-      this.search_username = ""
-      this.search_sex = ""
-      this.search_email = ""
-      this.search_address = ""
-      this.search_deactivate = ""
+      Object.keys(this.search_message)
+          .forEach(key => (this.search_message[key] = ""))
+      this.load_user()
     },
 
     // 分页查询
     handleSizeChange(pageSize) {
-
+      this.pageSize = pageSize
+      this.load_user()
     },
     handleCurrentChange(pageNum) {
-
-    },
-
-    filterTag() {
-
+      this.pageNum = pageNum
+      this.load_user()
     },
 
     // 显示顺序
@@ -348,6 +253,7 @@ export default {
         this.reverse_order_btncls = 'el-icon-bottom'
       }
       this.reverse_order_desc = !this.reverse_order_desc
+      this.load_user()
     },
 
     // 添加用户
@@ -381,7 +287,7 @@ export default {
 
     // 赋予复选框选中的值
     handleSelectionChange(val) {
-
+      this.multipleSelection = val
     },
 
     // 删除用户信息

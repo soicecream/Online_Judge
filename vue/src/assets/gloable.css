@@ -1,19 +1,11 @@
-* {
-    margin: 0;
-    padding: 0;
-    /*box-sizing: border-box;*/
-}
-
 .ml-5 {
     margin-left: 5px;
 }
 .mr-5 {
     margin-right: 5px;
 }
-
 .mrl-5{
-    margin-left: 5px;
-    margin-right: 5px;
+    margin: 0px 5px;
 }
 
 .ml-10 {
@@ -22,13 +14,10 @@
 .mr-10 {
     margin-right: 10px;
 }
+.mrl-10{
+    margin: 0px 10px;
+}
 
 .pd-10 {
     padding: 10px 0;
-}
-
-.zi-jc-dx-14-jj-2 {
-    font-weight: bolder;
-    font-size: 14px;
-    letter-spacing: 2px;
 }

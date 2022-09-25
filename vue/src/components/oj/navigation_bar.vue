@@ -2,7 +2,7 @@
   <div>
 
     <!--  导航栏-->
-    <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelect" active-text-color="#409EFF" router>
+    <el-menu class="el-menu-demo" mode="horizontal" active-text-color="#409EFF" router>
       <el-menu-item class="change">ZIME Online Judge</el-menu-item>
       <el-menu-item index="/home"><i class="el-icon-s-home"/>主页</el-menu-item>
       <el-menu-item index="/problem"><i class="el-icon-s-grid"/>问题</el-menu-item>
@@ -135,7 +135,7 @@ export default {
   data() {
     return {
       // 用户是否需要登录
-      user_login_check: false,
+      user_login_check: true,
 
       // 是否可以进入管理员后台
       is_admin: true,
@@ -195,11 +195,6 @@ export default {
   },
 
   methods: {
-
-    handleSelect() {
-
-    },
-
     // 清空所有数据
     clear_data() {
       if (this.$refs.login_user_form !== undefined)
@@ -270,7 +265,6 @@ export default {
       // console.log(this.identifyCode)
     },
 
-
     // 忘记密码
     forgot_password() {
 
@@ -279,7 +273,7 @@ export default {
 
     // 跳转到后台管理页面
     to_admin_page() {
-      console.log("123")
+      // console.log("123")
       this.$router.push('admin')
     }
 

@@ -32,8 +32,8 @@ public class CodeGenerator {
                             .pathInfo(Collections.singletonMap(OutputFile.mapperXml, "D:\\毕设\\demo\\src\\main\\resources\\mapper\\")); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.entityBuilder().enableLombok();
-                    builder.mapperBuilder().enableMapperAnnotation().build();
+                    builder.entityBuilder().enableLombok(); // 开启Lombok模式
+//                    builder.mapperBuilder().enableMapperAnnotation().build(); // 是否在mapper文件夹下每一个mapper中添加 @Mapper 注解
                     builder.controllerBuilder().enableHyphenStyle()  // 开启驼峰转连字符
                             .enableRestStyle();  // 开启生成@RestController 控制器
                     builder.addInclude("user") // 设置需要生成的表名

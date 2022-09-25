@@ -15,7 +15,7 @@ import lombok.Setter;
  * </p>
  *
  * @author 作者
- * @since 2022-09-24
+ * @since 2022-09-25
  */
 @Getter
 @Setter
@@ -34,11 +34,14 @@ public class User implements Serializable {
       @ApiModelProperty("密码")
       private String password;
 
-      @ApiModelProperty("真实姓名")
+      @ApiModelProperty("姓名")
       private String realname;
 
       @ApiModelProperty("昵称")
       private String nickname;
+
+      @ApiModelProperty("性别 (0男，1女)")
+      private Integer sex;
 
       @ApiModelProperty("手机号")
       private String phone;
@@ -46,13 +49,10 @@ public class User implements Serializable {
       @ApiModelProperty("邮箱")
       private String email;
 
-      @ApiModelProperty("性别 (0男，1女)")
-      private Integer sex;
-
       @ApiModelProperty("学校")
       private String school;
 
-      @ApiModelProperty("居住地")
+      @ApiModelProperty("地址")
       private String residence;
 
       @ApiModelProperty("介绍")
