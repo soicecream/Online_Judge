@@ -1,0 +1,413 @@
+<template>
+  <div>
+
+    <!-- 搜索栏 -->
+    <div class="pd-10">
+      <el-input style="width: 200px;" placeholder="请输入用户名" suffix-icon="el-icon-user" v-model="search_username"/>
+      <el-select v-model="search_sex" placeholder="请选择性别" style="width: 150px;" class="ml-5">
+        <el-option label="男" value="0"></el-option>
+        <el-option label="女" value="1"></el-option>
+      </el-select>
+      <el-input style="width: 200px;" placeholder="请输入邮箱" suffix-icon="el-icon-message" class="ml-5"
+                v-model="search_email"/>
+      <el-input style="width: 200px;" placeholder="请输入地址" suffix-icon="el-icon-position" class="mrl-5"
+                v-model="search_address"/>
+      <el-select v-model="search_deactivate" placeholder="请选择用户状态" style="width: 150px;" class="ml-5">
+        <el-option label="启用" value="1"></el-option>
+        <el-option label="禁用" value="0"></el-option>
+      </el-select>
+      <el-button type="primary" @click="search"> 搜索</el-button>
+      <el-button type="warning" @click="reset"> 重置</el-button>
+    </div>
+
+    <!-- 操作 -->
+    <div style="margin: 10px 0">
+      <el-button @click="handleAdd" type="primary"> 新增用户<i class="el-icon-circle-plus"/></el-button>
+
+      <el-popconfirm
+          confirm-button-text="确定"
+          cancel-button-text="我再想想"
+          icon="InfoFilled"
+          icon-color="#ff0000"
+          title="您确定批量删除这些数据吗?"
+          @confirm="handlerDelBatch"
+          @cancel="cancelEvent"
+          class="ml-10"
+          width="100px;"
+      >
+        <template #reference>
+          <el-button type="danger" slot="reference"> 批量删除 <i class="el-icon-remove"/></el-button>
+        </template>
+      </el-popconfirm>
+
+      <!--      <el-upload action="http://localhost:9090/manage/user_information/import"-->
+      <!--                 :show-file-list="false"-->
+      <!--                 :accept="xlsx"-->
+      <!--                 :on-success="handleExcelImportSuccess"-->
+      <!--                 style="display: inline-block">-->
+      <el-button type="primary" class="ml-10"> 导入 <i class="el-icon-folder-add"></i></el-button>
+      <!--      </el-upload>-->
+      <el-button type="primary"> 导出 <i class="el-icon-folder-checked"></i></el-button>
+      <el-button type="primary" @click="reverse_order" class="ml-10"> {{ reverse_order_value }}
+        <i :class=reverse_order_btncls /></el-button>
+
+      <el-button type="primary" class="ml-10"> 启用 <i class="el-icon-success"/></el-button>
+      <el-button type="primary" class="ml-10"> 禁用 <i class="el-icon-error"/></el-button>
+
+    </div>
+
+    <!-- 用户信息 -->
+    <el-table :data="tableData" border stripe @selection-change="handleSelectionChange" max-height="50rpx">
+      <el-table-column fixed type="selection" align="center" width="50"/>
+      <el-table-column fixed prop="id" sortable label="id" width="80"/>
+      <el-table-column fixed prop="username" label="用户名" width="130"/>
+      <el-table-column prop="realname" label="真实姓名" width="130"/>
+      <el-table-column prop="nickname" label="昵称" width="130"/>
+      <el-table-column prop="residence" label="地址" width="150"/>
+
+      <!--    性别-->
+      <el-table-column label="性别" width="70" align="center">
+        <template #default="scope">
+          <el-tag :type="scope.row.sex === 1 ? '' : 'warning'">
+            {{ scope.row.sex === 1 ? "男" : "女" }}
+          </el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="phone" label="电话" width="130" align="center"></el-table-column>
+      <el-table-column prop="email" label="邮箱" width="130" align="center"></el-table-column>
+
+      <el-table-column type="expand" label="补充信息" width="100">
+        <template #default="props">
+          <el-card class="box-card">
+            <template #header>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span> {{ props.row.username }} </span>
+                <el-button class="button" type="success" text> 编辑</el-button>
+              </div>
+            </template>
+            <el-form label-width="130px" label-position="left">
+              <el-form-item label="学      校">{{ props.row.school }}</el-form-item>
+              <el-form-item label="创 建 时 间">{{ props.row.create_time }}</el-form-item>
+              <el-form-item label="最后登录时间">{{ props.row.last_login_time }}</el-form-item>
+            </el-form>
+          </el-card>
+        </template>
+      </el-table-column>
+
+
+      <!--    状态-->
+      <el-table-column label="状态" width="100rpx" align="center">
+        <template #default="scope">
+          <el-tag :type="scope.row.deactivate === 1 ? 'success' : 'danger'">
+            {{ scope.row.deactivate == 1 ? "启用" : "禁用" }}
+          </el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column fixed="right" label="操作" width="400" align="center">
+        <template #default="scope">
+
+          <el-button type="success"> 编辑</el-button>
+
+          <el-button :type="scope.row.deactivate === 0 ? 'success' : 'danger'" class="mr-5"
+                     @click="handlerEdit(scope.row)"> {{ scope.row.deactivate === 0 ? '启用' : '禁用' }}
+          </el-button>
+
+          <!--        重置密码-->
+          <el-popconfirm
+              confirm-button-text='确定'
+              cancel-button-text='我再想想'
+              icon="el-icon-info"
+              icon-color="#ff0000"
+              title="您确定要重置该用户的密码吗？"
+              @confirm="headlerEdit_psd(scope.row)"
+              class="mr-5"
+          >
+            <template #reference>
+              <el-button type="warning" slot="reference"> 重置密码</el-button>
+            </template>
+          </el-popconfirm>
+
+          <!--        删除用户-->
+          <el-popconfirm
+              confirm-button-text='确定'
+              cancel-button-text='我再想想'
+              icon="el-icon-info"
+              icon-color="#ff0000"
+              title="您确定删除吗？"
+              @confirm="handlerDel(scope.row.id)"
+          >
+            <template #reference>
+              <el-button type="danger" slot="reference"> 删除</el-button>
+            </template>
+          </el-popconfirm>
+
+        </template>
+      </el-table-column>
+
+    </el-table>
+
+    <!--   底部分页选项的选择 -->
+    <div class="demo-pagination-block">
+      <el-pagination
+          v-model:currentPage="pageNum"
+          v-model:page-size="pageSize"
+          :page-sizes="[5, 10, 15, 20]"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="1"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+      />
+    </div>
+
+  </div>
+
+</template>
+
+<script>
+
+export default {
+  name: "list",
+
+  data() {
+    return {
+      tableData: [
+        {
+          id: 1,
+          username: "1",
+          nickname: "1",
+          realname: "11",
+          phone: "123",
+          email: "123@qq.com",
+          sex: 1,
+          school: "123",
+          residence: "asd",
+          create_time: "2022-01-11",
+          last_login_time: "2022-01-11",
+          deactivate: 1,
+        },
+        {
+          id: 2,
+          username: "12",
+          nickname: "1",
+          realname: "11",
+          phone: "123",
+          email: "123@qq.com",
+          sex: 0,
+          school: "123",
+          residence: "asd",
+          create_time: "2022-01-11",
+          last_login_time: "2022-01-11",
+          deactivate: 1,
+        },
+        {
+          id: 3,
+          username: "123",
+          nickname: "1",
+          realname: "11",
+          phone: "123",
+          email: "123@qq.com",
+          sex: 1,
+          school: "123",
+          residence: "asd",
+          create_time: "2022-01-11",
+          last_login_time: "2022-01-11",
+          deactivate: 1,
+        },
+        {
+          id: 4,
+          username: "1234",
+          nickname: "1",
+          realname: "11",
+          phone: "123",
+          email: "123@qq.com",
+          sex: 1,
+          school: "123",
+          residence: "asd",
+          create_time: "2022-01-11",
+          last_login_time: "2022-01-11",
+          deactivate: 0,
+        },
+        {
+          id: 5,
+          username: "12345",
+          nickname: "1",
+          realname: "11",
+          phone: "123",
+          email: "123@qq.com",
+          sex: 0,
+          school: "123",
+          residence: "asd",
+          create_time: "2022-01-11",
+          last_login_time: "2022-01-11",
+          deactivate: 1,
+        },
+        {
+          id: 6,
+          username: "123456",
+          nickname: "1",
+          realname: "11",
+          phone: "123",
+          email: "123@qq.com",
+          sex: 1,
+          school: "123",
+          residence: "asd",
+          create_time: "2022-01-11",
+          last_login_time: "2022-01-11",
+          deactivate: 0,
+        },
+
+      ],
+      total: 0,
+      pageNum: 1,
+      pageSize: 5,
+
+      search_username: "",
+      search_sex: "",
+      search_email: "",
+      search_address: "",
+      search_deactivate: "",
+
+      reverse_order_value: "正序",
+      reverse_order_desc: false,
+      reverse_order_btncls: 'el-icon-bottom',
+
+      multipleSelection: {},
+
+    }
+  },
+
+  created() {
+    this.load_user()
+  },
+
+  methods: {
+    // 加载用户
+    load_user() {
+      // index.get("https://localhost:9090/user").then(res => {
+      //   console.log(res)
+      // })
+
+      // const axios = require('axios').default
+      // axios.get('/user')
+      //     .then(function (res) {
+      //       console.log(res)
+      //     })
+      //     .catch(function (err) {
+      //       console.log('错误')
+      //       console.log(err)
+      //     })
+
+
+      // axios.get('http://localhost:9090/user')
+      //     .then(res => {
+      //       console.log(res)
+      //     })
+      //     .catch(res => {
+      //       console.log('错误')
+      //       console.log(res)
+      //     })
+
+
+    },
+
+    // 搜索
+    search() {
+
+    },
+
+    // 重置搜索
+    reset() {
+      this.search_username = ""
+      this.search_sex = ""
+      this.search_email = ""
+      this.search_address = ""
+      this.search_deactivate = ""
+    },
+
+    // 分页查询
+    handleSizeChange(pageSize) {
+
+    },
+    handleCurrentChange(pageNum) {
+
+    },
+
+    filterTag() {
+
+    },
+
+    // 显示顺序
+    reverse_order() {
+      if (this.reverse_order_desc) {
+        this.reverse_order_value = '倒序'
+        this.reverse_order_btncls = 'el-icon-top'
+      } else {
+        this.reverse_order_value = '正序'
+        this.reverse_order_btncls = 'el-icon-bottom'
+      }
+      this.reverse_order_desc = !this.reverse_order_desc
+    },
+
+    // 添加用户
+    handleAdd() {
+
+    },
+
+    cancelEvent() {
+
+    },
+
+    // 输入好了用户信息 将要填写进去
+    handleAdd_ok() {
+
+    },
+
+    // 修改用户信息
+    handlerEdit(row) {
+
+    },
+
+    // 修改好了用户信息 将要进行修改
+    handlerEdit_ok() {
+
+    },
+
+    // 重置用户的密码
+    headlerEdit_psd(row) {
+
+    },
+
+    // 赋予复选框选中的值
+    handleSelectionChange(val) {
+
+    },
+
+    // 删除用户信息
+    handlerDel(id) {
+
+    },
+
+    // 批量删除用户信息
+    handlerDelBatch() {
+
+    },
+
+  },
+
+}
+</script>
+
+<style scoped>
+
+.demo-pagination-block {
+  margin-top: 10px;
+}
+
+.box-card {
+  width: 480px;
+  margin: auto;
+}
+
+</style>
