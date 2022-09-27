@@ -21,3 +21,7 @@
 .pd-10 {
     padding: 10px 0;
 }
+
+.input_not_input {
+    pointer-events: none;
+}

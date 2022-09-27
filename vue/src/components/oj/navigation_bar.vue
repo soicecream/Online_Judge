@@ -31,16 +31,15 @@
               <i class="el-icon-caret-bottom"/>
             </el-button>
             <el-dropdown-menu>
-              <el-dropdown-item> 我的主页</el-dropdown-item>
+              <el-dropdown-item>
+                <el-link type="text" @click="to_user_information_page" :underline="false" >个人主页</el-link>
+              </el-dropdown-item>
 
-              <el-dropdown-item divided> 我的提交</el-dropdown-item>
-              <el-dropdown-item> 我的题单</el-dropdown-item>
+              <el-dropdown-item v-if="is_admin" divided >
+                <el-link type="text" @click="to_admin_page" :underline="false" >后台管理</el-link>
+              </el-dropdown-item>
 
-              <el-dropdown-item divided> 我的设置</el-dropdown-item>
-
-              <el-dropdown-item v-if="is_admin" divided ><el-link type="text" :underline="false" @click="to_admin_page">后台管理</el-link></el-dropdown-item>
-
-              <el-dropdown-item divided><el-link type="text" :underline="false" @click="logout">退出</el-link></el-dropdown-item>
+              <el-dropdown-item divided><el-link type="text" @click="logout" :underline="false" >退出登录</el-link></el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -285,8 +284,12 @@ export default {
 
     // 跳转到后台管理页面
     to_admin_page() {
-      // console.log("123")
       this.$router.push('admin')
+    },
+
+    // 跳转到用户信息界面
+    to_user_information_page() {
+      this.$router.push('user_information')
     },
 
     // 退出用户
