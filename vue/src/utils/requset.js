@@ -11,8 +11,11 @@ const request = axios.create({
 // 比如统一加token，对请求参数统一加密
 request.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json;charset=utf-8';
+
     let user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
-    if(user) config.headers['token'] = user.token;  // 在发射之前设置请求头
+    if (user) {
+        config.headers['token'] = user.token;  // 在发射之前设置请求头
+    }
 
     return config
 }, error => {
@@ -33,9 +36,9 @@ request.interceptors.response.use(
             res = res ? JSON.parse(res) : res
         }
         // 当权限验证不通过时 给出提示
-        if(res.code === '401') {
+        if (res.code === '401') {
             ElementUI.Message({
-                message: res.msg,
+                message: res.message,
                 type: "error"
             })
         }

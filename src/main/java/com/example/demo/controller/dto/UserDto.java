@@ -29,5 +29,7 @@ public class UserDto {
     private Integer language; // 语言
     private Integer deactivate; // 状态
 
+    private String token; // token
+
 
 }

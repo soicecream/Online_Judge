@@ -35,6 +35,10 @@
                 <el-link type="text" @click="to_user_information_page" :underline="false" >个人主页</el-link>
               </el-dropdown-item>
 
+              <el-dropdown-item>
+                <el-link type="text" @click="to_set_user_information_page" :underline="false" >我的设置</el-link>
+              </el-dropdown-item>
+
               <el-dropdown-item v-if="is_admin" divided >
                 <el-link type="text" @click="to_admin_page" :underline="false" >后台管理</el-link>
               </el-dropdown-item>
@@ -282,14 +286,20 @@ export default {
     },
 
 
-    // 跳转到后台管理页面
-    to_admin_page() {
-      this.$router.push('admin')
-    },
-
     // 跳转到用户信息界面
     to_user_information_page() {
-      this.$router.push('user_information')
+      console.log(this.user.id)
+      this.$router.push('/user_information/' + this.user.id)
+    },
+
+    // 跳转到个人设置
+    to_set_user_information_page() {
+      this.$router.push('/user_setting/' + this.user.id)
+    },
+
+    // 跳转到后台管理页面
+    to_admin_page() {
+      this.$router.push('/admin')
     },
 
     // 退出用户

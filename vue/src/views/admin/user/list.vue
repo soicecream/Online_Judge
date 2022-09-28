@@ -213,7 +213,7 @@ export default {
           desc: this.reverse_order_desc
         }
       }).then(res => {
-        console.log(res)
+        // console.log(res)
 
         this.tableData = res.records
         this.total = res.total

@@ -1,5 +1,5 @@
 <template>
-  <el-container style="min-height: 100vh;">
+  <el-container style="max-height: 100vh; ">
     <el-aside :width="sideWidth + 'px'" style="box-shadow: 2px 0 6px rgb(0 21 41 / 35%);">
       <NavigationBar :isCollapse="isCollapse" :logoTextShow="logoTextShow" @asideCollapse="collapse()"/>
     </el-aside>
