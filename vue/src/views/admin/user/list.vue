@@ -3,8 +3,10 @@
 
     <!-- 搜索栏 -->
     <div class="pd-10">
-      <el-input style="width: 150px;" placeholder="请输入用户名" suffix-icon="el-icon-user" v-model="search_message.username"/>
-      <el-input style="width: 150px;" placeholder="请输入姓名" suffix-icon="el-icon-user" class="ml-5" v-model="search_message.realname"/>
+      <el-input style="width: 150px;" placeholder="请输入用户名" suffix-icon="el-icon-user"
+                v-model="search_message.username"/>
+      <el-input style="width: 150px;" placeholder="请输入姓名" suffix-icon="el-icon-user" class="ml-5"
+                v-model="search_message.realname"/>
       <el-select v-model="search_message.sex" placeholder="请选择性别" style="width: 150px;" class="ml-5">
         <el-option label="男" value="1"></el-option>
         <el-option label="女" value="0"></el-option>
@@ -31,24 +33,21 @@
           title="您确定批量删除这些数据吗?"
           @confirm="handlerDelBatch"
           @cancel="cancelEvent"
-          class="mrl-10"
-          width="100px;"
+          class="ml-10"
       >
         <template #reference>
           <el-button type="danger" slot="reference"> 批量删除 <i class="el-icon-remove"/></el-button>
         </template>
       </el-popconfirm>
 
-      <!--      <el-upload action="http://localhost:9090/manage/user_information/import"-->
-      <!--                 :show-file-list="false"-->
-      <!--                 :accept="xlsx"-->
-      <!--                 :on-success="handleExcelImportSuccess"-->
-      <!--                 style="display: inline-block">-->
-      <el-button type="primary" class="mrl-10"> 导入 <i class="el-icon-folder-add"></i></el-button>
-      <!--      </el-upload>-->
-      <el-button type="primary" > 导出 <i class="el-icon-folder-checked"></i></el-button>
+      <el-upload action="http://localhost:9090/user/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess"
+                 style="display: inline-block;" class="mrl-10">
+        <el-button type="primary"> 导入 <i class="el-icon-folder-add"></i></el-button>
+      </el-upload>
+      <el-button type="primary" @click="exportFile" class="ml-10"> 导出 <i class="el-icon-folder-checked"></i></el-button>
       <el-button type="primary" @click="reverse_order" class="ml-10"> {{ 'id ' + reverse_order_value }}
-        <i :class=reverse_order_btncls /></el-button>
+        <i :class="reverse_order_btncls"/>
+      </el-button>
 
       <el-button type="primary" class="ml-10"> 启用 <i class="el-icon-success"/></el-button>
       <el-button type="primary" class="ml-10"> 禁用 <i class="el-icon-error"/></el-button>
@@ -62,10 +61,10 @@
       <el-table-column fixed prop="username" label="用户名" width="130"/>
       <el-table-column prop="realname" label="姓名" width="130"/>
       <el-table-column prop="nickname" label="昵称" width="130"/>
-      <el-table-column prop="residence" label="地址" width="150"/>
+      <el-table-column prop="residence" label="地址" width="200"/>
 
       <!--    性别-->
-      <el-table-column label="性别" width="70" align="center">
+      <el-table-column label="性别" width="60" align="center">
         <template #default="scope">
           <el-tag :type="scope.row.sex === 1 ? '' : 'warning'">
             {{ scope.row.sex === 1 ? "男" : "女" }}
@@ -87,8 +86,8 @@
             </template>
             <el-form label-width="130px" label-position="left">
               <el-form-item label="学      校">{{ props.row.school }}</el-form-item>
-              <el-form-item label="创 建 时 间">{{ props.row.create_time }}</el-form-item>
-              <el-form-item label="最后登录时间">{{ props.row.last_login_time }}</el-form-item>
+              <el-form-item label="创 建 时 间">{{ props.row.createTime }}</el-form-item>
+              <el-form-item label="最后登录时间">{{ props.row.lastLoginTime }}</el-form-item>
             </el-form>
           </el-card>
         </template>
@@ -96,7 +95,7 @@
 
 
       <!--    状态-->
-      <el-table-column label="状态" width="100rpx" align="center">
+      <el-table-column label="状态" width="70rpx" align="center">
         <template #default="scope">
           <el-tag :type="scope.row.deactivate === 1 ? 'success' : 'danger'">
             {{ scope.row.deactivate == 1 ? "启用" : "禁用" }}
@@ -299,6 +298,18 @@ export default {
     handlerDelBatch() {
 
     },
+
+    // 导出用户信息
+    exportFile() {
+      window.open("http://localhost:9090/user/export")
+    },
+
+    // 导入用户信息
+    handleExcelImportSuccess() {
+      this.$message.success("导入成功")
+      this.load_user()
+    }
+
 
   },
 

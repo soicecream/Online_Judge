@@ -55,14 +55,13 @@ public class TokenUtils {
 
     /**
      * 获取当前登录的用户信息
-     *
-     * @return
+     * @return User对象
      */
     public static User getCurrenUser() {
         try {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             String token = request.getHeader("token");
-            if (StrUtil.isBlank(token)) {
+            if (StrUtil.isNotBlank(token)) {
                 String userId = JWT.decode(token).getAudience().get(0);
                 return staticUserService.getById(Integer.valueOf(userId));
             }
