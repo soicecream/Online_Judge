@@ -14,10 +14,11 @@ import java.util.Collections;
 public class CodeGenerator {
 
     public static void main(String[] args) {
-        generate();
+//        generate("user");
+        generate("file");
     }
 
-    private static void generate() {
+    private static void generate(String tableName) {
         FastAutoGenerator.create("jdbc:mysql://localhost:3306/onlinejudge?serverTimezone=GMT%2b8", "root", "")
                 .globalConfig(builder -> {
                     builder
@@ -36,7 +37,7 @@ public class CodeGenerator {
 //                    builder.mapperBuilder().enableMapperAnnotation().build(); // 是否在mapper文件夹下每一个mapper中添加 @Mapper 注解
                     builder.controllerBuilder().enableHyphenStyle()  // 开启驼峰转连字符
                             .enableRestStyle();  // 开启生成@RestController 控制器
-                    builder.addInclude("user") // 设置需要生成的表名
+                    builder.addInclude(tableName) // 设置需要生成的表名
                             .addTablePrefix("t_", "sys_"); // 设置过滤表前缀
                 })
 //                .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板

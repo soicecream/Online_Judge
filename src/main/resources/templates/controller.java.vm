@@ -82,7 +82,7 @@ public class ${table.controllerName} {
         public Page<${entity}> findPage(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
                                         @RequestParam Boolean desc) {
-                QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+                QueryWrapper<${entity}> queryWrapper = new QueryWrapper<>();
                 if(desc) queryWrapper.orderByDesc("id"); // 是否根据id排序
 
                 return ${table.entityPath}Service.page(new Page<>(pageNum, pageSize));

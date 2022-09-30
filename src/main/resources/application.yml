@@ -11,7 +11,9 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-
+  servlet:
+    multipart:
+      max-request-size: 100MB
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml # 扫描所有mybatis的xml文件
@@ -22,4 +24,6 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 打印sql语句
 
-
+files:
+  upload:
+    path: D:\毕设\demo\files
