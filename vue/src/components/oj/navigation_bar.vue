@@ -82,8 +82,7 @@
       <el-form :model="register_form" :rules="register_form_rules" ref="register_user_form" label-position="top">
 
         <el-form-item prop="username">
-          <el-input v-model="register_form.username" class="w-50 m-2" placeholder="用户名"><i slot="prefix"
-                                                                                           class="el-icon-user"/>
+          <el-input v-model="register_form.username" class="w-50 m-2" placeholder="用户名"><i slot="prefix" class="el-icon-user"/>
           </el-input>
         </el-form-item>
 
@@ -139,7 +138,7 @@ export default {
   data() {
     return {
       // 用户是否需要登录
-      user_login_check: true,
+      user_login_check: false,
 
       // 是否可以进入管理员后台
       is_admin: true,
@@ -194,9 +193,10 @@ export default {
   },
 
   created() {
-    if(localStorage.getItem("user") != null)
-      this.user_login_check = false
-    this.get_verification_code()
+    console.log(this.user)
+    // if(localStorage.getItem("user") != null)
+    //   this.user_login_check = false
+    // this.get_verification_code()
   },
 
   methods: {
@@ -306,7 +306,7 @@ export default {
     logout() {
       localStorage.removeItem("user")
       this.user_login_check = true
-      this.$router.push('/home')
+      this.$router.push('/login')
       this.$message.success("退出成功")
     }
 

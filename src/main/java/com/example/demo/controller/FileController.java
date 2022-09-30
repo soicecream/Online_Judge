@@ -4,12 +4,17 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.entity.Files;
+import com.example.demo.entity.User;
 import com.example.demo.mapper.FileMapper;
+import com.example.demo.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
@@ -18,11 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.List;
-
-import com.example.demo.service.IFileService;
-
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <p>
@@ -66,27 +66,21 @@ public class FileController {
             parentFile.mkdirs();
         }
 
-        // 当文件存在的时候在获取文件的md5
-        String md5, url;
-        if (uploadFile.exists()) {
-            // 获取文件的md5, 通过对比md5避免重复上传相同内容的文件
-            md5 = SecureUtil.md5(uploadFile);
-            //  从数据库查询是否有相同的记录
-            Files dbFiles = getFileByMd5(md5);
+        // 把获取到的文件存储到磁盘目录
+        file.transferTo(uploadFile);
+        // 获取md5
+        String md5 = SecureUtil.md5(uploadFile);
+        //  从数据库查询是否有相同的记录
+        Files dbFiles = getFileByMd5(md5);
 
-            // 获取文件的url
-            if (dbFiles != null) {
-                url = dbFiles.getUrl();
-            } else {
-                // 把获取到的文件存储到磁盘目录
-                file.transferTo(uploadFile);
-                url = "http://localhost:9090/file/" + fileUuid;
-            }
+        // 获取文件的url
+        String url;
+        if (dbFiles != null) {
+            url = dbFiles.getUrl();
+            // 由于文件已存在， 所有删除刚才上传的重复文件
+            uploadFile.delete();
         } else {
-            // 把获取到的文件存储到磁盘目录
-            file.transferTo(uploadFile);
-            // 直接获取md5
-            md5 = SecureUtil.md5(uploadFile);
+            // 数据库若不存在重复文件，则不删除刚才上传的文件
             url = "http://localhost:9090/file/" + fileUuid;
         }
 
@@ -135,8 +129,34 @@ public class FileController {
         // 查询文件的md5是否存在
         QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("md5", md5);
-        return fileMapper.selectOne(queryWrapper);
+        List<Files> fileList = fileMapper.selectList(queryWrapper);
+        return fileList.size() == 0 ? null : fileList.get(0);
     }
+
+    // 分页查询
+    // limit第一个参数 = (pageNum - 1) * pageSize
+    @GetMapping("/page")
+    public Page<Files> findPage(@RequestParam Integer pageNum,
+                               @RequestParam Integer pageSize,
+                               @RequestParam(defaultValue = "") String name,
+                               @RequestParam(defaultValue = "") Integer enable,
+                               @RequestParam(defaultValue = "false") Boolean desc) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        if (desc) queryWrapper.orderByDesc("id"); // 是否根据id排序
+
+        if (!"".equals(name)) queryWrapper.like("name", name);
+        if (enable != null) queryWrapper.like("enable", enable);
+
+        // 获取当前用户信息
+        User currentUser = TokenUtils.getCurrenUser();
+        if (currentUser != null) {
+            System.out.println(" 获取当前用户信息的昵称 ============== " + currentUser.getNickname());
+        }
+
+//        return fileMapper.selectPage(new Page<>(pageNum, pageSize), queryWrapper);
+        return null;
+    }
+
 
 }
 

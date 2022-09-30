@@ -40,7 +40,8 @@
         </template>
       </el-popconfirm>
 
-      <el-upload action="http://localhost:9090/user/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess"
+      <el-upload action="http://localhost:9090/user/import" :show-file-list="false" accept="xlsx"
+                 :on-success="handleExcelImportSuccess"
                  style="display: inline-block;" class="mrl-10">
         <el-button type="primary"> 导入 <i class="el-icon-folder-add"></i></el-button>
       </el-upload>
@@ -56,9 +57,9 @@
 
     <!-- 用户信息 -->
     <el-table :data="tableData" border stripe @selection-change="handleSelectionChange" max-height="50rpx">
-      <el-table-column fixed type="selection" align="center" width="50"/>
-      <el-table-column fixed prop="id" label="id" width="80"/>
-      <el-table-column fixed prop="username" label="用户名" width="130"/>
+      <el-table-column type="selection" fixed align="center" width="50"/>
+      <el-table-column prop="id" fixed label="id" width="80"/>
+      <el-table-column prop="username" fixed label="用户名" width="130"/>
       <el-table-column prop="realname" label="姓名" width="130"/>
       <el-table-column prop="nickname" label="昵称" width="130"/>
       <el-table-column prop="residence" label="地址" width="200"/>
@@ -173,7 +174,7 @@ export default {
       tableData: [],
       total: 0,
       pageNum: 1,
-      pageSize: 5,
+      pageSize: 10,
 
       // 搜索的信息
       search_message: {
@@ -195,6 +196,7 @@ export default {
 
   created() {
     this.load_user()
+
   },
 
   methods: {
@@ -214,8 +216,12 @@ export default {
       }).then(res => {
         // console.log(res)
 
-        this.tableData = res.records
-        this.total = res.total
+        if(res.code === '200') {
+          this.tableData = res.data.records
+          this.total = res.data.total
+        } else {
+          this.$message.error("请求失败")
+        }
       })
     },
 

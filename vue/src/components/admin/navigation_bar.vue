@@ -17,7 +17,7 @@
     <el-menu-item index="/admin/home"><i class="el-icon-s-help"/><span slot="title"> 首页 </span></el-menu-item>
 
     <!--    用户管理-->
-    <el-submenu index="admin">
+    <el-submenu index="">
       <template slot="title"><i class="el-icon-user-solid"/><span slot="title">用户管理</span></template>
 
       <el-menu-item-group title="用户管理">
@@ -26,8 +26,8 @@
       </el-menu-item-group>
 
       <el-menu-item-group title="权限管理">
-        <el-menu-item index="/admin"><i class="el-icon-tickets"/>权限列表</el-menu-item>
-        <el-menu-item index="/admin"><i class="el-icon-coordinate"/>权限添加</el-menu-item>
+        <el-menu-item index=""><i class="el-icon-tickets"/>权限列表</el-menu-item>
+        <el-menu-item index=""><i class="el-icon-coordinate"/>权限添加</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
 
@@ -36,6 +36,13 @@
     <!--    竞赛管理-->
 
     <!--    系统管理-->
+    <el-submenu index="system management">
+      <template slot="title"><i class="el-icon-cpu"/><span slot="title">系统管理</span></template>
+
+      <el-menu-item index="/admin/file_list"><i class="el-icon-receiving"/> <span slot="title">文件管理</span></el-menu-item>
+
+
+    </el-submenu>
 
     <!--    Swagger-->
     <el-submenu index="Swagger">
@@ -67,7 +74,7 @@ export default {
   },
 
   data() {
-    return {}
+    return { }
   },
 
   methods: {

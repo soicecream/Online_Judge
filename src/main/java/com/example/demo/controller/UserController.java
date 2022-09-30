@@ -5,27 +5,23 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.common.Constants;
 import com.example.demo.common.Result;
 import com.example.demo.controller.dto.UserDto;
+import com.example.demo.entity.User;
+import com.example.demo.service.IUserService;
 import com.example.demo.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.List;
-
-import com.example.demo.service.IUserService;
-import com.example.demo.entity.User;
-
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <p>
@@ -57,6 +53,7 @@ public class UserController {
     // 注册用户
     @PostMapping("/register")
     public Result register(@RequestBody UserDto userDto) {
+        System.out.println("===========" + userDto.toString());
         String username = userDto.getUsername();
         String password = userDto.getPassword();
         if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
@@ -65,41 +62,48 @@ public class UserController {
         return Result.success(userService.register(userDto));
     }
 
-
     // 新增或者更新
     @PostMapping
-    public boolean save(@RequestBody User user) {
-        return userService.saveOrUpdate(user);
+    public Result save(@RequestBody User user) {
+        return Result.success(userService.saveOrUpdate(user));
     }
 
     // 根据id删除
     @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable Integer id) {
-        return userService.removeById(id);
+    public Result delete(@PathVariable Integer id) {
+        return Result.success(userService.removeById(id));
     }
 
     // 以id来删除多条数据     数据是 [1, 2, 3] 这样的
     @PostMapping("/del/batch")
-    public boolean deleteBatch(@RequestBody List<Integer> list) {
-        return userService.removeByIds(list);
+    public Result deleteBatch(@RequestBody List<Integer> list) {
+        return Result.success(userService.removeByIds(list));
     }
 
     // 获取所有数据
     @GetMapping
-    public List<User> findAll() {
-        return userService.list();
+    public Result findAll() {
+        return Result.success(userService.list());
     }
 
     // 根据id查询数据
     @GetMapping("/{id}")
-    public User findOne(@PathVariable Integer id) {
-        return userService.getById(id);
+    public Result findOne(@PathVariable Integer id) {
+        return Result.success(userService.getById(id));
+    }
+
+    // 根据username查询数据
+    @GetMapping("/username/{username}")
+    public Result findOne(@PathVariable String username) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", username);
+        return Result.success(userService.getOne(queryWrapper));
     }
 
     // 分页查询
     // limit第一个参数 = (pageNum - 1) * pageSize
     @GetMapping("/page")
-    public Page<User> findPage(@RequestParam Integer pageNum, @RequestParam Integer pageSize, @RequestParam(defaultValue = "") String username, @RequestParam(defaultValue = "") String realname, @RequestParam(defaultValue = "") Integer sex, @RequestParam(defaultValue = "") String residence, @RequestParam(defaultValue = "") Integer deactivate, @RequestParam(defaultValue = "false") Boolean desc) {
+    public Result findPage(@RequestParam Integer pageNum, @RequestParam Integer pageSize, @RequestParam(defaultValue = "") String username, @RequestParam(defaultValue = "") String realname, @RequestParam(defaultValue = "") Integer sex, @RequestParam(defaultValue = "") String residence, @RequestParam(defaultValue = "") Integer deactivate, @RequestParam(defaultValue = "false") Boolean desc) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         if (desc) queryWrapper.orderByDesc("id"); // 是否根据id排序
 
@@ -115,7 +119,7 @@ public class UserController {
             System.out.println(" 获取当前用户信息的昵称 ============== " + currentUser.getNickname());
         }
 
-        return userService.page(new Page<>(pageNum, pageSize), queryWrapper);
+        return Result.success(userService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
     //    https://hutool.cn/docs/#/poi/Excel%E7%94%9F%E6%88%90-ExcelWriter
@@ -168,7 +172,7 @@ public class UserController {
      * @throws Exception
      */
     @PostMapping("/import")
-    public boolean importFile(MultipartFile file) throws Exception {
+    public Result importFile(MultipartFile file) throws Exception {
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = ExcelUtil.getReader(inputStream);
 
@@ -199,7 +203,7 @@ public class UserController {
         userService.saveBatch(users);
         System.out.println(users);
 
-        return true;
+        return Result.success(true);
     }
 
 }

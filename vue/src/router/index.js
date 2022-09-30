@@ -59,9 +59,18 @@ const routes = [
         name: "user_update_password",
         component: () => import('../views/admin/user/update_password')
       },
-
+      {
+        path: 'file_list',
+        name: "file_list",
+        component: () => import('../views/admin/file')
+      },
 
     ]
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/share/login_register')
   },
   {
     path: '/404',
