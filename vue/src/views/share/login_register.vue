@@ -23,44 +23,36 @@
 
         <div class="big-contain" key="bigContainRegister" v-else>
           <div class="btitle">创建账户</div>
-          <el-form :model="register_form" :rules="register_form_rules" ref="register_user_form"
-                   style="width: 300px; height: 350px; margin-top: 5%;">
+          <el-form :model="register_form" :rules="register_form_rules" ref="register_user_form" style="width: 300px; height: 350px; margin-top: 5%;">
 
             <el-form-item prop="username">
-              <el-input v-model="register_form.username" class="w-50 m-2" placeholder="用户名"><i slot="prefix"
-                                                                                               class="el-icon-user"/>
+              <el-input v-model="register_form.username" class="w-50 m-2" placeholder="用户名"><i slot="prefix" class="el-icon-user"/>
               </el-input>
             </el-form-item>
 
             <el-form-item prop="nickname">
-              <el-input v-model="register_form.nickname" class="w-50 m-2" placeholder="昵称"><i slot="prefix"
-                                                                                              class="el-icon-user"/>
+              <el-input v-model="register_form.nickname" class="w-50 m-2" placeholder="昵称"><i slot="prefix" class="el-icon-user"/>
               </el-input>
             </el-form-item>
 
             <el-form-item prop="password">
-              <el-input v-model="register_form.password" class="w-50 m-2" placeholder="密码" type="password"
-                        show-password><i slot="prefix" class="el-icon-lock"/></el-input>
+              <el-input v-model="register_form.password" class="w-50 m-2" placeholder="密码" type="password" show-password><i slot="prefix" class="el-icon-lock"/></el-input>
             </el-form-item>
 
             <el-form-item prop="password_again">
-              <el-input v-model="register_form.password_again" class="w-50 m-2" placeholder="再次输入密码" type="password"
-                        show-password><i slot="prefix" class="el-icon-lock"/></el-input>
+              <el-input v-model="register_form.password_again" class="w-50 m-2" placeholder="再次输入密码" type="password" show-password><i slot="prefix" class="el-icon-lock"/></el-input>
             </el-form-item>
 
             <el-form-item prop="phone">
-              <el-input v-model="register_form.phone" class="w-50 m-2" placeholder="电话号码"><i slot="prefix"
-                                                                                             class="el-icon-phone"/>
+              <el-input v-model="register_form.phone" class="w-50 m-2" placeholder="电话号码"><i slot="prefix" class="el-icon-phone"/>
               </el-input>
             </el-form-item>
 
             <el-form-item prop="verification_code">
-              <el-input v-model="register_form.verification_code" placeholder="验证码"
-                        style="display: inline-block; width: 50%; vertical-align:top;">
+              <el-input v-model="register_form.verification_code" placeholder="验证码" style="display: inline-block; width: 50%; vertical-align:top;">
                 <i slot="prefix" class="el-icon-help"/>
               </el-input>
-              <span @click="get_verification_code" style="height: 40px; float: right;"><VerificationCode
-                  :identifyCode="identifyCode"/></span>
+              <span @click="get_verification_code" style="height: 40px; float: right;"><VerificationCode :identifyCode="identifyCode"/></span>
             </el-form-item>
 
             <el-form-item>
@@ -132,7 +124,7 @@ export default {
         phone: [
           {required: true, message: '请填写电话号码', trigger: 'blur'},
           {min: 11, max: 11, message: '请填写11位的电话号码', trigger: 'blur'},
-          {type: 'number', message: '电话必须为数字值'}
+          {pattern: /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/,message: "请输入正确的电话号码",}
         ],
         verification_code: [
           {required: true, message: '请填写验证码', trigger: 'blur'},
@@ -171,9 +163,9 @@ export default {
         if (valid) {
           this.request.post("/user/login", this.login_form).then(res => {
             if (res.code === "200") {
-              // 存储用户信息到浏览器中
-              // localStorage.setItem("user", JSON.stringify(res.data))
               let data = res.data
+              // 存储用户信息到浏览器中
+              // localStorage.setItem("user", JSON.stringify(data))
               localStorage.setItem("user", '{"id":' + data.id + ',"headPortrait":' + data.headPortrait + ',"token":"' + data.token + '"}')
 
               this.$router.push("/")
@@ -198,19 +190,20 @@ export default {
             this.$message.warning("两个密码不一样，请确认后重试")
             return false
           }
-          console.log(form)
 
+          this.$message.info("登录吧孩子，你没有权限注册！！")
+          this.isLogin = true
           // this.get_verification_code()
-          this.request.post("/user/register", form).then(res => {
-            console.log(res)
-            if (res.code === "200") {
-              this.$message.success("注册成功请登录")
-              this.isLogin = true
-              this.$message.success("登陆成功")
-            } else {
-              this.$message.error(res.message)
-            }
-          })
+          // this.request.post("/user/register", form).then(res => {
+          //   console.log(res)
+          //   if (res.code === "200") {
+          //     this.$message.success("注册成功请登录")
+          //     this.isLogin = true
+          //     this.$message.success("登陆成功")
+          //   } else {
+          //     this.$message.error(res.message)
+          //   }
+          // })
         } else {
           this.$message.error("请确认输入")
           return false;

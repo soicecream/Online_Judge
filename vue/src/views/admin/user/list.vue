@@ -171,7 +171,26 @@ export default {
 
   data() {
     return {
+      // tableData: [{
+      //   createTime: "2022-09-29T15:39:51",
+      //   deactivate: 1,
+      //   email: "admin@163.com",
+      //   headPortrait: null,
+      //   id: 1,
+      //   introduction: "加油",
+      //   language: 0,
+      //   lastLoginTime: "2022-09-29T15:39:51",
+      //   nickname: "admin",
+      //   password: "admin",
+      //   phone: "11111111111",
+      //   realname: "admin",
+      //   residence: "浙江温州",
+      //   school: "浙江机电",
+      //   sex: 1,
+      //   username: "admin",
+      // }],
       tableData: [],
+
       total: 0,
       pageNum: 1,
       pageSize: 10,
@@ -183,7 +202,8 @@ export default {
         sex: "", // 性别
         residence: "", // 地址
         deactivate: "", // 状态
-      },
+      }
+      ,
 
       reverse_order_value: "正序",
       reverse_order_desc: false,
@@ -214,9 +234,8 @@ export default {
           desc: this.reverse_order_desc
         }
       }).then(res => {
-        // console.log(res)
-
-        if(res.code === '200') {
+        if (res.code === '200') {
+          // console.log(res.data.records)
           this.tableData = res.data.records
           this.total = res.data.total
         } else {

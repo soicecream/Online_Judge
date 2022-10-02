@@ -4,14 +4,12 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
-import cn.hutool.poi.excel.ExcelUtil;
-import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.demo.common.Result;
 import com.example.demo.entity.Files;
 import com.example.demo.entity.User;
-import com.example.demo.mapper.FileMapper;
-import com.example.demo.utils.TokenUtils;
+import com.example.demo.service.IFileService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,7 +38,7 @@ public class FileController {
     private String fileUploadPath;
 
     @Resource
-    private FileMapper fileMapper;
+    private IFileService fileMapper;
 
     /**
      * 文件上传接口
@@ -91,7 +89,7 @@ public class FileController {
         saveFile.setSize(size / 1024); // B => KB
         saveFile.setUrl(url);
         saveFile.setMd5(md5);
-        fileMapper.insert(saveFile);
+        fileMapper.save(saveFile);
 
         return url;
     }
@@ -129,32 +127,63 @@ public class FileController {
         // 查询文件的md5是否存在
         QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("md5", md5);
-        List<Files> fileList = fileMapper.selectList(queryWrapper);
+        List<Files> fileList = fileMapper.list(queryWrapper);
         return fileList.size() == 0 ? null : fileList.get(0);
     }
 
-    // 分页查询
-    // limit第一个参数 = (pageNum - 1) * pageSize
+
+    // 新增或者更新
+    @PostMapping
+    public Result save(@RequestBody Files files) {
+        return Result.success(fileMapper.saveOrUpdate(files));
+    }
+
+    // 根据id删除
+    @DeleteMapping("/{id}")
+    public Result delete(@PathVariable Integer id) {
+        Files files = fileMapper.getById(id);
+        files.setIsDelete(1);
+        return Result.success(fileMapper.updateById(files));
+    }
+
+    // 以id来删除多条数据     数据是 [1, 2, 3] 这样的
+    @PostMapping("/del/batch")
+    public Result deleteBatch(@RequestBody List<Integer> ids) {
+        QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("id", ids);
+        List<Files> list = fileMapper.list(queryWrapper);
+        for (Files file : list) {
+            file.setIsDelete(1);
+            fileMapper.updateById(file);
+        }
+
+        return Result.success(fileMapper.removeByIds(ids));
+    }
+
+    /**
+     * 分页查询接口
+     * limit第一个参数 = (pageNum - 1) * pageSize
+     *
+     * @param pageNum
+     * @param pageSize
+     * @param name
+     * @param enable
+     * @param desc
+     * @return
+     */
     @GetMapping("/page")
-    public Page<Files> findPage(@RequestParam Integer pageNum,
-                               @RequestParam Integer pageSize,
-                               @RequestParam(defaultValue = "") String name,
-                               @RequestParam(defaultValue = "") Integer enable,
-                               @RequestParam(defaultValue = "false") Boolean desc) {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+    public Result findPage(@RequestParam Integer pageNum,
+                           @RequestParam Integer pageSize,
+                           @RequestParam(defaultValue = "") String name,
+                           @RequestParam(defaultValue = "") Integer enable,
+                           @RequestParam(defaultValue = "false") Boolean desc) {
+        QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
         if (desc) queryWrapper.orderByDesc("id"); // 是否根据id排序
 
         if (!"".equals(name)) queryWrapper.like("name", name);
-        if (enable != null) queryWrapper.like("enable", enable);
+        if (enable != null) queryWrapper.eq("enable", enable);
 
-        // 获取当前用户信息
-        User currentUser = TokenUtils.getCurrenUser();
-        if (currentUser != null) {
-            System.out.println(" 获取当前用户信息的昵称 ============== " + currentUser.getNickname());
-        }
-
-//        return fileMapper.selectPage(new Page<>(pageNum, pageSize), queryWrapper);
-        return null;
+        return Result.success(fileMapper.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
 

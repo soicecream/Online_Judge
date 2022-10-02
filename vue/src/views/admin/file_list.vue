@@ -54,7 +54,12 @@
       <el-table-column prop="size" label="文件大小(KB)" width="130"/>
       <el-table-column label="下载" width="200">
         <template slot-scope="scope">
-          <el-button type="primary" @click="window.open(scope.row.url)">下载</el-button>
+          <el-button type="primary" @click="download(scope.row.url)">下载</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column label="状态">
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.enable" active-color="#13ce66" inactive-color="#ff4949"/>
         </template>
       </el-table-column>
 
@@ -94,7 +99,7 @@
 
 <script>
 export default {
-  name: "file",
+  name: "file_list",
 
   data() {
     return {
@@ -191,6 +196,11 @@ export default {
     handlerEdit() {
 
     },
+
+    // 下载文件
+    download(url) {
+      window.open(url)
+    }
 
 
   },

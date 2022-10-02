@@ -76,8 +76,8 @@ public class UserController {
 
     // 以id来删除多条数据     数据是 [1, 2, 3] 这样的
     @PostMapping("/del/batch")
-    public Result deleteBatch(@RequestBody List<Integer> list) {
-        return Result.success(userService.removeByIds(list));
+    public Result deleteBatch(@RequestBody List<Integer> ids) {
+        return Result.success(userService.removeByIds(ids));
     }
 
     // 获取所有数据
@@ -109,9 +109,9 @@ public class UserController {
 
         if (!"".equals(username)) queryWrapper.like("username", username);
         if (!"".equals(realname)) queryWrapper.like("realname", realname);
-        if (sex != null) queryWrapper.like("sex", sex);
+        if (sex != null) queryWrapper.eq("sex", sex);
         if (!"".equals(residence)) queryWrapper.like("residence", residence);
-        if (deactivate != null) queryWrapper.like("deactivate", deactivate);
+        if (deactivate != null) queryWrapper.eq("deactivate", deactivate);
 
         // 获取当前用户信息
         User currentUser = TokenUtils.getCurrenUser();

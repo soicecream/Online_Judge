@@ -8,7 +8,7 @@
           <div class="userImageStyle">
             <div class="userImageSpan">用户头像</div>
             <div style="height: 100px; width: 100px; margin: auto;">
-              <el-image style="height: 100%; width: 100%;" :src="user.head_portrait" fit="cover">
+              <el-image style="height: 100%; width: 100%;" :src="user.headPortrait" fit="cover">
                 <div slot="error" style="margin-top: 10px;">
                   <el-avatar :size="80" icon="el-icon-user-solid"/>
                 </div>
@@ -84,9 +84,9 @@ export default {
         school: "浙江",
         residence: "浙江温州",
         introduction: "加油",
-        head_portrait: "",
-        create_time: "2022-09-26T22:48:32",
-        last_login_time: "2022-09-26T22:48:32",
+        headPortrait: "",
+        createTime: "2022-09-26T22:48:32",
+        lastLoginTime: "2022-09-26T22:48:32",
         language: 1,
       },
       // user: JSON.parse(localStorage.getItem("user")),

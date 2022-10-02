@@ -62,7 +62,7 @@ const routes = [
       {
         path: 'file_list',
         name: "file_list",
-        component: () => import('../views/admin/file')
+        component: () => import('../views/admin/file_list')
       },
 
     ]
