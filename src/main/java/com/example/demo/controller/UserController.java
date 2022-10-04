@@ -21,6 +21,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -68,6 +69,12 @@ public class UserController {
         return Result.success(userService.saveOrUpdate(user));
     }
 
+    // 批量新增或者更新
+    @PostMapping("/batch")
+    public Result saveBath(@RequestBody Collection<User> list) {
+        return Result.success(userService.saveOrUpdateBatch(list));
+    }
+
     // 根据id删除
     @DeleteMapping("/{id}")
     public Result delete(@PathVariable Integer id) {
@@ -75,9 +82,9 @@ public class UserController {
     }
 
     // 以id来删除多条数据     数据是 [1, 2, 3] 这样的
-    @PostMapping("/del/batch")
-    public Result deleteBatch(@RequestBody List<Integer> ids) {
-        return Result.success(userService.removeByIds(ids));
+    @PostMapping("/delete/batch")
+    public Result deleteBatch(@RequestBody List<Integer> list) {
+        return Result.success(userService.removeByIds(list));
     }
 
     // 获取所有数据
@@ -100,18 +107,18 @@ public class UserController {
         return Result.success(userService.getOne(queryWrapper));
     }
 
-    // 分页查询
-    // limit第一个参数 = (pageNum - 1) * pageSize
+    // 分页查询   limit第一个参数 = (pageNum - 1) * pageSize
     @GetMapping("/page")
-    public Result findPage(@RequestParam Integer pageNum, @RequestParam Integer pageSize, @RequestParam(defaultValue = "") String username, @RequestParam(defaultValue = "") String realname, @RequestParam(defaultValue = "") Integer sex, @RequestParam(defaultValue = "") String residence, @RequestParam(defaultValue = "") Integer deactivate, @RequestParam(defaultValue = "false") Boolean desc) {
+    public Result findPage(@RequestParam Integer pageNum, @RequestParam Integer pageSize, @RequestParam(defaultValue = "") String username, @RequestParam(defaultValue = "") String realname, @RequestParam(defaultValue = "") Integer sex, @RequestParam(defaultValue = "") String address, @RequestParam(defaultValue = "") Integer enable, @RequestParam(defaultValue = "") Integer isRank, @RequestParam(defaultValue = "false") Boolean desc) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         if (desc) queryWrapper.orderByDesc("id"); // 是否根据id排序
 
         if (!"".equals(username)) queryWrapper.like("username", username);
         if (!"".equals(realname)) queryWrapper.like("realname", realname);
         if (sex != null) queryWrapper.eq("sex", sex);
-        if (!"".equals(residence)) queryWrapper.like("residence", residence);
-        if (deactivate != null) queryWrapper.eq("deactivate", deactivate);
+        if (!"".equals(address)) queryWrapper.like("address", address);
+        if (enable != null) queryWrapper.eq("enable", enable);
+        if (isRank != null) queryWrapper.eq("is_rank", isRank);
 
         // 获取当前用户信息
         User currentUser = TokenUtils.getCurrenUser();
@@ -130,35 +137,43 @@ public class UserController {
         List<User> list = userService.list();
         // 通过工具类创建writer 写出到磁盘路径
 //        ExcelWriter writer = ExcelUtil.getWriter(filesUploadPath + "/用户信息.xlsx");
+
         // 在内存操作，写出到浏览器
         ExcelWriter writer = ExcelUtil.getWriter(true);
         // 自定义标题别名
-//        writer.addHeaderAlias("id", "id");
+        writer.setOnlyAlias(true);
+        writer.addHeaderAlias("id", "id");
         writer.addHeaderAlias("username", "用户名");
-//        writer.addHeaderAlias("password", "密码");
+        writer.addHeaderAlias("password", "密码");
         writer.addHeaderAlias("realname", "姓名");
         writer.addHeaderAlias("nickname", "昵称");
         writer.addHeaderAlias("sex", "性别");
         writer.addHeaderAlias("phone", "手机号");
         writer.addHeaderAlias("email", "邮箱");
         writer.addHeaderAlias("school", "学校");
-        writer.addHeaderAlias("residence", "地址");
+        writer.addHeaderAlias("address", "地址");
         writer.addHeaderAlias("introduction", "介绍");
         writer.addHeaderAlias("headPortrait", "头像");
         writer.addHeaderAlias("createTime", "创建时间");
-        writer.addHeaderAlias("lastLoginTime", "最后登录");
-//        writer.addHeaderAlias("language", "语言");
-//        writer.addHeaderAlias("deactivate", "状态");
+        writer.addHeaderAlias("language", "语言");
+        writer.addHeaderAlias("enable", "状态");
+        writer.addHeaderAlias("isRank", "是否参加排名");
+        writer.addHeaderAlias("isDelete", "假删除");
 
         // 一次性写出list内的对象到excel，使用默认样式，强制输出标题
         writer.write(list, true);
 
         // 设置浏览器响应的格式
+        // 设置content—type
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+        // 设置标题
         String fileName = URLEncoder.encode("用户信息", "UTF-8");
+//        Content-disposition是MIME协议的扩展，MIME协议指示MIME用户代理如何显示附加的文件。
         response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xlsx");
 
         ServletOutputStream out = response.getOutputStream();
+
+//        将Writer刷新到OutPut
         writer.flush(out, true);
         out.close();
         writer.close();
@@ -181,27 +196,31 @@ public class UserController {
 //        userService.saveBatch(list);
 
 
-//        忽略标头的中文
-        List<List<Object>> list = reader.read(1);
-        List<User> users = CollUtil.newArrayList();
-        for (List<Object> row : list) {
-            User user = new User();
-            user.setUsername(row.get(0).toString());
-            user.setPassword(row.get(1).toString());
-            user.setRealname(row.get(2).toString());
-            user.setNickname(row.get(3).toString());
-            user.setSex((Integer) row.get(4));
-            user.setPhone(row.get(5).toString());
-            user.setEmail(row.get(6).toString());
-            user.setSchool(row.get(7).toString());
-            user.setResidence(row.get(8).toString());
-            user.setIntroduction(row.get(9).toString());
-            user.setHeadPortrait(row.get(10).toString());
+        reader.addHeaderAlias("用户名", "username");
+        reader.addHeaderAlias("密码", "password");
+        reader.addHeaderAlias("姓名", "realname");
+        reader.addHeaderAlias("昵称", "nickname");
+        reader.addHeaderAlias("性别", "sex");
+        reader.addHeaderAlias("手机号", "phone");
+        reader.addHeaderAlias("邮箱", "email");
+        reader.addHeaderAlias("学校", "school");
+        reader.addHeaderAlias("地址", "address");
+        reader.addHeaderAlias("介绍", "introduction");
+        reader.addHeaderAlias("头像", "headPortrait");
+        reader.addHeaderAlias("创建时间", "createTime");
+        reader.addHeaderAlias("语言", "language");
+        reader.addHeaderAlias("状态", "enable");
+        reader.addHeaderAlias("是否参加排名", "isRank");
+        reader.addHeaderAlias("假删除", "isDelete");
 
-            users.add(user);
+        List<User> list = reader.readAll(User.class);
+        for (User i : list) {
+            // 如果用户的密码为空就设一个初始值
+            if (StrUtil.isBlank(i.getPassword())) {
+                i.setPassword("123456");
+            }
         }
-        userService.saveBatch(users);
-        System.out.println(users);
+        userService.saveBatch(list);
 
         return Result.success(true);
     }

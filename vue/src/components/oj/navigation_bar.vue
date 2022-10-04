@@ -3,7 +3,7 @@
 
     <!--  导航栏-->
     <el-menu :default-active="activeIndex" active-text-color="#409EFF" router class="el-menu-demo" mode="horizontal">
-      <el-menu-item class="change">ZIME Online Judge</el-menu-item>
+      <el-menu-item class="zimeLogo">ZIME Online Judge</el-menu-item>
       <el-menu-item index="/home"><i class="el-icon-s-home"/>主页</el-menu-item>
       <el-menu-item index="/problem"><i class="el-icon-s-grid"/>问题</el-menu-item>
       <el-menu-item index=""><i class="el-icon-monitor"/>竞赛/作业</el-menu-item>
@@ -18,7 +18,7 @@
       <el-menu-item-group style="margin-right: 1%; float: right">
         <el-dropdown trigger="click">
           <el-button type="text">
-            <el-avatar icon="el-icon-user-solid" :src="user.head_portrait" :size="30" style="display: block; margin-right: 10%; margin-top: -20%; float: left;"/>
+            <el-avatar icon="el-icon-user-solid" :src="user.headPortrait" :size="30" style="display: block; margin-right: 10%; margin-top: -20%; float: left;"/>
             <i class="el-icon-caret-bottom"/>
           </el-button>
           <el-dropdown-menu>
@@ -66,7 +66,6 @@ export default {
       user: JSON.parse(localStorage.getItem("user")),
 
       activeIndex: this.$route.path,
-
     }
   },
 
@@ -104,18 +103,17 @@ export default {
 </script>
 
 <style scoped>
-.change {
-  font-size: 1.3rem;
+.zimeLogo {
+  font-size: 1.5rem;
   font-weight: bold;
   color: #303133;
-  position: relative;
 }
 
 /* 移动到字体上出现下划线 */
-.change:after {
+.zimeLogo:after {
   content: '';
   width: 100%;
-  height: 1px;
+  height: 2px;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -124,7 +122,7 @@ export default {
   transition-duration: 0.2s;
 }
 
-.change:hover:after {
+.zimeLogo:hover:after {
   transform: scaleX(1);
 }
 

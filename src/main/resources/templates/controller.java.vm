@@ -77,8 +77,7 @@ public class ${table.controllerName} {
                 return Result.success(${table.entityPath}Service.getById(id));
         }
 
-        // 分页查询
-        // limit第一个参数 = (pageNum - 1) * pageSize
+        // 分页查询     limit第一个参数 = (pageNum - 1) * pageSize
         @GetMapping("/page")
         public Result findPage(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,

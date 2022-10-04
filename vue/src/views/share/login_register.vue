@@ -159,7 +159,7 @@ export default {
 
     // 提交登录 或者 注册的
     submit_login_form() {
-      this.$refs["login_user_form"].validate((valid) => {
+      this.$refs.login_user_form.validate((valid) => {
         if (valid) {
           this.request.post("/user/login", this.login_form).then(res => {
             if (res.code === "200") {
@@ -178,7 +178,7 @@ export default {
       });
     },
     submit_register_form() {
-      this.$refs["register_user_form"].validate((valid) => {
+      this.$refs.register_user_form.validate((valid) => {
         if (valid) {
           let form = this.register_form
           if (form.verification_code.toLowerCase() !== this.identifyCode.toLowerCase()) {

@@ -3,7 +3,7 @@
   <el-container style="height: 800px; border: 1px solid #eee; width: 1100px; margin: 1% auto auto;">
     <el-aside width="450px">
       <el-header height="350px" style="border: 1px solid red; text-align: center">
-        <el-avatar :size="200" icon="el-icon-user-solid" :src="user.head_portrait" style=" margin-top: 5%;"/>
+        <el-avatar :size="200" icon="el-icon-user-solid" :src="user.headPortrait" style=" margin-top: 5%;"/>
         <h1 style="margin-top: 3%; "> - {{ user.username }} - </h1>
         <h1 style="margin-top: 5%; ">
           {{ user.introduction == null || user.introduction.length == 0 ? "这个人很懒什么都没有写" : user.introduction }} </h1>
@@ -33,13 +33,12 @@ export default {
 
   data() {
     return {
-      // user: {},
-      // img_url: '',
       user: {
         username: "admin",
         introduction: "这个人很懒什么都没有写",
-        img_url: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-      }
+        headPortrait: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+      },
+      // user: {},
 
     }
   },

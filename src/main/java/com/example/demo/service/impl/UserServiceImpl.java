@@ -31,18 +31,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public UserDto login(UserDto userDto) {
         User one = getUserInfo(userDto);
         if (one != null) {
-            BeanUtil.copyProperties(one, userDto, true); // 从数据库查询用户信息(one 复制到 userDto中)
-
-//            设置token
-            String token = TokenUtils.getToken(one.getId().toString(), one.getPassword());
-            userDto.setToken(token);
-            return userDto;
+            if (!one.getEnable()) throw new ServiceException(Constants.CODE_600, "用户不可用");
+            else {
+                BeanUtil.copyProperties(one, userDto, true); // 从数据库查询用户信息(one 复制到 userDto中)
+//                设置token
+                String token = TokenUtils.getToken(one.getId().toString(), one.getPassword());
+                userDto.setToken(token);
+                return userDto;
+            }
         } else {
             throw new ServiceException(Constants.CODE_600, "用户名或密码错误");
         }
     }
 
-//    注册用户
+    //    注册用户
     @Override
     public User register(UserDto userDto) {
         User one = getUserInfo(userDto);
@@ -56,6 +58,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return one;
     }
 
+    // 从数据库查询用户信息
     private User getUserInfo(UserDto userDto) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", userDto.getUsername());

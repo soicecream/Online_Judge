@@ -59,7 +59,7 @@
       </el-table-column>
       <el-table-column label="状态">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.enable" active-color="#13ce66" inactive-color="#ff4949"/>
+          <el-switch v-model="scope.row.enable" @change="changeEnable(scope.row)" active-color="#13ce66" inactive-color="#ff4949"/>
         </template>
       </el-table-column>
 
@@ -194,6 +194,11 @@ export default {
     },
 
     handlerEdit() {
+
+    },
+
+    // 修改状态
+    changeEnable(row) {
 
     },
 

@@ -1,11 +1,12 @@
 <template>
 
-  <el-menu background-color="#304156" active-text-color="#ffd04b" text-color="#ffffff"
+  <el-menu background-color="#304156" active-text-color="#ffd04b" text-color="#ffffff" router
            style="min-height: 100vh; overflow-x: hidden;"
-           :collapse-transition="false"
-           :collapse="isCollapse"
-           router
+           :default-active="activeIndex"
            :unique-opened="true"
+
+           :collapse="isCollapse"
+           :collapse-transition="false"
   >
     <!--    logo-->
     <div style="height: 60px; line-height: 60px; text-align: center;" @click="collapse">
@@ -55,9 +56,7 @@
 
 
     <!-- 返回前台 -->
-    <el-menu-item index="/">
-      <template slot="title"><i class="el-icon-switch-button"/><span slot="title">返回前台</span></template>
-    </el-menu-item>
+    <el-menu-item index="/"><i class="el-icon-switch-button"/><span slot="title"> 返回前台 </span></el-menu-item>
 
   </el-menu>
 
@@ -74,7 +73,10 @@ export default {
   },
 
   data() {
-    return { }
+    return {
+      activeIndex: this.$route.path,
+
+    }
   },
 
   methods: {

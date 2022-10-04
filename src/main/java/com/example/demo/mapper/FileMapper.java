@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author 作者
  * @since 2022-09-29
  */
+
 public interface FileMapper extends BaseMapper<Files> {
 
 }

@@ -36,12 +36,10 @@ export default {
     collapse() {
       this.isCollapse = !this.isCollapse;
       this.collapseBtnClass = !this.collapseBtnClass
+      this.logoTextShow = !this.logoTextShow
+      this.sideWidth = 250
       if (this.isCollapse) {
-        this.sideWidth = 64;
-        this.logoTextShow = false;
-      } else {
-        this.sideWidth = 250;
-        this.logoTextShow = true;
+        this.sideWidth = 65
       }
     },
 

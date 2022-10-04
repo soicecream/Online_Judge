@@ -48,7 +48,7 @@ public class Files implements Serializable {
     private Integer isDelete;
 
     @ApiModelProperty("是否禁用(0禁用 1启用)")
-    private Integer enable;
+    private Boolean enable;
 
 
 }
