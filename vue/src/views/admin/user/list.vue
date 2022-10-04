@@ -437,9 +437,7 @@ export default {
     handleAdd_ok() {
       this.$refs.user_form.validate((valid) => {
         if (valid) {
-          let form = this.form
-
-          this.request.post("/user", form).then(res => {
+          this.request.post("/user", this.form).then(res => {
             if (res.code === "200") {
               this.$message.success("用户添加成功")
 
@@ -475,7 +473,6 @@ export default {
     handlerEdit(row) {
       this.dialogFormVisible_update = true
       this.form_update = Object.assign({}, row)
-      // this.form_update.sex = this.form_update.sex === 1 ? '男' : '女'
     },
     handlerEdit_close() {
       this.dialogFormVisible_update = false

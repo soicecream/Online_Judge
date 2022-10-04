@@ -47,14 +47,12 @@ public class UserController {
         if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
             return Result.error(Constants.CODE_400, "参数错误");
         }
-        UserDto dto = userService.login(userDto);
-        return Result.success(dto);
+        return Result.success(userService.login(userDto));
     }
 
     // 注册用户
     @PostMapping("/register")
     public Result register(@RequestBody UserDto userDto) {
-        System.out.println("===========" + userDto.toString());
         String username = userDto.getUsername();
         String password = userDto.getPassword();
         if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
@@ -63,29 +61,27 @@ public class UserController {
         return Result.success(userService.register(userDto));
     }
 
-    // 新增或者更新
-    @PostMapping
-    public Result save(@RequestBody User user) {
-        return Result.success(userService.saveOrUpdate(user));
+    // 修改用户密码
+    @PostMapping("/upadtePassword")
+    public Result updatePassword(@RequestBody UserDto userDto) {
+        String username = userDto.getUsername();
+        String password = userDto.getPassword();
+        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
+            return Result.error(Constants.CODE_400, "参数错误");
+        }
+        return Result.success(userService.updatePassword(userDto));
     }
 
-    // 批量新增或者更新
-    @PostMapping("/batch")
-    public Result saveBath(@RequestBody Collection<User> list) {
-        return Result.success(userService.saveOrUpdateBatch(list));
+    // 重置用户密码
+    @PostMapping("/resetPassword")
+    public Result resetPassword(@RequestBody UserDto userDto) {
+        String username = userDto.getUsername();
+        if (StrUtil.isBlank(username)) {
+            return Result.error(Constants.CODE_400, "参数错误");
+        }
+        return Result.success(userService.resetPassword(userDto));
     }
 
-    // 根据id删除
-    @DeleteMapping("/{id}")
-    public Result delete(@PathVariable Integer id) {
-        return Result.success(userService.removeById(id));
-    }
-
-    // 以id来删除多条数据     数据是 [1, 2, 3] 这样的
-    @PostMapping("/delete/batch")
-    public Result deleteBatch(@RequestBody List<Integer> list) {
-        return Result.success(userService.removeByIds(list));
-    }
 
     // 获取所有数据
     @GetMapping
@@ -128,6 +124,33 @@ public class UserController {
 
         return Result.success(userService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
+
+
+    // 新增或者更新
+    @PostMapping
+    public Result save(@RequestBody User user) {
+        return Result.success(userService.saveOrUpdate(user));
+    }
+
+    // 批量新增或者更新
+    @PostMapping("/batch")
+    public Result saveBath(@RequestBody Collection<User> list) {
+        return Result.success(userService.saveOrUpdateBatch(list));
+    }
+
+
+    // 根据id删除
+    @DeleteMapping("/{id}")
+    public Result delete(@PathVariable Integer id) {
+        return Result.success(userService.removeById(id));
+    }
+
+    // 以id来删除多条数据     数据是 [1, 2, 3] 这样的
+    @PostMapping("/delete/batch")
+    public Result deleteBatch(@RequestBody List<Integer> list) {
+        return Result.success(userService.removeByIds(list));
+    }
+
 
     //    https://hutool.cn/docs/#/poi/Excel%E7%94%9F%E6%88%90-ExcelWriter
     // 导出接口

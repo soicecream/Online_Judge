@@ -58,6 +58,50 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return one;
     }
 
+    @Override
+    public Boolean updatePassword(UserDto userDto) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", userDto.getUsername());
+
+        User one;
+        try {
+            one = getOne(queryWrapper);
+        } catch (Exception e) {
+            LOG.error(e);
+            throw new ServiceException(Constants.CODE_500, "系统错误");
+        }
+
+        if (one != null) {
+            one.setPassword(userDto.getPassword());
+            saveOrUpdate(one);
+            return true;
+        } else {
+            throw new ServiceException(Constants.CODE_600, "用户名不存在");
+        }
+    }
+
+    @Override
+    public Boolean resetPassword(UserDto userDto) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", userDto.getUsername());
+
+        User one;
+        try {
+            one = getOne(queryWrapper);
+        } catch (Exception e) {
+            LOG.error(e);
+            throw new ServiceException(Constants.CODE_500, "系统错误");
+        }
+
+        if (one != null) {
+            one.setPassword("123456");
+            saveOrUpdate(one);
+            return true;
+        } else {
+            throw new ServiceException(Constants.CODE_600, "用户名不存在");
+        }
+    }
+
     // 从数据库查询用户信息
     private User getUserInfo(UserDto userDto) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
