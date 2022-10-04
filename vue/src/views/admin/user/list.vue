@@ -43,8 +43,9 @@
       </el-popconfirm>
 
       <!--      导入-->
-      <el-upload action="http://localhost:9090/user/import" :show-file-list="false" accept="xlsx"
-                 :on-success="handleExcelImportSuccess"
+      <el-upload action="" :show-file-list="false" accept="xlsx"
+                 :http-request="handleExcelImport"
+                 :on-success="handleExcelImportSuccess" :on-error="handleExcelImportError"
                  style="display: inline-block;" class="mrl-10">
         <el-button type="primary"> 导入用户 <i class="el-icon-folder-add"></i></el-button>
       </el-upload>
@@ -157,13 +158,11 @@
     <!--   底部分页选项的选择 -->
     <div class="demo-pagination-block">
       <el-pagination
-          v-model:currentPage="pageNum"
-          v-model:page-size="pageSize"
+          :currentPage="pageNum" :page-size="pageSize"
           :page-sizes="[5, 10, 15, 20]"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange" @current-change="handleCurrentChange"
       />
     </div>
 
@@ -389,8 +388,8 @@ export default {
 
     // 搜索
     search() {
-      this.load_user()
       this.pageNum = 1
+      this.load_user()
     },
 
     // 重置搜索
@@ -533,7 +532,7 @@ export default {
     // 批量启用禁用状态 还有加入退出排名
     enable_start() {
       this.check_multipleSelection()
-      if(this.multipleSelection_length == 0)
+      if (this.multipleSelection_length == 0)
         return false
 
       this.multipleSelection.forEach(function (item) {
@@ -543,7 +542,7 @@ export default {
     },
     enable_end() {
       this.check_multipleSelection()
-      if(this.multipleSelection_length == 0)
+      if (this.multipleSelection_length == 0)
         return false
 
       this.multipleSelection.forEach(function (item) {
@@ -553,7 +552,7 @@ export default {
     },
     isRank_start() {
       this.check_multipleSelection()
-      if(this.multipleSelection_length == 0)
+      if (this.multipleSelection_length == 0)
         return false
 
       this.multipleSelection.forEach(function (item) {
@@ -563,7 +562,7 @@ export default {
     },
     isRank_end() {
       this.check_multipleSelection()
-      if(this.multipleSelection_length == 0)
+      if (this.multipleSelection_length == 0)
         return false
 
       this.multipleSelection.forEach(function (item) {
@@ -600,16 +599,30 @@ export default {
     },
 
     // 导入用户信息
+    handleExcelImport(param) {
+      let formData  = new FormData()
+      formData.append("file", param.file)
+
+      this.request.post("/user/import", formData).then(res => {
+        if (res.code === '200') {
+          this.$message.success("导入成功")
+
+          this.load_user()
+        } else
+          this.$message.error(res.message)
+      })
+    },
     handleExcelImportSuccess() {
       this.$message.success("导入成功")
-      this.load_user()
+    },
+    handleExcelImportError() {
+      this.$message.error("导入失败")
     },
 
     // 导出用户信息
     exportFile() {
       window.open("http://localhost:9090/user/export")
     },
-
 
 
   },

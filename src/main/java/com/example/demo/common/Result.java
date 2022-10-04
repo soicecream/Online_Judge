@@ -29,8 +29,8 @@ public class Result {
     public static Result error() {
         return new Result(Constants.CODE_500, "系统错误", null);
     }
-    public static Result error(String code, String massage) {
-        return new Result(code, massage, null);
+    public static Result error(String code, String message) {
+        return new Result(code, message, null);
     }
 
 }

@@ -216,8 +216,17 @@ public class UserController {
         List<User> list = reader.readAll(User.class);
         for (User i : list) {
             // 如果用户的密码为空就设一个初始值
+            System.out.println("=================>");
+            System.out.println(i.getUsername());
+            if(StrUtil.isBlank(i.getUsername())) {
+                System.out.println("=============> no");
+                return Result.error("400", "请在excel中添加用户名(username)");
+            }
             if (StrUtil.isBlank(i.getPassword())) {
                 i.setPassword("123456");
+            }
+            if(StrUtil.isBlank(i.getNickname())) {
+                i.setNickname(i.getUsername());
             }
         }
         userService.saveBatch(list);
