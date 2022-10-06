@@ -29,12 +29,14 @@
 
     </div>
 
-    <!-- 角色信息 -->
+    <!-- 菜单信息 -->
     <el-table :data="tableData" border stripe @selection-change="handleSelectionChange">
       <el-table-column type="selection" align="center"/>
       <el-table-column prop="id" label="id" align="center" width="80"/>
-      <el-table-column prop="name" label="角色名称"/>
-      <el-table-column prop="description" label="角色描述"/>
+      <el-table-column prop="name" label="菜单名称"/>
+      <el-table-column prop="path" label="菜单路劲"/>
+      <el-table-column prop="icon" label="菜单图标"/>
+      <el-table-column prop="description" label="菜单描述"/>
 
       <!--     操作该角色信息-->
       <el-table-column label="操作" align="center">
@@ -69,16 +71,14 @@
       />
     </div>
 
-    <!-- 添加用户角色的弹窗 -->
-    <el-dialog title="添加角色信息" :visible.sync="dialogFormVisible" width="30%">
+    <!-- 添加菜单的弹窗 -->
+    <el-dialog title="添加菜单信息" :visible.sync="dialogFormVisible" width="30%">
 
       <el-form :model="form" :rules="form_rules" ref="user_form" label-width="100px">
-        <el-form-item label="角色名称" prop="name">
-          <el-input v-model="form.name"/>
-        </el-form-item>
-        <el-form-item label="角色描述" prop="description">
-          <el-input v-model="form.description"/>
-        </el-form-item>
+        <el-form-item label="角色名称" prop="name"><el-input v-model="form.name"/></el-form-item>
+        <el-form-item label="角色路径" prop="path"><el-input v-model="form.path"/></el-form-item>
+        <el-form-item label="角色图标" prop="icon"><el-input v-model="form.icon"/></el-form-item>
+        <el-form-item label="角色描述" prop="description"><el-input v-model="form.description"/></el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -87,16 +87,14 @@
       </div>
     </el-dialog>
 
-    <!-- 修改用户角色的弹窗 -->
-    <el-dialog title="修改角色信息" :visible.sync="dialogFormVisible_update" width="30%">
+    <!-- 修改菜单的弹窗 -->
+    <el-dialog title="修改菜单信息" :visible.sync="dialogFormVisible_update" width="30%">
 
       <el-form label-width="100px" :model="form_update" :rules="form_update_rules" ref="user_update_form">
-        <el-form-item label="角色名称" prop="name">
-          <el-input v-model="form_update.name"/>
-        </el-form-item>
-        <el-form-item label="角色描述" prop="description">
-          <el-input v-model="form_update.description"/>
-        </el-form-item>
+        <el-form-item label="角色名称" prop="name"><el-input v-model="form.name"/></el-form-item>
+        <el-form-item label="角色路径" prop="path"><el-input v-model="form.path"/></el-form-item>
+        <el-form-item label="角色图标" prop="icon"><el-input v-model="form.icon"/></el-form-item>
+        <el-form-item label="角色描述" prop="description"><el-input v-model="form.description"/></el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -123,8 +121,8 @@ export default {
 
       // 搜索的信息
       search_message: {
-        name: "", // 角色名称
-        description: "", // 角色描述
+        name: "", // 菜单名称
+        description: "", // 菜单描述
       },
 
       // 显示顺序
@@ -136,23 +134,29 @@ export default {
       multipleSelection: {},
       multipleSelection_length: "",
 
-      // 添加角色信息弹窗
+      // 添加菜单信息弹窗
       dialogFormVisible: false,
       form: {},
       form_rules: {
         name: [
-          {required: true, message: '请输入角色名称', trigger: 'blur'},
+          {required: true, message: '请输入菜单名称', trigger: 'blur'},
           {min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
+        ],
+        path: [
+          {required: true, message: '请输入菜单路径', trigger: 'blur'},
         ],
       },
 
-      // 修改角色信息弹窗
+      // 修改菜单信息弹窗
       dialogFormVisible_update: false,
       form_update: {},
       form_update_rules: {
         name: [
-          {required: true, message: '请输入角色名称', trigger: 'blur'},
+          {required: true, message: '请输入菜单名称', trigger: 'blur'},
           {min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
+        ],
+        path: [
+          {required: true, message: '请输入菜单路径', trigger: 'blur'},
         ],
       },
 
@@ -165,9 +169,9 @@ export default {
   },
 
   methods: {
-    // 加载用户
+    // 加载菜单
     load_role() {
-      this.request.get("/role/page", {
+      this.request.get("/menu/page", {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
@@ -221,7 +225,7 @@ export default {
     },
 
 
-    // 添加角色
+    // 添加菜单
     handleAdd() {
       this.dialogFormVisible = true
       if (this.$refs.user_form !== undefined)
@@ -236,7 +240,7 @@ export default {
     handleAdd_ok() {
       this.$refs.user_form.validate((valid) => {
         if (valid) {
-          this.request.post("/role", this.form).then(res => {
+          this.request.post("/menu", this.form).then(res => {
             if (res.code === "200") {
               this.$message.success("角色添加成功")
 
@@ -256,9 +260,9 @@ export default {
       })
     },
 
-    // 修改角色信息
+    // 修改菜单信息
     update_information(form) {
-      this.request.post("/role", form).then(res => {
+      this.request.post("/menu", form).then(res => {
         if (res.code === '200') {
           this.$message.success("修改成功")
 
@@ -268,7 +272,7 @@ export default {
       })
     },
 
-    // 操作的编辑修改用户信息
+    // 操作的编辑修改菜单信息
     handlerEdit(row) {
       this.dialogFormVisible_update = true
       this.form_update = Object.assign({}, row)
@@ -306,9 +310,9 @@ export default {
       return true
     },
 
-    // 删除角色信息
+    // 删除菜单信息
     handlerDelete(id) {
-      this.request.delete("/role/" + id).then(res => {
+      this.request.delete("/menu/" + id).then(res => {
         if (res.code === '200') {
           this.$message.success("删除成功")
 
@@ -322,7 +326,7 @@ export default {
       // [{}, {}, {}] => [1, 2, 3 ]
       let ids = this.multipleSelection.map(v => v.id)
 
-      this.request.post("/role/delete/batch", ids).then(res => {
+      this.request.post("/menu/delete/batch", ids).then(res => {
         if (res.code === '200') {
           this.$message.success("删除成功")
 

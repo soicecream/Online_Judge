@@ -81,7 +81,7 @@ public class ${table.controllerName} {
         @GetMapping("/page")
         public Result findPage(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
-                                        @RequestParam Boolean desc) {
+                                        @RequestParam(defaultValue = "false") Boolean desc) {
                 QueryWrapper<${entity}> queryWrapper = new QueryWrapper<>();
                 if(desc) queryWrapper.orderByDesc("id"); // 是否根据id排序
 

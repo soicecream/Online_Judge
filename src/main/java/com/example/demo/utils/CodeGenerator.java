@@ -17,7 +17,7 @@ public class CodeGenerator {
 //        generate("user");
 //        generate("file");
 //        generate("role");
-        generate("menu");
+//        generate("menu");
 
     }
 

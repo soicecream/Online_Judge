@@ -40,6 +40,8 @@
     <el-submenu index="system management">
       <template slot="title"><i class="el-icon-cpu"/><span slot="title">系统管理</span></template>
 
+      <el-menu-item index="/admin/menu/list"><i class="el-icon-receiving"/> <span slot="title">菜单管理</span></el-menu-item>
+
       <el-menu-item index="/admin/file/list"><i class="el-icon-receiving"/> <span slot="title">文件管理</span></el-menu-item>
 
 

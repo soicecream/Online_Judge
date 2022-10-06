@@ -67,6 +67,12 @@ const routes = [
       },
 
       {
+        path: 'menu/list',
+        name: 'menu_list',
+        component: () => import('../views/admin/menu/list'),
+      },
+
+      {
         path: 'file/list',
         name: "file_list",
         component: () => import('../views/admin/file_list')
