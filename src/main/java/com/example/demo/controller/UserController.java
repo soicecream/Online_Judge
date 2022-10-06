@@ -105,7 +105,15 @@ public class UserController {
 
     // 分页查询   limit第一个参数 = (pageNum - 1) * pageSize
     @GetMapping("/page")
-    public Result findPage(@RequestParam Integer pageNum, @RequestParam Integer pageSize, @RequestParam(defaultValue = "") String username, @RequestParam(defaultValue = "") String realname, @RequestParam(defaultValue = "") Integer sex, @RequestParam(defaultValue = "") String address, @RequestParam(defaultValue = "") Integer enable, @RequestParam(defaultValue = "") Integer isRank, @RequestParam(defaultValue = "false") Boolean desc) {
+    public Result findPage(@RequestParam Integer pageNum,
+                           @RequestParam Integer pageSize,
+                           @RequestParam(defaultValue = "") String username,
+                           @RequestParam(defaultValue = "") String realname,
+                           @RequestParam(defaultValue = "") Integer sex,
+                           @RequestParam(defaultValue = "") String address,
+                           @RequestParam(defaultValue = "") Integer enable,
+                           @RequestParam(defaultValue = "") Integer isRank,
+                           @RequestParam(defaultValue = "false") Boolean desc) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         if (desc) queryWrapper.orderByDesc("id"); // 是否根据id排序
 

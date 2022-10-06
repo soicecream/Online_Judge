@@ -85,7 +85,7 @@ public class ${table.controllerName} {
                 QueryWrapper<${entity}> queryWrapper = new QueryWrapper<>();
                 if(desc) queryWrapper.orderByDesc("id"); // 是否根据id排序
 
-                return Result.success(${table.entityPath}Service.page(new Page<>(pageNum, pageSize)));
+                return Result.success(${table.entityPath}Service.page(new Page<>(pageNum, pageSize), queryWrapper));
         }
 
 }

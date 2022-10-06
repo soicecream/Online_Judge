@@ -159,9 +159,8 @@
     <div class="demo-pagination-block">
       <el-pagination
           :currentPage="pageNum" :page-size="pageSize"
-          :page-sizes="[5, 10, 15, 20]"
+          :page-sizes="[5, 10, 15, 20]" :total="total"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
           @size-change="handleSizeChange" @current-change="handleCurrentChange"
       />
     </div>

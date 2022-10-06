@@ -22,12 +22,12 @@
       <template slot="title"><i class="el-icon-user-solid"/><span slot="title">用户管理</span></template>
 
       <el-menu-item-group title="用户管理">
-        <el-menu-item index="/admin/user_list"><i class="el-icon-user"/><span>用户列表</span></el-menu-item>
-        <el-menu-item index="/admin/user_update_password"><i class="el-icon-edit"/><span>用户修改密码</span></el-menu-item>
+        <el-menu-item index="/admin/user/list"><i class="el-icon-user"/><span>用户列表</span></el-menu-item>
+        <el-menu-item index="/admin/user/update_password"><i class="el-icon-edit"/><span>用户修改密码</span></el-menu-item>
       </el-menu-item-group>
 
       <el-menu-item-group title="权限管理">
-        <el-menu-item index=""><i class="el-icon-tickets"/>权限列表</el-menu-item>
+        <el-menu-item index="/admin/role/list"><i class="el-icon-tickets"/>权限列表</el-menu-item>
         <el-menu-item index=""><i class="el-icon-coordinate"/>权限添加</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
@@ -40,7 +40,7 @@
     <el-submenu index="system management">
       <template slot="title"><i class="el-icon-cpu"/><span slot="title">系统管理</span></template>
 
-      <el-menu-item index="/admin/file_list"><i class="el-icon-receiving"/> <span slot="title">文件管理</span></el-menu-item>
+      <el-menu-item index="/admin/file/list"><i class="el-icon-receiving"/> <span slot="title">文件管理</span></el-menu-item>
 
 
     </el-submenu>

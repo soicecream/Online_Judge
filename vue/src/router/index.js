@@ -50,17 +50,24 @@ const routes = [
       },
 
       {
-        path: 'user_list',
+        path: 'user/list',
         name: 'user_list',
         component: () => import('../views/admin/user/list'),
       },
       {
-        path: 'user_update_password',
+        path: 'user/update_password',
         name: "user_update_password",
         component: () => import('../views/admin/user/update_password')
       },
+
       {
-        path: 'file_list',
+        path: 'role/list',
+        name: 'role_list',
+        component: () => import('../views/admin/role/list'),
+      },
+
+      {
+        path: 'file/list',
         name: "file_list",
         component: () => import('../views/admin/file_list')
       },

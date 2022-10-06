@@ -15,8 +15,12 @@ public class CodeGenerator {
 
     public static void main(String[] args) {
 //        generate("user");
-        generate("file");
+//        generate("file");
+//        generate("role");
+        generate("menu");
+
     }
+
 
     private static void generate(String tableName) {
         FastAutoGenerator.create("jdbc:mysql://localhost:3306/onlinejudge?serverTimezone=GMT%2b8", "root", "")
