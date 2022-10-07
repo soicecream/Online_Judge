@@ -18,18 +18,18 @@
     <el-menu-item index="/admin/home"><i class="el-icon-s-help"/><span slot="title"> 首页 </span></el-menu-item>
 
     <!--    用户管理-->
-    <el-submenu index="">
+    <el-submenu index="user">
       <template slot="title"><i class="el-icon-user-solid"/><span slot="title">用户管理</span></template>
 
-      <el-menu-item-group title="用户管理">
-        <el-menu-item index="/admin/user/list"><i class="el-icon-user"/><span>用户列表</span></el-menu-item>
-        <el-menu-item index="/admin/user/update_password"><i class="el-icon-edit"/><span>用户修改密码</span></el-menu-item>
-      </el-menu-item-group>
+        <el-menu-item index="/admin/user/list"><i class="el-icon-user"/>用户列表</el-menu-item>
+        <el-menu-item index="/admin/user/update_password"><i class="el-icon-edit"/>用户修改密码</el-menu-item>
 
-      <el-menu-item-group title="权限管理">
-        <el-menu-item index="/admin/role/list"><i class="el-icon-tickets"/>权限列表</el-menu-item>
-        <el-menu-item index=""><i class="el-icon-coordinate"/>权限添加</el-menu-item>
-      </el-menu-item-group>
+    </el-submenu>
+
+    <el-submenu index="role">
+      <template slot="title"><i class="el-icon-user-solid"/><span slot="title">权限管理</span></template>
+      <el-menu-item index="/admin/role/list"><i class="el-icon-tickets"/>权限列表</el-menu-item>
+      <el-menu-item index=""><i class="el-icon-coordinate"/>权限添加</el-menu-item>
     </el-submenu>
 
     <!--    问题管理-->
@@ -40,9 +40,9 @@
     <el-submenu index="system management">
       <template slot="title"><i class="el-icon-cpu"/><span slot="title">系统管理</span></template>
 
-      <el-menu-item index="/admin/menu/list"><i class="el-icon-receiving"/> <span slot="title">菜单管理</span></el-menu-item>
+      <el-menu-item index="/admin/menu/list"><i class="el-icon-receiving"/>菜单管理</el-menu-item>
 
-      <el-menu-item index="/admin/file/list"><i class="el-icon-receiving"/> <span slot="title">文件管理</span></el-menu-item>
+      <el-menu-item index="/admin/file/list"><i class="el-icon-receiving"/>文件管理</el-menu-item>
 
 
     </el-submenu>

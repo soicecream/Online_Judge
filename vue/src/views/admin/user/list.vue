@@ -27,7 +27,7 @@
 
     <!-- 操作 -->
     <div style="margin: 10px 0">
-      <el-button @click="handleAdd" type="primary"> 新增用户 <i class="el-icon-circle-plus"/></el-button>
+      <el-button @click="handlerAdd" type="primary"> 新增用户 <i class="el-icon-circle-plus"/></el-button>
 
       <!--      批量删除-->
       <el-popconfirm
@@ -44,8 +44,8 @@
 
       <!--      导入-->
       <el-upload action="" :show-file-list="false" accept="xlsx"
-                 :http-request="handleExcelImport"
-                 :on-success="handleExcelImportSuccess" :on-error="handleExcelImportError"
+                 :http-request="handlerExcelImport"
+                 :on-success="handlerExcelImportSuccess" :on-error="handlerExcelImportError"
                  style="display: inline-block;" class="mrl-10">
         <el-button type="primary"> 导入用户 <i class="el-icon-folder-add"></i></el-button>
       </el-upload>
@@ -65,7 +65,7 @@
     </div>
 
     <!-- 用户信息 -->
-    <el-table :data="tableData" border stripe @selection-change="handleSelectionChange">
+    <el-table :data="tableData" border stripe @selection-change="handlerSelectionChange">
       <el-table-column type="selection" fixed align="center" width="50"/>
       <el-table-column prop="id" fixed label="id" width="50" align="center"/>
       <el-table-column prop="username" fixed label="用户名" width="130"/>
@@ -161,7 +161,7 @@
           :currentPage="pageNum" :page-size="pageSize"
           :page-sizes="[5, 10, 15, 20]" :total="total"
           layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange" @current-change="handleCurrentChange"
+          @size-change="handlerSizeChange" @current-change="handlerCurrentChange"
       />
     </div>
 
@@ -203,8 +203,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="handleAdd_close">取 消</el-button>
-        <el-button type="primary" @click="handleAdd_ok">确 定</el-button>
+        <el-button @click="handlerAdd_close">取 消</el-button>
+        <el-button type="primary" @click="handlerAdd_ok">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -291,12 +291,12 @@ export default {
 
       // 搜索的信息
       search_message: {
-        username: "", // 用户名
-        realname: "", // 姓名
-        sex: "", // 性别
-        address: "", // 地址
-        enable: "", // 状态
-        isRank: "", // 参加排名
+        username: "",
+        realname: "",
+        sex: "",
+        address: "",
+        enable: "",
+        isRank: "",
       },
 
       // 显示顺序
@@ -398,11 +398,11 @@ export default {
     },
 
     // 分页查询
-    handleSizeChange(pageSize) {
+    handlerSizeChange(pageSize) {
       this.pageSize = pageSize
       this.load_user()
     },
-    handleCurrentChange(pageNum) {
+    handlerCurrentChange(pageNum) {
       this.pageNum = pageNum
       this.load_user()
     },
@@ -422,18 +422,18 @@ export default {
 
 
     // 添加用户
-    handleAdd() {
+    handlerAdd() {
       this.dialogFormVisible = true
       if (this.$refs.user_form !== undefined)
         this.$refs.user_form.resetFields()
     },
-    handleAdd_close() {
+    handlerAdd_close() {
       // 关闭添加的窗口
       this.dialogFormVisible = false
       // 清空数据
       this.$refs.user_form.resetFields()
     },
-    handleAdd_ok() {
+    handlerAdd_ok() {
       this.$refs.user_form.validate((valid) => {
         if (valid) {
           this.request.post("/user", this.form).then(res => {
@@ -443,7 +443,7 @@ export default {
               this.reverse_order_desc = true
               this.load_user()
 
-              this.handleAdd_close()
+              this.handlerAdd_close()
             } else {
               this.$message.error(res.message)
               return false
@@ -498,7 +498,7 @@ export default {
 
 
     // 赋予复选框选中的值
-    handleSelectionChange(val) {
+    handlerSelectionChange(val) {
       this.multipleSelection = val
     },
 
@@ -595,7 +595,7 @@ export default {
     },
 
     // 导入用户信息
-    handleExcelImport(param) {
+    handlerExcelImport(param) {
       let formData  = new FormData()
       formData.append("file", param.file)
 
@@ -608,10 +608,10 @@ export default {
           this.$message.error(res.message)
       })
     },
-    handleExcelImportSuccess() {
+    handlerExcelImportSuccess() {
       this.$message.success("导入成功")
     },
-    handleExcelImportError() {
+    handlerExcelImportError() {
       this.$message.error("导入失败")
     },
 

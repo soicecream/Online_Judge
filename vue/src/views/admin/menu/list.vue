@@ -1,16 +1,9 @@
 <template>
   <div>
-    <!-- 搜索栏 -->
-    <div class="pd-10">
-      <el-input placeholder="请输入角色名称" v-model="search_message.name" suffix-icon="el-icon-user" style="width: 150px;"/>
-      <el-input placeholder="请输入角色描述" v-model="search_message.description" suffix-icon="el-icon-user" style="width: 150px;" class="mrl-5"/>
-      <el-button type="primary" @click="search"> 搜索</el-button>
-      <el-button type="warning" @click="reset"> 重置</el-button>
-    </div>
 
     <!-- 操作 -->
     <div style="margin: 10px 0">
-      <el-button @click="handleAdd" type="primary"> 新增用户 <i class="el-icon-circle-plus"/></el-button>
+      <el-button @click="handlerAdd" type="primary"> 新增菜单 <i class="el-icon-circle-plus"/></el-button>
 
       <!--      批量删除-->
       <el-popconfirm
@@ -24,13 +17,11 @@
         </template>
       </el-popconfirm>
 
-      <!--      显示顺序-->
-      <el-button type="primary" @click="reverse_order" class="ml-10"> {{ 'id ' + reverse_order_value }}<i :class="reverse_order_btncls"/></el-button>
-
     </div>
 
     <!-- 菜单信息 -->
-    <el-table :data="tableData" border stripe @selection-change="handleSelectionChange">
+    <el-table :data="tableData" border stripe @selection-change="handlerSelectionChange"
+              row-key="id" default-expand-all>
       <el-table-column type="selection" align="center"/>
       <el-table-column prop="id" label="id" align="center" width="80"/>
       <el-table-column prop="name" label="菜单名称"/>
@@ -38,9 +29,11 @@
       <el-table-column prop="icon" label="菜单图标"/>
       <el-table-column prop="description" label="菜单描述"/>
 
-      <!--     操作该角色信息-->
+      <!--     操作该菜单信息-->
       <el-table-column label="操作" align="center">
         <template #default="scope">
+
+          <el-button type="primary" @click="handlerAdd(scope.row.id)"> 新增子菜单 </el-button>
 
           <el-button type="success" @click="handlerEdit(scope.row)"> 编辑</el-button>
 
@@ -61,29 +54,27 @@
 
     </el-table>
 
-    <!--   底部分页选项的选择 -->
-    <div class="demo-pagination-block">
-      <el-pagination
-          :currentPage="pageNum" :page-size="pageSize"
-          :page-sizes="[5, 10, 15, 20]" :total="total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange" @current-change="handleCurrentChange"
-      />
-    </div>
-
     <!-- 添加菜单的弹窗 -->
     <el-dialog title="添加菜单信息" :visible.sync="dialogFormVisible" width="30%">
 
       <el-form :model="form" :rules="form_rules" ref="user_form" label-width="100px">
-        <el-form-item label="角色名称" prop="name"><el-input v-model="form.name"/></el-form-item>
-        <el-form-item label="角色路径" prop="path"><el-input v-model="form.path"/></el-form-item>
-        <el-form-item label="角色图标" prop="icon"><el-input v-model="form.icon"/></el-form-item>
-        <el-form-item label="角色描述" prop="description"><el-input v-model="form.description"/></el-form-item>
+        <el-form-item label="菜单名称" prop="name">
+          <el-input v-model="form.name"/>
+        </el-form-item>
+        <el-form-item label="菜单路径" prop="path">
+          <el-input v-model="form.path"/>
+        </el-form-item>
+        <el-form-item label="菜单图标" prop="icon">
+          <el-input v-model="form.icon"/>
+        </el-form-item>
+        <el-form-item label="菜单描述" prop="description">
+          <el-input v-model="form.description"/>
+        </el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="handleAdd_close">取 消</el-button>
-        <el-button type="primary" @click="handleAdd_ok">确 定</el-button>
+        <el-button @click="handlerAdd_close">取 消</el-button>
+        <el-button type="primary" @click="handlerAdd_ok">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -91,10 +82,18 @@
     <el-dialog title="修改菜单信息" :visible.sync="dialogFormVisible_update" width="30%">
 
       <el-form label-width="100px" :model="form_update" :rules="form_update_rules" ref="user_update_form">
-        <el-form-item label="角色名称" prop="name"><el-input v-model="form.name"/></el-form-item>
-        <el-form-item label="角色路径" prop="path"><el-input v-model="form.path"/></el-form-item>
-        <el-form-item label="角色图标" prop="icon"><el-input v-model="form.icon"/></el-form-item>
-        <el-form-item label="角色描述" prop="description"><el-input v-model="form.description"/></el-form-item>
+        <el-form-item label="菜单名称" prop="name">
+          <el-input v-model="form_update.name"/>
+        </el-form-item>
+        <el-form-item label="菜单路径" prop="path">
+          <el-input v-model="form_update.path"/>
+        </el-form-item>
+        <el-form-item label="菜单图标" prop="icon">
+          <el-input v-model="form_update.icon"/>
+        </el-form-item>
+        <el-form-item label="菜单描述" prop="description">
+          <el-input v-model="form_update.description"/>
+        </el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -114,36 +113,17 @@ export default {
     return {
       tableData: [],
 
-      // 表格设计
-      total: 0,
-      pageNum: 1,
-      pageSize: 10,
-
-      // 搜索的信息
-      search_message: {
-        name: "", // 菜单名称
-        description: "", // 菜单描述
-      },
-
-      // 显示顺序
-      reverse_order_value: "正序",
-      reverse_order_desc: false,
-      reverse_order_btncls: 'el-icon-bottom',
-
       // 复选框选中
       multipleSelection: {},
       multipleSelection_length: "",
 
       // 添加菜单信息弹窗
       dialogFormVisible: false,
-      form: {},
+      form: {name: "", path: "", icon: "", pid: "", description: ""},
       form_rules: {
         name: [
           {required: true, message: '请输入菜单名称', trigger: 'blur'},
           {min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
-        ],
-        path: [
-          {required: true, message: '请输入菜单路径', trigger: 'blur'},
         ],
       },
 
@@ -154,9 +134,6 @@ export default {
         name: [
           {required: true, message: '请输入菜单名称', trigger: 'blur'},
           {min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
-        ],
-        path: [
-          {required: true, message: '请输入菜单路径', trigger: 'blur'},
         ],
       },
 
@@ -171,83 +148,44 @@ export default {
   methods: {
     // 加载菜单
     load_role() {
-      this.request.get("/menu/page", {
-        params: {
-          pageNum: this.pageNum,
-          pageSize: this.pageSize,
-          name: this.search_message.name,
-          description: this.search_message.description,
-          desc: this.reverse_order_desc,
-        }
-      }).then(res => {
+      this.request.get("/menu"
+          // , {params: {name: this.search_message.name,}}
+      ).then(res => {
         if (res.code === '200') {
-          this.tableData = res.data.records
-          this.total = res.data.total
+          this.tableData = res.data
         } else {
           this.$message.error("请求失败")
         }
       })
     },
 
-    // 搜索
-    search() {
-      this.pageNum = 1
-      this.load_role()
-    },
-
-    // 重置搜索
-    reset() {
-      Object.keys(this.search_message).forEach(key => (this.search_message[key] = ""))
-      this.load_role()
-    },
-
-    // 分页查询
-    handleSizeChange(pageSize) {
-      this.pageSize = pageSize
-      this.load_role()
-    },
-    handleCurrentChange(pageNum) {
-      this.pageNum = pageNum
-      this.load_role()
-    },
-
-    // 显示顺序
-    reverse_order() {
-      if (this.reverse_order_desc) {
-        this.reverse_order_value = '倒序'
-        this.reverse_order_btncls = 'el-icon-top'
-      } else {
-        this.reverse_order_value = '正序'
-        this.reverse_order_btncls = 'el-icon-bottom'
-      }
-      this.reverse_order_desc = !this.reverse_order_desc
-      this.load_role()
-    },
-
 
     // 添加菜单
-    handleAdd() {
+    handlerAdd(rowId) {
       this.dialogFormVisible = true
       if (this.$refs.user_form !== undefined)
         this.$refs.user_form.resetFields()
+
+      this.form.pid = 0
+      if(rowId)
+        this.form.pid = rowId
     },
-    handleAdd_close() {
+    handlerAdd_close() {
       // 关闭添加的窗口
       this.dialogFormVisible = false
       // 清空数据
       this.$refs.user_form.resetFields()
     },
-    handleAdd_ok() {
+    handlerAdd_ok() {
       this.$refs.user_form.validate((valid) => {
         if (valid) {
           this.request.post("/menu", this.form).then(res => {
             if (res.code === "200") {
-              this.$message.success("角色添加成功")
+              this.$message.success("添加成功")
 
-              this.reverse_order_desc = true
               this.load_role()
 
-              this.handleAdd_close()
+              this.handlerAdd_close()
             } else {
               this.$message.error(res.message)
               return false
@@ -295,7 +233,7 @@ export default {
     },
 
     // 赋予复选框选中的值
-    handleSelectionChange(val) {
+    handlerSelectionChange(val) {
       this.multipleSelection = val
     },
 
@@ -303,7 +241,7 @@ export default {
     check_multipleSelection() {
       this.multipleSelection_length = 0
       if (this.multipleSelection.length === undefined || this.multipleSelection.length === 0) {
-        this.$message.error("请选择角色")
+        this.$message.error("请选择菜单")
         return false
       }
       this.multipleSelection_length = this.multipleSelection.length
@@ -344,11 +282,6 @@ export default {
 
 .demo-pagination-block {
   margin-top: 10px;
-}
-
-.box-card {
-  width: 480px;
-  margin: auto;
 }
 
 </style>

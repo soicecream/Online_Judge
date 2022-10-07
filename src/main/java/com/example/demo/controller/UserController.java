@@ -105,15 +105,7 @@ public class UserController {
 
     // 分页查询   limit第一个参数 = (pageNum - 1) * pageSize
     @GetMapping("/page")
-    public Result findPage(@RequestParam Integer pageNum,
-                           @RequestParam Integer pageSize,
-                           @RequestParam(defaultValue = "") String username,
-                           @RequestParam(defaultValue = "") String realname,
-                           @RequestParam(defaultValue = "") Integer sex,
-                           @RequestParam(defaultValue = "") String address,
-                           @RequestParam(defaultValue = "") Integer enable,
-                           @RequestParam(defaultValue = "") Integer isRank,
-                           @RequestParam(defaultValue = "false") Boolean desc) {
+    public Result findPage(@RequestParam Integer pageNum, @RequestParam Integer pageSize, @RequestParam(defaultValue = "") String username, @RequestParam(defaultValue = "") String realname, @RequestParam(defaultValue = "") Integer sex, @RequestParam(defaultValue = "") String address, @RequestParam(defaultValue = "") Integer enable, @RequestParam(defaultValue = "") Integer isRank, @RequestParam(defaultValue = "false") Boolean desc) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         if (desc) queryWrapper.orderByDesc("id"); // 是否根据id排序
 
@@ -249,14 +241,14 @@ public class UserController {
             // 如果用户的密码为空就设一个初始值
             System.out.println("=================>");
             System.out.println(i.getUsername());
-            if(StrUtil.isBlank(i.getUsername())) {
+            if (StrUtil.isBlank(i.getUsername())) {
                 System.out.println("=============> no");
                 return Result.error("400", "请在excel中添加用户名(username)");
             }
             if (StrUtil.isBlank(i.getPassword())) {
                 i.setPassword("123456");
             }
-            if(StrUtil.isBlank(i.getNickname())) {
+            if (StrUtil.isBlank(i.getNickname())) {
                 i.setNickname(i.getUsername());
             }
         }
