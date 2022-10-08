@@ -42,7 +42,7 @@
       <el-table-column label="操作" align="center">
         <template #default="scope">
 
-          <el-button type="info" @click="handlerMenu(scope.row)"> 分配菜单</el-button>
+          <el-button type="info" @click="handlerMenu(scope.row.id)"> 分配菜单</el-button>
 
           <el-button type="success" @click="handlerEdit(scope.row)"> 编辑</el-button>
 
@@ -77,8 +77,12 @@
     <el-dialog title="添加角色信息" :visible.sync="dialogFormVisible" width="30%">
 
       <el-form :model="form" :rules="form_rules" ref="user_form" label-width="100px">
-        <el-form-item label="角色名称" prop="name"><el-input v-model="form.name"/></el-form-item>
-        <el-form-item label="角色描述" prop="description"><el-input v-model="form.description"/></el-form-item>
+        <el-form-item label="角色名称" prop="name">
+          <el-input v-model="form.name"/>
+        </el-form-item>
+        <el-form-item label="角色描述" prop="description">
+          <el-input v-model="form.description"/>
+        </el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -91,8 +95,12 @@
     <el-dialog title="修改角色信息" :visible.sync="dialogFormVisible_update" width="30%">
 
       <el-form label-width="100px" :model="form_update" :rules="form_update_rules" ref="user_update_form">
-        <el-form-item label="角色名称" prop="name"><el-input v-model="form_update.name"/></el-form-item>
-        <el-form-item label="角色描述" prop="description"><el-input v-model="form_update.description"/></el-form-item>
+        <el-form-item label="角色名称" prop="name">
+          <el-input v-model="form_update.name"/>
+        </el-form-item>
+        <el-form-item label="角色描述" prop="description">
+          <el-input v-model="form_update.description"/>
+        </el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -105,13 +113,14 @@
     <el-dialog title="菜单分配" :visible.sync="dialogFormVisible_menu" width="30%">
 
       <el-tree
-          show-checkbox @check-change="handlerMenu_CheckChange"
+          show-checkbox
           node-key="id" default-expand-all
           :data="MenuData" :props="props"
-          :default-expanded-keys="expends" :default-checked-keys="checks"
+          :default-expanded-keys="menu_expends" :default-checked-keys="menu_checks"
+          ref="menu_tree"
       >
         <span class="custom-tree-node" slot-scope="{node, data}">
-          <span> <i :class="data.icon" /> {{data.name}}</span>
+          <span> <i :class="data.icon"/> {{ data.name }}</span>
         </span>
       </el-tree>
 
@@ -180,6 +189,7 @@ export default {
         label: "name",
       },
 
+      roleId: 0,
     }
   },
 
@@ -314,14 +324,11 @@ export default {
       })
     },
 
-    //
-    handlerMenu_CheckChange(data, checked, indeterminate) {
-      console.log(data, checked, indeterminate)
-    },
 
     // 分配菜单
-    handlerMenu(row) {
+    handlerMenu(rowId) {
       this.dialogFormVisible_menu = true
+      this.roleId = rowId
 
       this.request.get("/menu").then(res => {
         if (res.code === '200') {
@@ -335,13 +342,28 @@ export default {
         }
       })
 
+      this.request.get("/role/roleMenu/" + rowId).then(res => {
+        if (res.code === '200') {
+          this.menu_checks = res.data
+        } else {
+          this.$message.error("请求失败")
+        }
+      })
+
 
     },
     handlerMenu_close() {
       this.dialogFormVisible_menu = false
     },
     handlerMenu_ok() {
-
+      this.request.post("/role/roleMenu/" + this.roleId, this.$refs.menu_tree.getCheckedKeys()).then(res => {
+        if (res.code === '200') {
+          this.$message.success("分配菜单成功")
+          this.handlerMenu_close()
+        } else {
+          this.$message.error(res.message)
+        }
+      })
     },
 
 

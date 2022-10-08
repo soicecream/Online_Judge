@@ -79,4 +79,7 @@ public class User implements Serializable {
     @ApiModelProperty("假删除 (1删除，0未删除)")
     private Boolean isDelete;
 
+    @ApiModelProperty("角色")
+    private String role;
+
 }

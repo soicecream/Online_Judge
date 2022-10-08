@@ -37,5 +37,8 @@ public class Role implements Serializable {
     @ApiModelProperty("角色描述")
     private String description;
 
+    @ApiModelProperty("唯一标识")
+    private String key;
+
 
 }
