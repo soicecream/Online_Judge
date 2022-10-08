@@ -3,6 +3,9 @@ package com.example.demo.controller;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.demo.common.Constants;
+import com.example.demo.entity.Dict;
+import com.example.demo.service.IDictService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,6 +35,9 @@ public class MenuController {
     @Resource
     private IMenuService menuService;
 
+    @Resource
+    private IDictService dictService;
+
 
     // 新增或者更新
     @PostMapping
@@ -46,7 +52,7 @@ public class MenuController {
     }
 
     // 以id来删除多条数据     数据是 [1, 2, 3] 这样的
-    @PostMapping("/del/batch")
+    @PostMapping("/delete/batch")
     public Result deleteBatch(@RequestBody List<Integer> list) {
         return Result.success(menuService.removeByIds(list));
     }
@@ -106,6 +112,15 @@ public class MenuController {
         }
 
         return Result.success(parentNode);
+    }
+
+
+    // 根据id查询数据
+    @GetMapping("/icons")
+    public Result getIcons() {
+        QueryWrapper<Dict> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("type", Constants.DICT_TYPE_ICON);
+        return Result.success(dictService.list(queryWrapper));
     }
 
 

@@ -7,8 +7,8 @@ import javax.annotation.Resource;
 import java.util.List;
 import com.example.demo.common.Result;
 
-import com.example.demo.service.IFileService;
-import com.example.demo.entity.File;
+import com.example.demo.service.IDictService;
+import com.example.demo.entity.Dict;
 
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,41 +21,41 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2022-10-07
  */
 @RestController
-@RequestMapping("/file")
-public class FileController {
+@RequestMapping("/dict")
+public class DictController {
 
         @Resource
-        private IFileService fileService;
+        private IDictService dictService;
 
 
         // 新增或者更新
         @PostMapping
-        public Result save(@RequestBody File file) {
-                return Result.success(fileService.saveOrUpdate(file));
+        public Result save(@RequestBody Dict dict) {
+                return Result.success(dictService.saveOrUpdate(dict));
         }
 
         // 根据id删除
         @DeleteMapping("/{id}")
         public Result delete(@PathVariable Integer id) {
-                return Result.success(fileService.removeById(id));
+                return Result.success(dictService.removeById(id));
         }
 
         // 以id来删除多条数据     数据是 [1, 2, 3] 这样的
         @PostMapping("/delete/batch")
         public Result deleteBatch(@RequestBody List<Integer> list) {
-                return Result.success(fileService.removeByIds(list));
+                return Result.success(dictService.removeByIds(list));
         }
 
         // 获取所有数据
         @GetMapping
         public Result findAll() {
-                return Result.success(fileService.list());
+                return Result.success(dictService.list());
         }
 
         // 根据id查询数据
         @GetMapping("/{id}")
         public Result findOne(@PathVariable Integer id) {
-                return Result.success(fileService.getById(id));
+                return Result.success(dictService.getById(id));
         }
 
         // 分页查询     limit第一个参数 = (pageNum - 1) * pageSize
@@ -63,10 +63,10 @@ public class FileController {
         public Result findPage(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
                                         @RequestParam(defaultValue = "false") Boolean desc) {
-                QueryWrapper<File> queryWrapper = new QueryWrapper<>();
+                QueryWrapper<Dict> queryWrapper = new QueryWrapper<>();
                 if(desc) queryWrapper.orderByDesc("id"); // 是否根据id排序
 
-                return Result.success(fileService.page(new Page<>(pageNum, pageSize), queryWrapper));
+                return Result.success(dictService.page(new Page<>(pageNum, pageSize), queryWrapper));
         }
 
 }

@@ -3,7 +3,7 @@
 
     <!-- 操作 -->
     <div style="margin: 10px 0">
-      <el-button @click="handlerAdd" type="primary"> 新增菜单 <i class="el-icon-circle-plus"/></el-button>
+      <el-button @click="handlerAdd()" type="primary"> 新增菜单 <i class="el-icon-circle-plus"/></el-button>
 
       <!--      批量删除-->
       <el-popconfirm
@@ -26,14 +26,18 @@
       <el-table-column prop="id" label="id" align="center" width="80"/>
       <el-table-column prop="name" label="菜单名称"/>
       <el-table-column prop="path" label="菜单路劲"/>
-      <el-table-column prop="icon" label="菜单图标"/>
+      <el-table-column label="菜单图标" align="center">
+        <template #default="scope">
+          <i :class="scope.row.icon" style="font-size: 30px;"/>
+        </template>
+      </el-table-column>
       <el-table-column prop="description" label="菜单描述"/>
 
       <!--     操作该菜单信息-->
       <el-table-column label="操作" align="center">
         <template #default="scope">
 
-          <el-button type="primary" @click="handlerAdd(scope.row.id)"> 新增子菜单 </el-button>
+          <el-button type="primary" @click="handlerAdd(scope.row.id)"> 新增子菜单</el-button>
 
           <el-button type="success" @click="handlerEdit(scope.row)"> 编辑</el-button>
 
@@ -64,9 +68,15 @@
         <el-form-item label="菜单路径" prop="path">
           <el-input v-model="form.path"/>
         </el-form-item>
+
         <el-form-item label="菜单图标" prop="icon">
-          <el-input v-model="form.icon"/>
+          <el-select v-model="form.icon" placeholder="请选择" filterable clearable style="width: 100%;">
+            <el-option v-for="item in options" :key="item.name" :label="item.name" :value="item.value">
+              <i :class="item.value"/> {{ item.name }}
+            </el-option>
+          </el-select>
         </el-form-item>
+
         <el-form-item label="菜单描述" prop="description">
           <el-input v-model="form.description"/>
         </el-form-item>
@@ -88,9 +98,15 @@
         <el-form-item label="菜单路径" prop="path">
           <el-input v-model="form_update.path"/>
         </el-form-item>
+
         <el-form-item label="菜单图标" prop="icon">
-          <el-input v-model="form_update.icon"/>
+          <el-select v-model="form_update.icon" placeholder="请选择" filterable clearable style="width: 100%;">
+            <el-option v-for="item in options" :key="item.name" :label="item.name" :value="item.value">
+              <i :class="item.value"/> {{ item.name }}
+            </el-option>
+          </el-select>
         </el-form-item>
+
         <el-form-item label="菜单描述" prop="description">
           <el-input v-model="form_update.description"/>
         </el-form-item>
@@ -119,7 +135,7 @@ export default {
 
       // 添加菜单信息弹窗
       dialogFormVisible: false,
-      form: {name: "", path: "", icon: "", pid: "", description: ""},
+      form: {},
       form_rules: {
         name: [
           {required: true, message: '请输入菜单名称', trigger: 'blur'},
@@ -136,6 +152,9 @@ export default {
           {min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
         ],
       },
+
+      // 图标
+      options: [],
 
     }
   },
@@ -160,15 +179,27 @@ export default {
     },
 
 
+    // 请求图标
+    load_icons() {
+      this.request.get("/menu/icons").then(res => {
+        if (res.code === '200') {
+          this.options = res.data
+        } else {
+          this.$message.error("请求失败")
+        }
+      })
+    },
+
     // 添加菜单
     handlerAdd(rowId) {
       this.dialogFormVisible = true
       if (this.$refs.user_form !== undefined)
         this.$refs.user_form.resetFields()
 
-      this.form.pid = 0
-      if(rowId)
+      if (rowId)
         this.form.pid = rowId
+
+      this.load_icons()
     },
     handlerAdd_close() {
       // 关闭添加的窗口
@@ -179,6 +210,7 @@ export default {
     handlerAdd_ok() {
       this.$refs.user_form.validate((valid) => {
         if (valid) {
+          console.log(this.form.id)
           this.request.post("/menu", this.form).then(res => {
             if (res.code === "200") {
               this.$message.success("添加成功")
@@ -214,6 +246,8 @@ export default {
     handlerEdit(row) {
       this.dialogFormVisible_update = true
       this.form_update = Object.assign({}, row)
+
+      this.load_icons()
     },
     handlerEdit_close() {
       this.dialogFormVisible_update = false
@@ -242,10 +276,8 @@ export default {
       this.multipleSelection_length = 0
       if (this.multipleSelection.length === undefined || this.multipleSelection.length === 0) {
         this.$message.error("请选择菜单")
-        return false
       }
       this.multipleSelection_length = this.multipleSelection.length
-      return true
     },
 
     // 删除菜单信息
@@ -263,6 +295,7 @@ export default {
       // 将对象数据 变成 id数组
       // [{}, {}, {}] => [1, 2, 3 ]
       let ids = this.multipleSelection.map(v => v.id)
+      console.log(ids)
 
       this.request.post("/menu/delete/batch", ids).then(res => {
         if (res.code === '200') {
@@ -279,9 +312,5 @@ export default {
 </script>
 
 <style scoped>
-
-.demo-pagination-block {
-  margin-top: 10px;
-}
 
 </style>

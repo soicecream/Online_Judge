@@ -14,10 +14,11 @@ import java.util.Collections;
 public class CodeGenerator {
 
     public static void main(String[] args) {
-//        generate("user");
-//        generate("file");
-//        generate("role");
-//        generate("menu");
+//        generate("sys_user");
+//        generate("sys_file");
+//        generate("sys_role");
+//        generate("sys_menu");
+        generate("sys_dict");
 
     }
 

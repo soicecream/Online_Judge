@@ -23,6 +23,9 @@ mybatis:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 打印sql语句
+  global-config:
+    db-config:
+      id-type: auto
 
 files:
   upload:

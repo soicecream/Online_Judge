@@ -43,7 +43,7 @@ public class RoleController {
     }
 
     // 以id来删除多条数据     数据是 [1, 2, 3] 这样的
-    @PostMapping("/del/batch")
+    @PostMapping("/delete/batch")
     public Result deleteBatch(@RequestBody List<Integer> list) {
         return Result.success(roleService.removeByIds(list));
     }

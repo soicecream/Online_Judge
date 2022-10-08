@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.File;
+import com.example.demo.entity.Dict;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author 作者
  * @since 2022-10-07
  */
-public interface IFileService extends IService<File> {
+public interface IDictService extends IService<Dict> {
 
 }

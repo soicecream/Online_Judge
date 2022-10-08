@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -20,6 +21,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
+@TableName("sys_user")
 @ApiModel(value = "User对象", description = "")
 public class User implements Serializable {
 

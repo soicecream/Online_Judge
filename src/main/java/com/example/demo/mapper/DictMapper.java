@@ -1,6 +1,6 @@
 package com.example.demo.mapper;
 
-import com.example.demo.entity.File;
+import com.example.demo.entity.Dict;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author 作者
  * @since 2022-10-07
  */
-public interface FileMapper extends BaseMapper<File> {
+public interface DictMapper extends BaseMapper<Dict> {
 
 }

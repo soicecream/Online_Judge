@@ -318,11 +318,11 @@ export default {
         ],
         password: [
           {required: true, message: '请输入密码', trigger: 'blur'},
-          {min: 6, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
+          {min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur'}
         ],
         nickname: [
           {required: true, message: '请输入昵称', trigger: 'blur'},
-          {min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
+          {min: 1, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur'}
         ],
         phone: [
           {min: 11, max: 11, message: '请填写11位的电话号码', trigger: 'blur'},
@@ -580,9 +580,14 @@ export default {
       })
     },
     handlerDelBatch() {
+      this.check_multipleSelection()
+      if (this.multipleSelection_length == 0)
+        return false
+
       // 将对象数据 变成 id数组
       // [{}, {}, {}] => [1, 2, 3 ]
       let ids = this.multipleSelection.map(v => v.id)
+      console.log(ids)
 
       this.request.post("/user/delete/batch", ids).then(res => {
         if (res.code === '200') {

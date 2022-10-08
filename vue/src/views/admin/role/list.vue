@@ -77,12 +77,8 @@
     <el-dialog title="添加角色信息" :visible.sync="dialogFormVisible" width="30%">
 
       <el-form :model="form" :rules="form_rules" ref="user_form" label-width="100px">
-        <el-form-item label="角色名称" prop="name">
-          <el-input v-model="form.name"/>
-        </el-form-item>
-        <el-form-item label="角色描述" prop="description">
-          <el-input v-model="form.description"/>
-        </el-form-item>
+        <el-form-item label="角色名称" prop="name"><el-input v-model="form.name"/></el-form-item>
+        <el-form-item label="角色描述" prop="description"><el-input v-model="form.description"/></el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -95,12 +91,8 @@
     <el-dialog title="修改角色信息" :visible.sync="dialogFormVisible_update" width="30%">
 
       <el-form label-width="100px" :model="form_update" :rules="form_update_rules" ref="user_update_form">
-        <el-form-item label="角色名称" prop="name">
-          <el-input v-model="form_update.name"/>
-        </el-form-item>
-        <el-form-item label="角色描述" prop="description">
-          <el-input v-model="form_update.description"/>
-        </el-form-item>
+        <el-form-item label="角色名称" prop="name"><el-input v-model="form_update.name"/></el-form-item>
+        <el-form-item label="角色描述" prop="description"><el-input v-model="form_update.description"/></el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -116,8 +108,12 @@
           show-checkbox @check-change="handlerMenu_CheckChange"
           node-key="id" default-expand-all
           :data="MenuData" :props="props"
-          :default-expanded-keys="[1]" :default-checked-keys="[4]"
-      />
+          :default-expanded-keys="expends" :default-checked-keys="checks"
+      >
+        <span class="custom-tree-node" slot-scope="{node, data}">
+          <span> <i :class="data.icon" /> {{data.name}}</span>
+        </span>
+      </el-tree>
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="handlerMenu_close">取 消</el-button>
@@ -178,6 +174,8 @@ export default {
 
       dialogFormVisible_menu: false,
       MenuData: [],
+      menu_expends: [],
+      menu_checks: [],
       props: {
         label: "name",
       },
@@ -328,10 +326,16 @@ export default {
       this.request.get("/menu").then(res => {
         if (res.code === '200') {
           this.MenuData = res.data
+
+          // 把后台返回的菜单数据处理成id数组
+          this.menu_expends = this.MenuData.map(v => v.id)
+
         } else {
           this.$message.error("请求失败")
         }
       })
+
+
     },
     handlerMenu_close() {
       this.dialogFormVisible_menu = false
@@ -369,6 +373,10 @@ export default {
       })
     },
     handlerDelBatch() {
+      this.check_multipleSelection()
+      if (this.multipleSelection_length == 0)
+        return false
+
       // 将对象数据 变成 id数组   [{}, {}, {}] => [1, 2, 3 ]
       let ids = this.multipleSelection.map(v => v.id)
 
