@@ -32,9 +32,10 @@
         </template>
       </el-table-column>
       <el-table-column prop="description" label="菜单描述"/>
+      <el-table-column prop="pagePath" label="页面路径"/>
 
       <!--     操作该菜单信息-->
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" width="300" align="center">
         <template #default="scope">
 
           <el-button type="primary" @click="handlerAdd(scope.row.id)"> 新增子菜单</el-button>
@@ -77,9 +78,8 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="菜单描述" prop="description">
-          <el-input v-model="form.description"/>
-        </el-form-item>
+        <el-form-item label="菜单描述" prop="description"><el-input v-model="form.description"/></el-form-item>
+        <el-form-item label="页面路径" prop="pagePath"><el-input v-model="form.pagePath"/></el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -107,9 +107,8 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="菜单描述" prop="description">
-          <el-input v-model="form_update.description"/>
-        </el-form-item>
+        <el-form-item label="菜单描述" prop="description"><el-input v-model="form_update.description"/></el-form-item>
+        <el-form-item label="页面路径" prop="pagePath"><el-input v-model="form_update.pagePath"/></el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -167,9 +166,7 @@ export default {
   methods: {
     // 加载菜单
     load_role() {
-      this.request.get("/menu"
-          // , {params: {name: this.search_message.name,}}
-      ).then(res => {
+      this.request.get("/menu/findTreeMenus").then(res => {
         if (res.code === '200') {
           this.tableData = res.data
         } else {

@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import NavigationBar from "@/components/admin/navigation_bar";
+import NavigationBar from "@/components/admin/navigationBar";
 
 export default {
   name: "admin",
@@ -41,6 +41,10 @@ export default {
       if (this.isCollapse) {
         this.sideWidth = 65
       }
+    },
+
+    getMenus() {
+
     },
 
 

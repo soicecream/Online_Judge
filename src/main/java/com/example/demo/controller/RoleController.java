@@ -65,16 +65,13 @@ public class RoleController {
 
     // 分页查询     limit第一个参数 = (pageNum - 1) * pageSize
     @GetMapping("/page")
-    public Result findPage(@RequestParam Integer pageNum,
-                           @RequestParam Integer pageSize,
-                           @RequestParam(defaultValue = "") String name,
-                           @RequestParam(defaultValue = "") String description,
-                           @RequestParam(defaultValue = "false") Boolean desc) {
+    public Result findPage(@RequestParam Integer pageNum, @RequestParam Integer pageSize, @RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String description, @RequestParam(defaultValue = "") String roleKey, @RequestParam(defaultValue = "false") Boolean desc) {
         QueryWrapper<Role> queryWrapper = new QueryWrapper<>();
         if (desc) queryWrapper.orderByDesc("id"); // 是否根据id排序
 
         if (!"".equals(name)) queryWrapper.like("name", name);
         if (!"".equals(description)) queryWrapper.like("description", description);
+        if (!"".equals(roleKey)) queryWrapper.like("role_key", roleKey);
 
 
         return Result.success(roleService.page(new Page<>(pageNum, pageSize), queryWrapper));

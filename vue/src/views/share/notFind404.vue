@@ -40,7 +40,7 @@
 
 <script>
 export default {
-  name: "not_find_404",
+  name: "notFind404",
 
   methods: {
     go_back() {

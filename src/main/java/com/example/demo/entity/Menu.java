@@ -45,6 +45,9 @@ public class Menu implements Serializable {
     @ApiModelProperty("描述")
     private String description;
 
+    @ApiModelProperty("页面路径")
+    private String pagePath;
+
     // 该字段在数据库中是没有的
     @TableField(exist = false)
     private List<Menu> children;

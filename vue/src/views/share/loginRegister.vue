@@ -3,6 +3,7 @@
     <div class="contain">
       <div class="big-box" :class="{active:isLogin}">
 
+<!--        登录-->
         <div class="big-contain" key="bigContainLogin" v-if="isLogin">
           <div class="btitle">账户登录</div>
           <el-form :model="login_form" :rules="login_form_rules" ref="login_user_form"
@@ -12,7 +13,7 @@
             </el-form-item>
 
             <el-form-item prop="password">
-              <el-input v-model="login_form.password" prefix-icon="el-icon-lock" placeholder="密码"></el-input>
+              <el-input v-model="login_form.password" show-password prefix-icon="el-icon-lock" placeholder="密码"></el-input>
             </el-form-item>
 
             <el-form-item style="text-align: center">
@@ -21,6 +22,7 @@
           </el-form>
         </div>
 
+<!--        注册-->
         <div class="big-contain" key="bigContainRegister" v-else>
           <div class="btitle">创建账户</div>
           <el-form :model="register_form" :rules="register_form_rules" ref="register_user_form" style="width: 300px; height: 350px; margin-top: 5%;">
@@ -81,10 +83,11 @@
 </template>
 
 <script>
-import VerificationCode from "@/components/share/verification_code";
+import VerificationCode from "@/components/share/verificationCode";
+import {setRoutes} from "@/router";
 
 export default {
-  name: 'login-register',
+  name: 'loginRegister',
 
   components: {
     VerificationCode,
@@ -163,10 +166,13 @@ export default {
         if (valid) {
           this.request.post("/user/login", this.login_form).then(res => {
             if (res.code === "200") {
-              let data = res.data
               // 存储用户信息到浏览器中
-              // localStorage.setItem("user", JSON.stringify(data))
-              localStorage.setItem("user", '{"id":' + data.id + ',"headPortrait":' + data.headPortrait + ',"token":"' + data.token + '"}')
+              localStorage.setItem("user", JSON.stringify(res.data))
+              // localStorage.setItem("user", '{"id":' + data.id + ',"headPortrait":' + data.headPortrait + ',"token":"' + data.token + '"}')
+              localStorage.setItem("menus", JSON.stringify(res.data.menus))
+
+              // 动态设置当前用户的路由
+              setRoutes()
 
               this.$router.push("/")
               this.$message.success("登陆成功")

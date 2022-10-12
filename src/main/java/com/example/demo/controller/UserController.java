@@ -39,6 +39,8 @@ public class UserController {
     @Resource
     private IUserService userService;
 
+
+
     // 登录用户
     @PostMapping("/login")
     public Result login(@RequestBody UserDto userDto) {
@@ -129,6 +131,7 @@ public class UserController {
     // 新增或者更新
     @PostMapping
     public Result save(@RequestBody User user) {
+
         return Result.success(userService.saveOrUpdate(user));
     }
 
@@ -239,11 +242,11 @@ public class UserController {
         List<User> list = reader.readAll(User.class);
         for (User i : list) {
             // 如果用户的密码为空就设一个初始值
-            System.out.println("=================>");
-            System.out.println(i.getUsername());
+//            System.out.println("=================>");
+//            System.out.println(i.getUsername());
             if (StrUtil.isBlank(i.getUsername())) {
-                System.out.println("=============> no");
-                return Result.error("400", "请在excel中添加用户名(username)");
+//                System.out.println("=============> no");
+                return Result.error("400", "请在excel表中添加用户名或者username字段");
             }
             if (StrUtil.isBlank(i.getPassword())) {
                 i.setPassword("123456");

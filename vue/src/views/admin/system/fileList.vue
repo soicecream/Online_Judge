@@ -99,7 +99,7 @@
 
 <script>
 export default {
-  name: "file_list",
+  name: "fileList",
 
   data() {
     return {

@@ -11,7 +11,7 @@
 
 <script>
 
-import Navigation_bar from "@/components/oj/navigation_bar";
+import Navigation_bar from "@/components/oj/navigationBar";
 
 export default {
   name: "oj",

@@ -5,13 +5,25 @@ import cn.hutool.log.Log;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.demo.common.Constants;
 import com.example.demo.controller.dto.UserDto;
+import com.example.demo.entity.Menu;
+import com.example.demo.entity.Role;
+import com.example.demo.entity.RoleMenu;
 import com.example.demo.entity.User;
 import com.example.demo.exception.ServiceException;
+import com.example.demo.mapper.RoleMapper;
+import com.example.demo.mapper.RoleMenuMapper;
 import com.example.demo.mapper.UserMapper;
+import com.example.demo.service.IMenuService;
 import com.example.demo.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.demo.utils.TokenUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -25,6 +37,15 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
     private static final Log LOG = Log.get();
+    
+    @Resource
+    private RoleMapper roleMapper;
+
+    @Resource
+    private RoleMenuMapper roleMenuMapper;
+
+    @Resource
+    private IMenuService menuService;
 
     //    登录用户
     @Override
@@ -37,6 +58,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 //                设置token
                 String token = TokenUtils.getToken(one.getId().toString(), one.getPassword());
                 userDto.setToken(token);
+
+                String role = one.getRole();
+
+                // 设置用户的菜单列表
+//                if(!role.equals(Constants.ROLE_USER))
+                    userDto.setMenus(getRoleMenus(role));
+
                 return userDto;
             }
         } else {
@@ -57,6 +85,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         return one;
     }
+
 
     @Override
     public Boolean updatePassword(UserDto userDto) {
@@ -115,6 +144,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new ServiceException(Constants.CODE_500, "系统错误");
         }
         return one;
+    }
+
+    // 获取当前角色的菜单列表
+    private List<Menu> getRoleMenus(String role) {
+        QueryWrapper<Role> queryWrapper = new QueryWrapper<>(); queryWrapper.eq("role_key", role);
+        Integer roleId = roleMapper.selectOne(queryWrapper).getId();
+
+        QueryWrapper<RoleMenu> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("role_id", roleId);
+        List<Integer> menuIds = roleMenuMapper.selectList(queryWrapper1).stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
+
+        // 查出系统所有的菜单
+        List<Menu> menus = menuService.findMenus();
+
+        // 最后筛选完之后的list
+        List<Menu> roleMenus = new ArrayList<>();
+        // 筛选当前用户角色的菜单
+        for(Menu menu: menus) {
+            if(menuIds.contains(menu.getId())) {
+                roleMenus.add(menu);
+            }
+            List<Menu> children = menu.getChildren();
+            // removeIf 移除children 里面不在menuIds集合中的元素
+            children.removeIf(child -> !menuIds.contains(child.getId()));
+        }
+        return roleMenus;
     }
 
 }

@@ -11,4 +11,10 @@ public interface Constants {
 
     String DICT_TYPE_ICON = "icon"; // 图标
 
+
+    String ROLE_ADMIN = "ROLE_ADMIN";
+    String ROLE_ROOT = "ROLE_ROOT";
+    String ROLE_USER = "ROLE_USER";
+
+
 }

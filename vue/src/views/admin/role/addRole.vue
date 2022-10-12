@@ -1,12 +1,12 @@
 <template>
 <div>
-  <h1>role_list</h1>
+  <h1>add_role</h1>
 </div>
 </template>
 
 <script>
 export default {
-  name: "list"
+  name: "addRole"
 }
 </script>
 

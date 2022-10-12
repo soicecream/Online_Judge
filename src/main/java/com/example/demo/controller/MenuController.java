@@ -60,25 +60,12 @@ public class MenuController {
     // 获取所有数据
     @GetMapping
     public Result findAll() {
-//         查询所有数据
-        List<Menu> list = menuService.list();
+        return Result.success(menuService.list());
+    }
 
-        // 找到pid为null的一级菜单
-        List<Menu> parentNode = list.stream().filter(menu -> menu.getPid() == 0).collect(Collectors.toList());
-
-        for (Menu menu : parentNode) {
-            // 筛选所有的二级菜单  所有数据中pid=父级id的数据就是下级菜单
-            menu.setChildren(list.stream().filter(m -> menu.getId().equals(m.getPid())).collect(Collectors.toList()));
-
-            // 筛选所有的三级菜单
-            for(Menu menu1 : menu.getChildren()) {
-                menu1.setChildren(list.stream().filter(m -> menu1.getId().equals(m.getPid())).collect(Collectors.toList()));
-            }
-        }
-
-        return Result.success(parentNode);
-
-//        return Result.success(menuService.list());
+    @GetMapping("/ids")
+    public Result findAllIds() {
+        return Result.success(menuService.list().stream().map(Menu::getId));
     }
 
     // 根据id查询数据
@@ -87,31 +74,10 @@ public class MenuController {
         return Result.success(menuService.getById(id));
     }
 
-    // 获取所有数据
-    @GetMapping("/all")
-    public Result findAlls(@RequestParam(defaultValue = "") String name) {
-        QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
-
-        if(!"".equals(name)) queryWrapper.like("name", name);
-
-        // 查询所有数据
-        List<Menu> list = menuService.list(queryWrapper);
-
-        // 找到pid为null的一级菜单
-        List<Menu> parentNode = list.stream().filter(menu -> menu.getPid() == null).collect(Collectors.toList());
-
-        // 找出一级菜单的子菜单
-        for (Menu menu : parentNode) {
-            // 筛选所有数据中pid=父级id的数据就是二级菜单
-            menu.setChildren(list.stream().filter(m -> menu.getId().equals(m.getPid())).collect(Collectors.toList()));
-
-            // 找出二级菜单的子菜单
-            for(Menu menus : menu.getChildren()) {
-                menus.setChildren(list.stream().filter(mm -> menus.getId().equals(mm.getPid())).collect(Collectors.toList()));
-            }
-        }
-
-        return Result.success(parentNode);
+    // 获取树形接口的菜单数据
+    @GetMapping("/findTreeMenus")
+    public Result findMenus(@RequestParam(defaultValue = "") String name) {
+        return Result.success(menuService.findMenus());
     }
 
 

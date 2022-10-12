@@ -42,7 +42,7 @@
 
 <script>
 export default {
-  name: "update_password",
+  name: "updatePassword",
 
   data() {
     return {

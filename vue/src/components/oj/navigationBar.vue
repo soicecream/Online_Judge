@@ -46,10 +46,10 @@
 </template>
 
 <script>
-import VerificationCode from "@/components/share/verification_code";
+import VerificationCode from "@/components/share/verificationCode";
 
 export default {
-  name: "navigation_bar",
+  name: "navigationBar",
 
   components: {
     VerificationCode,
@@ -87,13 +87,13 @@ export default {
 
     // 跳转到后台管理页面
     to_admin_page() {
-      this.$router.push('/admin')
+      this.$router.push('/admin/home')
     },
 
     // 退出用户
     logout() {
-      localStorage.removeItem("user")
-      this.$router.push('/login')
+      this.$store.commit('logout')
+
       this.$message.success("退出成功")
     }
 
