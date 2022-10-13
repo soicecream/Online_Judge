@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import store from "@/store";
 
 Vue.use(VueRouter)
 
@@ -63,7 +62,6 @@ export const resetRouter = () => {
 export const setRoutes = () => {
     const user = localStorage.getItem("user")
     if (user) {
-
         // 获取当前路由对象名称数组
         const currentRouteNames = router.getRoutes().map(v => v.name)
         if (!currentRouteNames.includes('admin')) {
