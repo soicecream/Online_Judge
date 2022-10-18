@@ -15,11 +15,12 @@ public class CodeGenerator {
 
     public static void main(String[] args) {
 //        generate("sys_user");
-//        generate("sys_file");
+//        generate("sys_files");
 //        generate("sys_role");
 //        generate("sys_menu");
 //        generate("sys_dict");
 //        generate("sys_role_menu");
+//        generate("sys_problem");
 
 
     }

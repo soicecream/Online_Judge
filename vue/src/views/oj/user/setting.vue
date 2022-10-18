@@ -1,69 +1,27 @@
 <template>
-  <div class="userSettingStyle">
-    <el-tabs>
-      <el-tab-pane label="个人信息">
-        <!--        用户信息-->
-        <div style="display: flex;">
-          <!--          头像-->
-          <div class="userImageStyle">
-            <div class="userImageSpan">用户头像</div>
-            <div style="height: 100px; width: 100px; margin: auto;">
-              <el-image style="height: 100%; width: 100%;" :src="user.headPortrait" fit="cover">
-                <div slot="error" style="margin-top: 10px;">
-                  <el-avatar :size="80" icon="el-icon-user-solid"/>
-                </div>
-              </el-image>
-            </div>
-            <el-upload action="" style="line-height: 34px; height: 34px; margin-top: 20px;">
-              <el-button icon="el-icon-upload2" type="primary" plain>更换头像</el-button>
-            </el-upload>
+  <!--        用户信息-->
+  <div style="display: flex;" class="userSettingStyle">
+    <!--          头像-->
+    <div class="userImageStyle">
+      <div class="userImageSpan">用户头像</div>
+      <div style="height: 100px; width: 100px; margin: auto;">
+        <el-image style="height: 100%; width: 100%;" :src="user.headPortrait" fit="cover">
+          <div slot="error" style="margin-top: 10px;">
+            <el-avatar :size="80">
+              <img src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"/>
+            </el-avatar>
           </div>
-
-          <!--          其他信息-->
-          <el-form class="userSettingForm" :model="user" label-width="100px">
-            <el-form-item label="用户名">
-              <el-input v-model="user.username" class="input_not_input"/>
-            </el-form-item>
-            <el-form-item label="昵称">
-              <el-input v-model="user.nickname" class="input_not_input"/>
-            </el-form-item>
-            <el-form-item label="姓名">
-              <el-input v-model="user.realname" style="width: 50%" class="input_not_input"/>
-              <el-tag :type="user.sex ? '' : 'danger'" effect="dark" >
-                <i :class="user.sex == 1 ? 'el-icon-male' : 'el-icon-female'"/>
-              </el-tag>
-            </el-form-item>
-            <el-form-item label="联系方式">
-              <el-input v-model="user.phone" class="input_not_input"/>
-            </el-form-item>
-            <el-form-item label="邮箱">
-              <el-input v-model="user.email" class="input_not_input"/>
-            </el-form-item>
-            <el-form-item label="学校">
-              <el-input v-model="user.school" class="input_not_input"/>
-            </el-form-item>
-            <el-form-item label="地址">
-              <el-input v-model="user.residence" class="input_not_input"/>
-            </el-form-item>
-            <el-form-item label="个人介绍">
-              <el-input type="textarea" v-model="user.introduction" class="input_not_input"/>
-            </el-form-item>
-            <el-form-item label="注册时间">
-              <el-input v-model="user.createTime" class="input_not_input"/>
-            </el-form-item>
-            <el-form-item label="最后登录时间">
-              <el-input v-model="user.lastLoginTime" class="input_not_input"/>
-            </el-form-item>
-          </el-form>
-        </div>
-      </el-tab-pane>
-
-      <el-tab-pane label="个人主页">
-
-      </el-tab-pane>
-
-    </el-tabs>
-
+        </el-image>
+      </div>
+      <el-upload action="http://localhost:9090/files/upload"
+                 :http-request="handlerAvatarImport"
+                 :before-upload="beforeAvatarUpload"
+                 :on-success="handleAvatarSuccess" :on-error="handleAvatarError"
+                 style="line-height: 34px; height: 34px; margin-top: 20px;">
+        <!--                       :show-file-list="false"-->
+        <el-button  icon="el-icon-upload2" type="primary" plain >更换头像</el-button>
+      </el-upload>
+    </div>
   </div>
 </template>
 
@@ -95,10 +53,47 @@ export default {
   },
 
   created() {
-    console.log(this.user)
+    // console.log(this.user)
   },
 
-  methods: {}
+  methods: {
+    load_user() {
+
+    },
+
+    handlerAvatarImport(param) {
+      // let formData  = new FormData()
+      // formData.append("file", param.file)
+      //
+      // console.log(formData)
+      //
+      // this.request.post("/files/import", formData).then(res => {
+      //   if (res.code === '200') {
+      //     this.$message.success("导入成功")
+      //
+      //     this.load_user();
+      //   } else
+      //     this.$message.error(res.message)
+      // })
+
+    },
+    handleAvatarSuccess(res) {
+      console.log(res)
+      this.user.headPortrait = res
+      this.$message.success("上传成功")
+    },
+    handleAvatarError() {
+      this.$message.error("上传失败")
+    },
+    beforeAvatarUpload(file) {
+      const vis = file.type === 'image/jpeg' || file.type === 'image/png';
+      if (!vis) {
+        this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
+      }
+      return vis;
+    },
+
+  },
 
 
 }
@@ -117,15 +112,6 @@ export default {
 
 }
 
-.settingStyleTitle {
-  margin-bottom: 12px;
-  color: rgba(0, 0, 0, 0.85);
-  font-weight: 500;
-  font-size: 20px;
-  line-height: 28px;
-  text-align: left;
-}
-
 .userSettingForm {
   text-align: left;
   margin-left: 10px;
@@ -133,7 +119,6 @@ export default {
   padding: 16px;
   border-radius: 8px;
   width: 100%;
-
 
 }
 

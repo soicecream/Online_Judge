@@ -19,7 +19,7 @@
 
     </div>
 
-    <!-- 菜单信息 -->
+    <!-- 信息 -->
     <el-table :data="tableData" border stripe @selection-change="handlerSelectionChange"
               row-key="id" default-expand-all>
       <el-table-column type="selection" align="center"/>
@@ -59,7 +59,7 @@
 
     </el-table>
 
-    <!-- 添加菜单的弹窗 -->
+    <!-- 添加弹窗 -->
     <el-dialog title="添加菜单信息" :visible.sync="dialogFormVisible" width="30%">
 
       <el-form :model="form" :rules="form_rules" ref="user_form" label-width="100px">
@@ -88,7 +88,7 @@
       </div>
     </el-dialog>
 
-    <!-- 修改菜单的弹窗 -->
+    <!-- 修改弹窗 -->
     <el-dialog title="修改菜单信息" :visible.sync="dialogFormVisible_update" width="30%">
 
       <el-form label-width="100px" :model="form_update" :rules="form_update_rules" ref="user_update_form">
@@ -159,13 +159,13 @@ export default {
   },
 
   created() {
-    this.load_role()
+    this.load_menu()
 
   },
 
   methods: {
     // 加载菜单
-    load_role() {
+    load_menu() {
       this.request.get("/menu/findTreeMenus").then(res => {
         if (res.code === '200') {
           this.tableData = res.data
@@ -212,7 +212,7 @@ export default {
             if (res.code === "200") {
               this.$message.success("添加成功")
 
-              this.load_role()
+              this.load_menu()
 
               this.handlerAdd_close()
             } else {
@@ -233,7 +233,7 @@ export default {
         if (res.code === '200') {
           this.$message.success("修改成功")
 
-          this.load_role()
+          this.load_menu()
         } else
           this.$message.error("修改失败")
       })
@@ -283,7 +283,7 @@ export default {
         if (res.code === '200') {
           this.$message.success("删除成功")
 
-          this.load_role()
+          this.load_menu()
         } else
           this.$message.error("删除失败")
       })
@@ -298,7 +298,7 @@ export default {
         if (res.code === '200') {
           this.$message.success("删除成功")
 
-          this.load_role()
+          this.load_menu()
         } else
           this.$message.error("删除失败")
       })

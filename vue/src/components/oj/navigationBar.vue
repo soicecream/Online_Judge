@@ -77,12 +77,12 @@ export default {
     // 跳转到用户信息界面
     to_user_information_page() {
       // console.log(this.user.id)
-      this.$router.push('/user_information/' + this.user.id)
+      this.$router.push('/information/' + this.user.id)
     },
 
     // 跳转到个人设置
     to_set_user_information_page() {
-      this.$router.push('/user_setting/' + this.user.id)
+      this.$router.push('/setting/' + this.user.id)
     },
 
     // 跳转到后台管理页面

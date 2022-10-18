@@ -1,5 +1,8 @@
 server:
+#  ip:
   port: 9090
+  tomcat:
+    max-http-form-post-size: -1
 
 
 spring:
@@ -29,4 +32,4 @@ mybatis-plus:
 
 files:
   upload:
-    path: D:\毕设\demo\files
+    path: D:\毕设\demo\files\

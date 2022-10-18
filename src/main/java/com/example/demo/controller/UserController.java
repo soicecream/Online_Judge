@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -38,7 +37,6 @@ public class UserController {
 
     @Resource
     private IUserService userService;
-
 
 
     // 登录用户
@@ -131,7 +129,6 @@ public class UserController {
     // 新增或者更新
     @PostMapping
     public Result save(@RequestBody User user) {
-
         return Result.success(userService.saveOrUpdate(user));
     }
 
@@ -157,8 +154,8 @@ public class UserController {
 
     //    https://hutool.cn/docs/#/poi/Excel%E7%94%9F%E6%88%90-ExcelWriter
     // 导出接口
-    @GetMapping("/export")
-    public void export(HttpServletResponse response) throws Exception {
+    @GetMapping("/exportUserList")
+    public void exportFile(HttpServletResponse response) throws Exception {
         // 从数据库查询出所有数据
         List<User> list = userService.list();
         // 通过工具类创建writer 写出到磁盘路径
@@ -212,15 +209,16 @@ public class UserController {
      * @param file
      * @throws Exception
      */
-    @PostMapping("/import")
+    @PostMapping("/importUserList")
     public Result importFile(MultipartFile file) throws Exception {
+        System.out.println(file);
+
+        if (file == null || file.isEmpty()) {
+            return Result.error(Constants.CODE_400, "请选择文件");
+        }
+
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = ExcelUtil.getReader(inputStream);
-
-//        通过javaben 的方式读取excel内的对象 但是要求表头必须是英文，跟javabean的属性要对应起来
-//        List<User> list = reader.readAll(User.class);
-//        userService.saveBatch(list);
-
 
         reader.addHeaderAlias("用户名", "username");
         reader.addHeaderAlias("密码", "password");
@@ -240,22 +238,25 @@ public class UserController {
         reader.addHeaderAlias("假删除", "isDelete");
 
         List<User> list = reader.readAll(User.class);
+
         for (User i : list) {
             // 如果用户的密码为空就设一个初始值
-//            System.out.println("=================>");
-//            System.out.println(i.getUsername());
             if (StrUtil.isBlank(i.getUsername())) {
-//                System.out.println("=============> no");
-                return Result.error("400", "请在excel表中添加用户名或者username字段");
+                return Result.error("400", "请在excel表中添加字段为用户名或者username的字段");
             }
+            // 若密码不存在 则定义初始密码
             if (StrUtil.isBlank(i.getPassword())) {
-                i.setPassword("123456");
+                String username = i.getUsername();
+                i.setPassword("zime" + username.substring(username.length() - 6));
             }
+            // 若昵称不存在 设置初始昵称
             if (StrUtil.isBlank(i.getNickname())) {
                 i.setNickname(i.getUsername());
             }
         }
-        userService.saveBatch(list);
+
+        System.out.println("okok");
+//        userService.saveBatch(list);
 
         return Result.success(true);
     }

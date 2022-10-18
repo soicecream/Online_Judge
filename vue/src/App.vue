@@ -1,5 +1,5 @@
 <template>
-    <router-view/>
+  <router-view/>
 </template>
 
 <script>
@@ -19,31 +19,35 @@ export default {
   // this.$router.back(1) //前进
 
   // 相当于注册  也就是定义
-  components: {
-
-  },
+  components: {},
 
   // 数据
   data() {
-    return {
-
-    }
+    return {}
   },
 
   // 计算属性
-  computed: {
-
-  },
+  computed: {},
 
   // 定义函数  事件处理器
   methods: {
-
+    // beforeunloadHandler(e) {
+    //   // console.log(e)
+    //   this._beforeUnload_time = new Date().getTime()
+    // },
+    //
+    // unloadHandler(e) {
+    //   this._gap_time = new Date().getTime() - this._beforeUnload_time
+    //   //判断是窗口关闭还是刷新
+    //   if (this._gap_time <= 5) {
+    //     // 窗口关闭
+    //     this.$store.commit('logout')
+    //   }
+    // }
   },
 
   // 侦听器
-  watch: {
-
-  },
+  watch: {},
 
 
   // 下面都是 生命周期钩子
@@ -59,43 +63,48 @@ export default {
   },
 
   // 实例被挂载后调用  挂载阶段：数据加载到页面
-  mounted () {
+  mounted() {
+    // 关闭页面操作
+    // window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
+    // window.addEventListener('unload', e => this.unloadHandler(e))
 
   },
 
   // 在数据发生改变后，DOM 被更新之前被调用。
-  beforeUpdate () {
+  beforeUpdate() {
 
   },
 
   // 在数据更改导致的虚拟 DOM 重新渲染和更新完毕之后被调用。   数据更新后调用
   // 该钩子在服务器端渲染期间不被调用。
-  updated () {
+  updated() {
 
   },
 
   // 被 keep-alive 缓存的组件激活时调用。
   // 该钩子在服务器端渲染期间不被调用。
-  activated () {
+  activated() {
 
   },
 
   // 被 keep-alive 缓存的组件失活时调用。
   // 该钩子在服务器端渲染期间不被调用。
-  deactivated () {
+  deactivated() {
 
   },
 
   // 实例销毁之前调用。在这一步，实例仍然完全可用。
   // 该钩子在服务器端渲染期间不被调用。
-  beforeDestroy () {
+  beforeDestroy() {
 
   },
 
   // 实例销毁后调用。
   //  该钩子被调用后，对应Vue实例的所有指令都被解绑，所有的事件监听器被移除，所有的子实例也都被销毁。
   // 该钩子在服务器端渲染期间不被调用。
-  destroyed () {
+  destroyed() {
+    // window.removeEventListener('beforeunload', e => this.beforeunloadHandler(e))
+    // window.removeEventListener('unload', e => this.unloadHandler(e))
 
   },
 

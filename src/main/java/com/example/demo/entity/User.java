@@ -3,10 +3,12 @@ package com.example.demo.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -65,6 +67,8 @@ public class User implements Serializable {
     private String headPortrait;
 
     @ApiModelProperty("创建时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") //是前端往后段传的时候使用
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") //后端往前端传输的时候使用
     private Date createTime;
 
     @ApiModelProperty("语言")

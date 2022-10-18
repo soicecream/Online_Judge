@@ -1,9 +1,10 @@
 import axios from 'axios'
 import ElementUI from "element-ui";
 import router from "@/router";
+import {serverIp} from "../../public/config";
 
 const request = axios.create({
-    baseURL: 'http://localhost:9090',
+    baseURL: `http://${serverIp}:9090`,
     timeout: 5000
 })
 
@@ -38,10 +39,8 @@ request.interceptors.response.use(
         }
         // 当权限验证不通过时 给出提示
         if (res.code === '401') {
-            ElementUI.Message({
-                message: res.message,
-                type: "error"
-            })
+            // ElementUI.Message({message: res.message, type: "error"})
+            ElementUI.Message.error(res.message)
         }
         return res;
     },

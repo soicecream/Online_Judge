@@ -3,31 +3,28 @@
 
     <!-- 搜索栏 -->
     <div class="pd-10">
-      <el-input style="width: 150px;" placeholder="请输入用户名" suffix-icon="el-icon-user"
-                v-model="search_message.username"/>
-      <el-input style="width: 150px;" placeholder="请输入姓名" suffix-icon="el-icon-user" class="ml-5"
-                v-model="search_message.realname"/>
-      <el-select v-model="search_message.sex" placeholder="请选择性别" style="width: 150px;" class="ml-5">
-        <el-option label="男" value="1"></el-option>
-        <el-option label="女" value="0"></el-option>
+      <el-input style="width: 150px;" placeholder="请输入题目id" suffix-icon="el-icon-user" v-model="search_message.id"/>
+      <el-input style="width: 150px;" placeholder="请输入题目标题" suffix-icon="el-icon-user" class="ml-5" v-model="search_message.title"/>
+
+      <el-select v-model="search_message.difficulty" placeholder="请选择题目难度" style="width: 150px;" class="ml-5">
+        <el-option label="未知" value="0"/>
+        <el-option label="简单" value="1"/>
+        <el-option label="中等" value="2"/>
+        <el-option label="困难" value="3"/>
       </el-select>
-      <el-input style="width: 200px;" placeholder="请输入地址" suffix-icon="el-icon-position" class="mrl-5"
-                v-model="search_message.address"/>
-      <el-select v-model="search_message.enable" placeholder="请选择用户状态" style="width: 150px;" class="mrl-5">
-        <el-option label="启用" value="1"></el-option>
-        <el-option label="禁用" value="0"></el-option>
+
+      <el-select v-model="search_message.auth" placeholder="请选择题目状态" style="width: 150px;" class="ml-5">
+        <el-option label="启用" value="1"/>
+        <el-option label="禁用" value="0"/>
       </el-select>
-      <el-select v-model="search_message.isRank" placeholder="请选择用户是否参加排名" style="width: 200px;" class="mrl-5">
-        <el-option label="参加" value="1"></el-option>
-        <el-option label="退出" value="0"></el-option>
-      </el-select>
+
       <el-button type="primary" @click="search"> 搜索</el-button>
       <el-button type="warning" @click="reset"> 重置</el-button>
     </div>
 
     <!-- 操作 -->
     <div style="margin: 10px 0">
-      <el-button @click="handlerAdd" type="primary"> 新增用户 <i class="el-icon-circle-plus"/></el-button>
+      <el-button @click="handlerAdd" type="primary"> 新增题目 <i class="el-icon-circle-plus"/></el-button>
 
       <!--      批量删除-->
       <el-popconfirm
@@ -43,32 +40,20 @@
       </el-popconfirm>
 
       <!--      导入-->
-      <!--      <el-upload-->
-      <!--          :http-request="handlerExcelImport"-->
-      <!--          action=""-->
-      <!--          :show-file-list="false" accept=".xlsx"-->
-      <!--          :on-success="handlerExcelImportSuccess" :on-error="handlerExcelImportError"-->
-      <!--          style="display: inline-block;" class="mrl-10">-->
-      <!--      <el-upload action=""-->
-      <!--                 :before-upload="handlerExcelImportBeforeUpload"-->
-      <!--                 :http-request="handlerExcelImport"-->
-      <!--                 :show-file-list="false" accept=".xls, .xlsx"-->
-      <!--                 :on-success="handlerExcelImportSuccess" :on-error="handlerExcelImportError"-->
-      <!--                 style="display: inline-block" class="mrl-10">-->
-      <!--        <el-button type="primary"> 导入用户 <i class="el-icon-folder-add"/></el-button>-->
-      <!--      </el-upload>-->
-      <el-button type="primary" @click="handlerExcelImportOpen"> 导入用户 <i class="el-icon-folder-add"/></el-button>
-      <el-button type="primary" @click="exportFile" class="ml-10"> 导出用户 <i class="el-icon-folder-checked"/></el-button>
+<!--      <el-upload action="" :show-file-list="false" accept="xlsx"-->
+<!--                 :http-request="handlerExcelImport"-->
+<!--                 :on-success="handlerExcelImportSuccess" :on-error="handlerExcelImportError"-->
+<!--                 style="display: inline-block;" class="mrl-10">-->
+<!--        <el-button type="primary"> 导入用户 <i class="el-icon-folder-add"></i></el-button>-->
+<!--      </el-upload>-->
+<!--      <el-button type="primary" @click="exportFile" class="ml-10"> 导出题目 <i class="el-icon-folder-checked"></i>-->
+<!--      </el-button>-->
 
       <!--      显示顺序-->
-      <el-button type="primary" @click="reverse_order" class="ml-10"> {{ 'id ' + reverse_order_value }}<i
-          :class="reverse_order_btncls"/></el-button>
+      <el-button type="primary" @click="reverse_order" class="ml-10"> {{ 'id ' + reverse_order_value }}<i :class="reverse_order_btncls"/></el-button>
 
       <el-button type="primary" @click="enable_start" class="ml-10"> 启用 <i class="el-icon-success"/></el-button>
       <el-button type="primary" @click="enable_end" class="ml-10"> 禁用 <i class="el-icon-error"/></el-button>
-
-      <el-button type="primary" @click="isRank_start" class="ml-10"> 加入排名 <i class="el-icon-s-claim"/></el-button>
-      <el-button type="primary" @click="isRank_end" class="ml-10"> 推出排名 <i class="el-icon-s-release"/></el-button>
 
     </div>
 
@@ -76,77 +61,46 @@
     <el-table :data="tableData" border stripe @selection-change="handlerSelectionChange">
       <el-table-column type="selection" fixed align="center" width="50"/>
       <el-table-column prop="id" fixed label="id" width="50" align="center"/>
-      <el-table-column prop="username" fixed label="用户名" width="130"/>
-      <el-table-column prop="realname" label="姓名" width="130"/>
-      <el-table-column prop="nickname" label="昵称" width="180"/>
-
-      <!--    性别-->
-      <el-table-column label="性别" width="60" align="center">
+      <el-table-column prop="title" fixed label="标题" width="130"/>
+      <el-table-column prop="author" label="作者" width="130"/>
+      <el-table-column label="类型" width="100" align="center">
         <template #default="scope">
-          <el-tag :type="scope.row.sex ? '' : 'warning'">
-            {{ scope.row.sex ? "男" : "女" }}
+          <el-tag>
+            {{ scope.row.type }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="timeLimit" label="时间限制" width="130" align="center"/>
+      <el-table-column prop="memoryLimit" label="空间限制" width="130" align="center"/>
+      <el-table-column prop="stackLimit" label="栈限制" width="130" align="center"/>
+
+      <!--    难度-->
+      <el-table-column label="难度" width="100" align="center">
+        <template #default="scope">
+<!--          ----------------------------------------     ============================================= ------------------------------------------------------------     -->
+          <el-tag>
+            {{ scope.row.difficulty }}
           </el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column prop="phone" label="电话" width="150"/>
-
-      <el-table-column type="expand" label="补充信息" width="200">
-        <template #default="props">
-          <el-card class="box-card">
-            <template #header>
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span> {{ props.row.username }} </span>
-                <el-button class="button" type="success" text> 编辑</el-button>
-              </div>
-            </template>
-            <el-form label-width="130px" label-position="left">
-              <el-form-item label="地      址">{{ props.row.address }}</el-form-item>
-              <el-form-item label="学      校">{{ props.row.email }}</el-form-item>
-              <el-form-item label="邮      箱">{{ props.row.school }}</el-form-item>
-              <el-form-item label="创 建 时 间">{{ props.row.createTime }}</el-form-item>
-              <el-form-item label="最后登录时间">{{ props.row.lastLoginTime }}</el-form-item>
-            </el-form>
-          </el-card>
-        </template>
-      </el-table-column>
-
-
       <!--    状态-->
       <el-table-column label="状态" width="70" align="center">
         <template #default="scope">
-          <el-switch v-model="scope.row.enable" @change="update_information(scope.row)" active-color="#13ce66"
-                     inactive-color="#ff4949"/>
+          <el-switch v-model="scope.row.auth" @change="update_information(scope.row)" active-color="#13ce66" inactive-color="#ff4949"/>
         </template>
       </el-table-column>
 
-      <!--    排名-->
-      <el-table-column label="排名" width="70" align="center">
-        <template #default="scope">
-          <el-switch v-model="scope.row.isRank" @change="update_information(scope.row)" active-color="#13ce66"
-                     inactive-color="#ff4949"/>
-        </template>
-      </el-table-column>
+      <el-table-column prop="updateTime" label="修改时间" width="200" align="center"/>
 
-      <!--     操作该用户信息-->
-      <el-table-column label="操作" fixed="right" width="300" align="center">
+
+      <!--     操作该信息-->
+      <el-table-column label="操作" fixed="right" align="center">
         <template #default="scope">
 
           <el-button type="success" @click="handlerEdit(scope.row)"> 编辑</el-button>
 
-          <!--        重置密码-->
-          <el-popconfirm
-              confirm-button-text='确定' cancel-button-text='我再想想'
-              icon="el-icon-info" icon-color="#ff0000"
-              title="您确定要重置该用户的密码吗？ (重置的密码为123456)" class="ml-10"
-              @confirm="handlerEdit_password(scope.row)"
-          >
-            <template #reference>
-              <el-button type="warning" slot="reference"> 重置密码</el-button>
-            </template>
-          </el-popconfirm>
-
-          <!--        删除用户-->
+          <!--        删除-->
           <el-popconfirm
               confirm-button-text='确定' cancel-button-text='我再想想'
               icon="el-icon-info" icon-color="#ff0000"
@@ -259,32 +213,6 @@
       </div>
     </el-dialog>
 
-    <!--    导入用户信息-->
-    <el-dialog title="批量导入" :visible.sync="dialogFormVisible_import" width="30%">
-      <div class="importDialog-content">
-        <el-upload
-            action=""
-            ref="importExcel"
-            :limit="1" :auto-upload="false" drag
-            :http-request="handlerExcelImport"
-            accept='.xls,.xlsx'>
-          <i class="el-icon-upload"></i>
-          <div class="el-upload__text">
-            将文件拖到此处，或
-            <em>点击上传</em>
-          </div>
-          <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-        </el-upload>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <span class="template-download">
-          <i class="el-icon-download"></i>格式模板下载：data.xlsx
-        </span>
-        <el-button @click="handlerExcelImportClose">取 消</el-button>
-        <el-button type="primary" @click="handlerExcelImportOk">确定上传</el-button>
-      </span>
-    </el-dialog>
-
   </div>
 
 </template>
@@ -298,8 +226,26 @@ export default {
 
   data() {
     return {
-      serverIp: serverIp,
-
+      // tableData: [{
+      //   id: 1,
+      //   username: "admin",
+      //   password: "admin",
+      //   realname: "admin",
+      //   nickname: "admin",
+      //   sex: 1,
+      //   phone: "11111111111",
+      //   email: "admin@163.com",
+      //   school: "浙江机电",
+      //   address: "浙江温州",
+      //   introduction: "加油",
+      //   headPortrait: null,
+      //   createTime: "2022-09-29T15:39:51",
+      //   lastLoginTime: "2022-09-29T15:39:51",
+      //   language: 0,
+      //   enable: true,
+      //   isRank: false,
+      //   isDelete: 0,
+      // }],
       tableData: [],
 
       // 表格设计
@@ -309,8 +255,8 @@ export default {
 
       // 搜索的信息
       search_message: {
-        username: "",
-        realname: "",
+        id: "",
+        title: "",
         sex: "",
         address: "",
         enable: "",
@@ -326,7 +272,7 @@ export default {
       multipleSelection: {},
       multipleSelection_length: "",
 
-      // 添加信息弹窗
+      // 添加用户信息弹窗
       dialogFormVisible: false,
       form: {},
       form_rules: {
@@ -348,7 +294,7 @@ export default {
         ],
       },
 
-      // 修改信息弹窗
+      // 修改用户信息弹窗
       dialogFormVisible_update: false,
       form_update: {},
       form_update_rules: {
@@ -370,31 +316,21 @@ export default {
         ],
       },
 
-      // 导入用户信息
-      dialogFormVisible_import: false,
-
     }
   },
 
   created() {
-    this.load_user()
+    this.load_problem()
 
   },
 
   methods: {
-    // 加载信息
-    load_user() {
-      this.request.get("/user/page", {
+    // 加载用户
+    load_problem() {
+      this.request.get("/problem/page", {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          username: this.search_message.username,
-          realname: this.search_message.realname,
-          sex: this.search_message.sex,
-          address: this.search_message.address,
-          enable: this.search_message.enable,
-          isRank: this.search_message.isRank,
-          desc: this.reverse_order_desc,
         }
       }).then(res => {
         if (res.code === '200') {
@@ -409,23 +345,23 @@ export default {
     // 搜索
     search() {
       this.pageNum = 1
-      this.load_user()
+      this.load_problem()
     },
 
     // 重置搜索
     reset() {
       Object.keys(this.search_message).forEach(key => (this.search_message[key] = ""))
-      this.load_user()
+      this.load_problem()
     },
 
     // 分页查询
     handlerSizeChange(pageSize) {
       this.pageSize = pageSize
-      this.load_user()
+      this.load_problem()
     },
     handlerCurrentChange(pageNum) {
       this.pageNum = pageNum
-      this.load_user()
+      this.load_problem()
     },
 
     // 显示顺序
@@ -438,11 +374,11 @@ export default {
         this.reverse_order_btncls = 'el-icon-bottom'
       }
       this.reverse_order_desc = !this.reverse_order_desc
-      this.load_user()
+      this.load_problem()
     },
 
 
-    // 添加信息
+    // 添加用户
     handlerAdd() {
       this.dialogFormVisible = true
       if (this.$refs.user_form !== undefined)
@@ -457,12 +393,12 @@ export default {
     handlerAdd_ok() {
       this.$refs.user_form.validate((valid) => {
         if (valid) {
-          this.request.post("/user", this.form).then(res => {
+          this.request.post("/problem", this.form).then(res => {
             if (res.code === "200") {
               this.$message.success("用户添加成功")
 
               this.reverse_order_desc = true
-              this.load_user()
+              this.load_problem()
 
               this.handlerAdd_close()
             } else {
@@ -477,19 +413,19 @@ export default {
       })
     },
 
-    // 修改信息
+    // 修改用户信息
     update_information(form) {
-      this.request.post("/user", form).then(res => {
+      this.request.post("/problem", form).then(res => {
         if (res.code === '200') {
           this.$message.success("修改成功")
 
-          this.load_user()
+          this.load_problem()
         } else
           this.$message.error("修改失败")
       })
     },
 
-    // 操作的编辑修改信息
+    // 操作的编辑修改用户信息
     handlerEdit(row) {
       this.dialogFormVisible_update = true
       this.form_update = Object.assign({}, row)
@@ -523,19 +459,19 @@ export default {
       this.multipleSelection = val
     },
 
-    // 批量修改信息
+    // 批量修改用户信息
     update_information_batch(list) {
-      this.request.post("/user/batch", list).then(res => {
+      this.request.post("/problem/batch", list).then(res => {
         if (res.code === '200') {
           this.$message.success("修改成功")
 
-          this.load_user()
+          this.load_problem()
         } else
           this.$message.error("修改失败")
       })
     },
 
-    // 判断选中的信息
+    // 判断选中的用户信息
     check_multipleSelection() {
       this.multipleSelection_length = 0
       if (this.multipleSelection.length === undefined || this.multipleSelection.length === 0) {
@@ -589,13 +525,13 @@ export default {
     },
 
 
-    // 删除信息
+    // 删除用户信息
     handlerDelete(id) {
-      this.request.delete("/user/" + id).then(res => {
+      this.request.delete("/problem/" + id).then(res => {
         if (res.code === '200') {
           this.$message.success("删除成功")
 
-          this.load_user()
+          this.load_problem()
         } else
           this.$message.error("删除失败")
       })
@@ -610,64 +546,40 @@ export default {
       let ids = this.multipleSelection.map(v => v.id)
       console.log(ids)
 
-      this.request.post("/user/delete/batch", ids).then(res => {
+      this.request.post("/problem/delete/batch", ids).then(res => {
         if (res.code === '200') {
           this.$message.success("删除成功")
 
-          this.load_user()
+          this.load_problem()
         } else
           this.$message.error("删除失败")
       })
     },
 
-    // 导入信息
-    handlerExcelImportOpen() {
-      this.dialogFormVisible_import = true
-      if (this.$refs.importExcel)
-        this.$refs.importExcel.clearFiles()
-    },
-    handlerExcelImportClose() {
-      this.dialogFormVisible_import = false
-    },
-    handlerExcelImportOk() {
-      this.$refs.importExcel.submit()
-    },
+    // 导入用户信息
     handlerExcelImport(param) {
-      let formData = new FormData()
+      let formData  = new FormData()
       formData.append("file", param.file)
-      console.log("gogogo")
-      console.log(param.file)
 
-      this.request.post("/user/importUserList", formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          }
-      ).then(res => {
+      this.request.post("/problem/import", formData).then(res => {
         if (res.code === '200') {
           this.$message.success("导入成功")
 
-          this.load_user()
+          this.load_problem()
         } else
           this.$message.error(res.message)
       })
     },
-    handlerExcelImportSuccess(res) {
-      // this.$message.success("导入成功")
-      console.log(res)
-      // this.load_user()
+    handlerExcelImportSuccess() {
+      this.$message.success("导入成功")
     },
     handlerExcelImportError() {
       this.$message.error("导入失败")
     },
-    handlerExcelImportBeforeUpload(file) {
-      console.log(file)
-      console.log(file.size)
-    },
 
-    // 导出信息
+    // 导出用户信息
     exportFile() {
-      window.open(`http://${serverIp}:9090/user/exportUserList`)
+      window.open(`http://${serverIp}:9090/user/export`)
     },
 
 
