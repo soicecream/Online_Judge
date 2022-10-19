@@ -43,21 +43,7 @@
       </el-popconfirm>
 
       <!--      导入-->
-      <!--      <el-upload-->
-      <!--          :http-request="handlerExcelImport"-->
-      <!--          action=""-->
-      <!--          :show-file-list="false" accept=".xlsx"-->
-      <!--          :on-success="handlerExcelImportSuccess" :on-error="handlerExcelImportError"-->
-      <!--          style="display: inline-block;" class="mrl-10">-->
-      <!--      <el-upload action=""-->
-      <!--                 :before-upload="handlerExcelImportBeforeUpload"-->
-      <!--                 :http-request="handlerExcelImport"-->
-      <!--                 :show-file-list="false" accept=".xls, .xlsx"-->
-      <!--                 :on-success="handlerExcelImportSuccess" :on-error="handlerExcelImportError"-->
-      <!--                 style="display: inline-block" class="mrl-10">-->
-      <!--        <el-button type="primary"> 导入用户 <i class="el-icon-folder-add"/></el-button>-->
-      <!--      </el-upload>-->
-      <el-button type="primary" @click="handlerExcelImportOpen"> 导入用户 <i class="el-icon-folder-add"/></el-button>
+      <el-button type="primary" @click="handlerExcelImport_open"> 导入用户 <i class="el-icon-folder-add"/></el-button>
       <el-button type="primary" @click="exportFile" class="ml-10"> 导出用户 <i class="el-icon-folder-checked"/></el-button>
 
       <!--      显示顺序-->
@@ -263,16 +249,12 @@
     <el-dialog title="批量导入" :visible.sync="dialogFormVisible_import" width="30%">
       <div class="importDialog-content">
         <el-upload
-            action=""
-            ref="importExcel"
-            :limit="1" :auto-upload="false" drag
+            :action="'http://' + serverIp + ':9090/user/importUserList'"
             :http-request="handlerExcelImport"
-            accept='.xls,.xlsx'>
+            ref="importExcel"
+            :limit="1" :auto-upload="false" drag accept='.xls,.xlsx'>
           <i class="el-icon-upload"></i>
-          <div class="el-upload__text">
-            将文件拖到此处，或
-            <em>点击上传</em>
-          </div>
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
           <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
         </el-upload>
       </div>
@@ -280,8 +262,8 @@
         <span class="template-download">
           <i class="el-icon-download"></i>格式模板下载：data.xlsx
         </span>
-        <el-button @click="handlerExcelImportClose">取 消</el-button>
-        <el-button type="primary" @click="handlerExcelImportOk">确定上传</el-button>
+        <el-button @click="handlerExcelImport_close">取 消</el-button>
+        <el-button type="primary" @click="handlerExcelImport_ok">确定上传</el-button>
       </span>
     </el-dialog>
 
@@ -621,48 +603,30 @@ export default {
     },
 
     // 导入信息
-    handlerExcelImportOpen() {
+    handlerExcelImport_open() {
       this.dialogFormVisible_import = true
       if (this.$refs.importExcel)
         this.$refs.importExcel.clearFiles()
     },
-    handlerExcelImportClose() {
+    handlerExcelImport_close() {
       this.dialogFormVisible_import = false
     },
-    handlerExcelImportOk() {
+    handlerExcelImport_ok() {
       this.$refs.importExcel.submit()
     },
     handlerExcelImport(param) {
-      let formData = new FormData()
-      formData.append("file", param.file)
-      console.log("gogogo")
-      console.log(param.file)
+      const formData = new FormData()
+      formData.append("file", param.file);
 
-      this.request.post("/user/importUserList", formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          }
-      ).then(res => {
+      this.request.post("/user/import/userList", formData).then(res => {
         if (res.code === '200') {
           this.$message.success("导入成功")
 
+          this.handlerExcelImport_close()
           this.load_user()
         } else
           this.$message.error(res.message)
       })
-    },
-    handlerExcelImportSuccess(res) {
-      // this.$message.success("导入成功")
-      console.log(res)
-      // this.load_user()
-    },
-    handlerExcelImportError() {
-      this.$message.error("导入失败")
-    },
-    handlerExcelImportBeforeUpload(file) {
-      console.log(file)
-      console.log(file.size)
     },
 
     // 导出信息

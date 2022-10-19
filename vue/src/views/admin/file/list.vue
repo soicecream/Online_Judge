@@ -42,8 +42,7 @@
           icon-color="#ff0000"
           title="您确定批量删除这些数据吗?"
           @confirm="handlerDeleteBatch"
-          class="mrl-10"
-      >
+          class="mrl-10">
         <template #reference>
           <el-button type="danger" slot="reference"> 批量删除 <i class="el-icon-remove"/></el-button>
         </template>

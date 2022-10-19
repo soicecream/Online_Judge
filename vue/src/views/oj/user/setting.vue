@@ -13,24 +13,28 @@
           </div>
         </el-image>
       </div>
-      <el-upload action="http://localhost:9090/files/upload"
+      <el-upload :action="'http://'+serverIp+':9090/files/upload'"
                  :http-request="handlerAvatarImport"
                  :before-upload="beforeAvatarUpload"
                  :on-success="handleAvatarSuccess" :on-error="handleAvatarError"
                  style="line-height: 34px; height: 34px; margin-top: 20px;">
         <!--                       :show-file-list="false"-->
-        <el-button  icon="el-icon-upload2" type="primary" plain >更换头像</el-button>
+        <el-button icon="el-icon-upload2" type="primary" plain>更换头像</el-button>
       </el-upload>
     </div>
   </div>
 </template>
 
 <script>
+import {serverIp} from "../../../../public/config";
+
 export default {
   name: "information",
 
   data() {
     return {
+      serverIp: serverIp,
+
       user: {
         id: "1",
         username: "admin",
@@ -62,19 +66,19 @@ export default {
     },
 
     handlerAvatarImport(param) {
-      // let formData  = new FormData()
-      // formData.append("file", param.file)
-      //
-      // console.log(formData)
-      //
-      // this.request.post("/files/import", formData).then(res => {
-      //   if (res.code === '200') {
-      //     this.$message.success("导入成功")
-      //
-      //     this.load_user();
-      //   } else
-      //     this.$message.error(res.message)
-      // })
+      let formData  = new FormData()
+      formData.append("file", param.file)
+
+      console.log(formData)
+
+      this.request.post("/files/importFile", formData).then(res => {
+        if (res.code === '200') {
+          this.$message.success("导入成功")
+
+          this.load_user();
+        } else
+          this.$message.error(res.message)
+      })
 
     },
     handleAvatarSuccess(res) {

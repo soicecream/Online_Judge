@@ -33,6 +33,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/user")
+@CrossOrigin
 public class UserController {
 
     @Resource
@@ -209,10 +210,8 @@ public class UserController {
      * @param file
      * @throws Exception
      */
-    @PostMapping("/importUserList")
+    @PostMapping("/import/userList")
     public Result importFile(MultipartFile file) throws Exception {
-        System.out.println(file);
-
         if (file == null || file.isEmpty()) {
             return Result.error(Constants.CODE_400, "请选择文件");
         }
@@ -254,9 +253,7 @@ public class UserController {
                 i.setNickname(i.getUsername());
             }
         }
-
-        System.out.println("okok");
-//        userService.saveBatch(list);
+        userService.saveOrUpdateBatch(list);
 
         return Result.success(true);
     }
