@@ -31,12 +31,9 @@
 
       <!--      批量删除-->
       <el-popconfirm
-          confirm-button-text="确定" cancel-button-text="我再想想"
-          icon="el-icon-info" icon-color="#ff0000"
-          title="您确定批量删除这些数据吗?" class="ml-10"
-          @confirm="handlerDelBatch"
-
-      >
+          title="您确定批量删除这些数据吗?" confirm-button-text="确定" cancel-button-text="我再想想"
+          style="display: inline-block;" class="mrl-10" icon="el-icon-info" icon-color="#ff0000"
+          @confirm="handlerDelBatch">
         <template #reference>
           <el-button type="danger" slot="reference"> 批量删除 <i class="el-icon-remove"/></el-button>
         </template>
@@ -44,17 +41,17 @@
 
       <!--      导入-->
       <el-button type="primary" @click="handlerExcelImport_open"> 导入用户 <i class="el-icon-folder-add"/></el-button>
-      <el-button type="primary" @click="exportFile" class="ml-10"> 导出用户 <i class="el-icon-folder-checked"/></el-button>
+      <el-button type="primary" @click="exportFile"> 导出用户 <i class="el-icon-folder-checked"/></el-button>
 
       <!--      显示顺序-->
-      <el-button type="primary" @click="reverse_order" class="ml-10"> {{ 'id ' + reverse_order_value }}<i
+      <el-button type="primary" @click="reverse_order"> {{ 'id ' + reverse_order_value }}<i
           :class="reverse_order_btncls"/></el-button>
 
-      <el-button type="primary" @click="enable_start" class="ml-10"> 启用 <i class="el-icon-success"/></el-button>
-      <el-button type="primary" @click="enable_end" class="ml-10"> 禁用 <i class="el-icon-error"/></el-button>
+      <el-button type="primary" @click="enable_start"> 启用 <i class="el-icon-success"/></el-button>
+      <el-button type="primary" @click="enable_end"> 禁用 <i class="el-icon-error"/></el-button>
 
-      <el-button type="primary" @click="isRank_start" class="ml-10"> 加入排名 <i class="el-icon-s-claim"/></el-button>
-      <el-button type="primary" @click="isRank_end" class="ml-10"> 推出排名 <i class="el-icon-s-release"/></el-button>
+      <el-button type="primary" @click="isRank_start"> 加入排名 <i class="el-icon-s-claim"/></el-button>
+      <el-button type="primary" @click="isRank_end"> 推出排名 <i class="el-icon-s-release"/></el-button>
 
     </div>
 
@@ -249,19 +246,16 @@
     <el-dialog title="批量导入" :visible.sync="dialogFormVisible_import" width="30%">
       <div class="importDialog-content">
         <el-upload
-            :action="'http://' + serverIp + ':9090/user/importUserList'"
-            :http-request="handlerExcelImport"
+            :action="'http://' + serverIp + ':9090/user/importUserList'" :http-request="handlerExcelImport"
             ref="importExcel"
-            :limit="1" :auto-upload="false" drag accept='.xls,.xlsx'>
+            drag :limit="1" :auto-upload="false" accept=".xls,.xlsx">
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+          <div class="el-upload__tip" slot="tip">只能上传xls/xlsx文件</div>
+          <div class="el-upload__tip" slot="tip">上传的表格中要有username或用户名字段</div>
         </el-upload>
       </div>
-      <span slot="footer" class="dialog-footer">
-        <span class="template-download">
-          <i class="el-icon-download"></i>格式模板下载：data.xlsx
-        </span>
+      <span slot="footer">
         <el-button @click="handlerExcelImport_close">取 消</el-button>
         <el-button type="primary" @click="handlerExcelImport_ok">确定上传</el-button>
       </span>
@@ -649,6 +643,11 @@ export default {
 .box-card {
   width: 480px;
   margin: auto;
+}
+
+.importDialog-content {
+  display: flex;
+  justify-content: center;
 }
 
 </style>
