@@ -3,6 +3,14 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
+//解决vue路由重复导航错误
+//获取原型对象上的push函数
+const originalPush = VueRouter.prototype.push
+//修改原型对象中的push方法
+VueRouter.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch(err => err)
+}
+
 // 初始化路由
 const routes = [
     {
@@ -12,7 +20,7 @@ const routes = [
             {path: 'problem', name: 'problemList', component: () => import('@/views/oj/problem/problemList')},
             {path: 'problem/:id', name: 'problem', component: () => import('@/views/oj/problem/problem')},
             {path: 'information/:id', name: 'userInformation', component: () => import('@/views/oj/user/information')},
-            {path: 'setting/:id', name: 'userSetting', component: () => import('@/views/oj/user/setting')},
+            {path: 'setting', name: 'userSetting', component: () => import('@/views/oj/user/setting')},
         ]
     },
 

@@ -85,64 +85,61 @@ public class FilesController {
      */
     @PostMapping("/import/file")
     public Result upload( MultipartFile file) throws IOException {
-        System.out.println("file  " + file);
 
         if (file == null || file.isEmpty()) {
             return Result.error(Constants.CODE_400, "请选择文件");
         }
 
-        return Result.success(file);
+        String originalFileName = file.getOriginalFilename();
+        String type = FileUtil.extName(originalFileName);
+        if(type == null) {
+            return Result.error(Constants.CODE_400, "文件类型有问题，请确认文件类型");
+        }
+        originalFileName = originalFileName.substring(0, originalFileName.lastIndexOf(type) - 1);
+        long size = file.getSize();
+        if(size == 0) {
+            return Result.error(Constants.CODE_400, "暂无文件，请选择文件");
+        }
 
-//        String originalFileName = file.getOriginalFilename();
-//        String type = FileUtil.extName(originalFileName);
-//        if(type == null) {
-//            return Result.error(Constants.CODE_400, "文件类型有问题，请确认文件类型");
-//        }
-//        originalFileName = originalFileName.substring(0, originalFileName.lastIndexOf(type) - 1);
-//        long size = file.getSize();
-//        if(size == 0) {
-//            return Result.error(Constants.CODE_400, "暂无文件，请选择文件");
-//        }
-//
-//        // 定义一个文件的唯一标识码
-//        String uuid = IdUtil.fastSimpleUUID();
-//        String fileUUID = uuid + StrUtil.DOT + type;
-//
-//        File uploadFile = new File(fileUploadPath + fileUUID);
-//
-//        // 判断配置的文件目录是否存在， 若不存在则创建一个新的文件目录
-//        File parentFile = uploadFile.getParentFile();
-//        if (!parentFile.exists()) {
-//            parentFile.mkdirs();
-//        }
-//
-//        String url;
-//        // 上传文件到磁盘
-//        file.transferTo(uploadFile);
-//        // 获取文件的md5
-//        String md5 = SecureUtil.md5(uploadFile);
-//        // 从数据库查询是否存在相同的数据
-//        Files dbFiles = getFileByMd5(md5);
-//        if (dbFiles != null) {
-//            url = dbFiles.getUrl();
-//            // 由于文件已存在，所以删除刚才上传的重复文件
-//            uploadFile.delete();
-//        } else {
-//            // 数据库若不存在重复文件，则不删除刚才上传的文件
-//            url = "http://localhost:9090/files/" + fileUUID;
-//        }
-//
-//
-//        // 存储数据库
-//        Files saveFile = new Files();
-//        saveFile.setName(originalFileName);
-//        saveFile.setType(type);
-//        saveFile.setSize(size / 1024);
-//        saveFile.setUrl(url);
-//        saveFile.setMd5(md5);
-//        filesService.saveOrUpdate(saveFile);
-//
-//        return Result.success(url);
+        // 定义一个文件的唯一标识码
+        String uuid = IdUtil.fastSimpleUUID();
+        String fileUUID = uuid + StrUtil.DOT + type;
+
+        File uploadFile = new File(fileUploadPath + fileUUID);
+
+        // 判断配置的文件目录是否存在， 若不存在则创建一个新的文件目录
+        File parentFile = uploadFile.getParentFile();
+        if (!parentFile.exists()) {
+            parentFile.mkdirs();
+        }
+
+        String url;
+        // 上传文件到磁盘
+        file.transferTo(uploadFile);
+        // 获取文件的md5
+        String md5 = SecureUtil.md5(uploadFile);
+        // 从数据库查询是否存在相同的数据
+        Files dbFiles = getFileByMd5(md5);
+        if (dbFiles != null) {
+            url = dbFiles.getUrl();
+            // 由于文件已存在，所以删除刚才上传的重复文件
+            uploadFile.delete();
+        } else {
+            // 数据库若不存在重复文件，则不删除刚才上传的文件
+            url = "http://localhost:9090/files/" + fileUUID;
+        }
+
+
+        // 存储数据库
+        Files saveFile = new Files();
+        saveFile.setName(originalFileName);
+        saveFile.setType(type);
+        saveFile.setSize(size / 1024);
+        saveFile.setUrl(url);
+        saveFile.setMd5(md5);
+        filesService.saveOrUpdate(saveFile);
+
+        return Result.success(url);
     }
 
     /**

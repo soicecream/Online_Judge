@@ -82,7 +82,7 @@ export default {
 
     // 跳转到个人设置
     to_set_user_information_page() {
-      this.$router.push('/setting/' + this.user.id)
+      this.$router.push({ name: 'userSetting'  })
     },
 
     // 跳转到后台管理页面
