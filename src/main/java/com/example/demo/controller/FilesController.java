@@ -40,8 +40,8 @@ public class FilesController {
     @Value("${files.upload.path}")
     private String fileUploadPath;
 
-//        @Value("${server.ip}")
-//        private String serverIp;
+    @Value("${server.ip}")
+    private String serverIp;
 
 
     // 分页查询接口
@@ -84,7 +84,7 @@ public class FilesController {
      * @throws IOException
      */
     @PostMapping("/import/file")
-    public Result upload( MultipartFile file) throws IOException {
+    public Result upload(MultipartFile file) throws IOException {
 
         if (file == null || file.isEmpty()) {
             return Result.error(Constants.CODE_400, "请选择文件");
@@ -92,12 +92,12 @@ public class FilesController {
 
         String originalFileName = file.getOriginalFilename();
         String type = FileUtil.extName(originalFileName);
-        if(type == null) {
+        if (type == null) {
             return Result.error(Constants.CODE_400, "文件类型有问题，请确认文件类型");
         }
         originalFileName = originalFileName.substring(0, originalFileName.lastIndexOf(type) - 1);
         long size = file.getSize();
-        if(size == 0) {
+        if (size == 0) {
             return Result.error(Constants.CODE_400, "暂无文件，请选择文件");
         }
 
@@ -126,7 +126,7 @@ public class FilesController {
             uploadFile.delete();
         } else {
             // 数据库若不存在重复文件，则不删除刚才上传的文件
-            url = "http://localhost:9090/files/" + fileUUID;
+            url = "http://" + serverIp + ":9090/files/" + fileUUID;
         }
 
 

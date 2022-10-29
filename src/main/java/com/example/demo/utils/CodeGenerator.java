@@ -21,6 +21,7 @@ public class CodeGenerator {
 //        generate("sys_dict");
 //        generate("sys_role_menu");
 //        generate("sys_problem");
+        generate("sys_user_role");
 
 
     }

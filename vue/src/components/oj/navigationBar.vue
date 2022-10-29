@@ -17,26 +17,27 @@
       <!--      操作用户-->
       <el-menu-item-group style="margin-right: 1%; float: right">
         <el-dropdown trigger="click">
-          <el-button type="text">
-            <el-avatar icon="el-icon-user-solid" :src="user.headPortrait" :size="30" style="display: block; margin-right: 10%; margin-top: -20%; float: left;"/>
-            <i class="el-icon-caret-bottom"/>
+          <el-button type="text" style="display: block;">
+            <el-image v-if="user.headPortrait" :src="user.headPortrait" fit="cover" class="zimeUserImage"/>
+            <el-image v-else :src="require('@/assets/img/image/user.png')" class="zimeUserImage"/>
+            <i class="el-icon-caret-bottom" style="margin-top: -10%;"/>
           </el-button>
           <el-dropdown-menu>
             <el-dropdown-item>
               <el-link type="text" @click="to_user_information_page" :underline="false">个人主页</el-link>
             </el-dropdown-item>
-
             <el-dropdown-item>
               <el-link type="text" @click="to_set_user_information_page" :underline="false">我的设置</el-link>
             </el-dropdown-item>
 
-            <el-dropdown-item v-if="is_admin" divided>
+            <el-dropdown-item v-if="isAdmin" divided>
               <el-link type="text" @click="to_admin_page" :underline="false">后台管理</el-link>
             </el-dropdown-item>
 
             <el-dropdown-item divided>
               <el-link type="text" @click="logout" :underline="false">退出登录</el-link>
             </el-dropdown-item>
+
           </el-dropdown-menu>
         </el-dropdown>
       </el-menu-item-group>
@@ -56,20 +57,21 @@ export default {
 
   },
 
+  props: {
+    user: Object,
+    isAdmin: Boolean,
+
+  },
+
   data() {
     return {
-      // 是否可以进入管理员后台
-      is_admin: true,
-
-      // 登录后存储的用户信息
-      // user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
-      user: JSON.parse(localStorage.getItem("user")),
-
       activeIndex: this.$route.path,
+
     }
   },
 
   created() {
+    // this.user.headPortrait = ""
 
   },
 
@@ -82,7 +84,7 @@ export default {
 
     // 跳转到个人设置
     to_set_user_information_page() {
-      this.$router.push({ name: 'userSetting'  })
+      this.$router.push({name: 'userSetting'})
     },
 
     // 跳转到后台管理页面
@@ -126,5 +128,11 @@ export default {
   transform: scaleX(1);
 }
 
+.zimeUserImage {
+  height: 30px;
+  width: 30px;
+  margin-top: -25%;
+  border-radius: 50%;
+}
 
 </style>

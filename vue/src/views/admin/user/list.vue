@@ -147,7 +147,7 @@
     </el-table>
 
     <!--   底部分页选项的选择 -->
-    <div class="demo-pagination-block">
+    <div class="mt-10">
       <el-pagination
           :currentPage="pageNum" :page-size="pageSize"
           :page-sizes="[5, 10, 15, 20]" :total="total"
@@ -246,7 +246,7 @@
     <el-dialog title="批量导入" :visible.sync="dialogFormVisible_import" width="30%">
       <div class="importDialog-content">
         <el-upload
-            :action="'http://' + serverIp + ':9090/user/importUserList'" :http-request="handlerExcelImport"
+            action="" :http-request="handlerExcelImport"
             ref="importExcel"
             drag :limit="1" :auto-upload="false" accept=".xls,.xlsx">
           <i class="el-icon-upload"></i>
@@ -635,15 +635,6 @@ export default {
 </script>
 
 <style scoped>
-
-.demo-pagination-block {
-  margin-top: 10px;
-}
-
-.box-card {
-  width: 480px;
-  margin: auto;
-}
 
 .importDialog-content {
   display: flex;

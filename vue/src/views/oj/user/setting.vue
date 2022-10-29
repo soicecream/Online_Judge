@@ -3,52 +3,34 @@
   <div style="display: flex;" class="userSettingStyle">
     <!--          头像-->
     <div class="userImageStyle">
-      <div class="userImageSpan">用户头像</div>
-      <el-upload
-          :action="'http://'+serverIp+':9090/files/upload'"
-          :http-request="handlerAvatarImport"
-          :show-file-list="false" accept=".jpg, .png">
-        <div style="height: 180px; width: 180px; margin: auto;">
-          <el-image v-if="form.headPortrait" style="height: 100%; width: 100%; border-radius: 50%;" :src="form.headPortrait" fit="cover" :preview-src-list="previewSrcs"/>
-          <el-image v-else style="height: 100%; width: 100%; border-radius: 50%;" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"/>
-        </div>
+      <div style="width: 100%; margin: auto; text-align: center">
+        <el-image v-if="form.headPortrait" :src="form.headPortrait" :preview-src-list="previewSrcs" fit="cover" style="height: 150px; width: 150px;"/>
+        <el-image v-else style="height: 150px; width: 150px;" :src="require('@/assets/img/image/user.png')"/>
+        <el-divider/>
+        <el-upload action="" :http-request="handlerAvatarImport" :show-file-list="false" accept=".jpg, .png">
+          <el-button>修改头像</el-button>
+        </el-upload>
+      </div>
 
-      </el-upload>
 
     </div>
 
-    <div>
+    <div class="userSettingInformation">
       <el-form :model="form" :rules="form_rules" ref="user_form" label-width="100px">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="form.username" class="input_not_input"/>
-        </el-form-item>
-        <el-form-item label="姓名">
-          <el-input v-model="form.realname"/>
-        </el-form-item>
-        <el-form-item label="昵称" prop="nickname">
-          <el-input v-model="form.nickname"/>
-        </el-form-item>
+        <el-form-item label="用户名" prop="username"><el-input v-model="form.username" class="input_not_input"/></el-form-item>
+        <el-form-item label="姓名"><el-input v-model="form.realname"/></el-form-item>
+        <el-form-item label="昵称" prop="nickname"><el-input v-model="form.nickname"/></el-form-item>
         <el-form-item label="性别">
           <el-select v-model="form.sex" placeholder="请选择性别">
             <el-option label="男" value="1"/>
             <el-option label="女" value="0"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="电话" prop="phone">
-          <el-input v-model="form.phone"/>
-        </el-form-item>
-        <el-form-item label="邮箱">
-          <el-input v-model="form.email"/>
-        </el-form-item>
-        <el-form-item label="学校">
-          <el-input v-model="form.school"/>
-        </el-form-item>
-        <el-form-item label="地址">
-          <el-input v-model="form.address"/>
-        </el-form-item>
-        <el-form-item label="介绍">
-          <el-input v-model="form.introduction" type="textarea"/>
-        </el-form-item>
+        <el-form-item label="电话" prop="phone"><el-input v-model="form.phone"/></el-form-item>
+        <el-form-item label="邮箱"><el-input v-model="form.email"/></el-form-item>
+        <el-form-item label="学校"><el-input v-model="form.school"/></el-form-item>
+        <el-form-item label="地址"><el-input v-model="form.address"/></el-form-item>
+        <el-form-item label="介绍"><el-input v-model="form.introduction" type="textarea"/></el-form-item>
       </el-form>
     </div>
 
@@ -90,11 +72,9 @@ export default {
   methods: {
     load_user() {
       const id = JSON.parse(localStorage.getItem("user")).id
-      console.log(id)
       this.request.get("user/" + id).then(res => {
         if (res.code === '200') {
           this.form = res.data
-          this.form.headPortrait = ""
 
           this.previewSrcs = new Array()
           this.previewSrcs.push(this.form.headPortrait)
@@ -111,23 +91,18 @@ export default {
       this.request.post("/files/import/file", formData).then(res => {
         if (res.code === '200') {
           this.form.headPortrait = res.data
-          console.log(res.data)
-
           this.request.post("/user", this.form).then(res => {
             if (res.code === '200') {
               this.$message.success("修改成功")
 
-              this.load_user()
+              // 触发父级的获取用户信息
+              this.$emit("refreshUser")
             } else
               this.$message.error("修改失败")
           })
         } else
           this.$message.error(res.message)
       })
-    },
-
-    importOK(res) {
-      console.log(res)
     },
 
   },
@@ -139,28 +114,14 @@ export default {
 <style scoped>
 .userSettingStyle {
   background-color: #fff;
-  width: 50%;
-  height: calc(100vh - 200px);
+  width: 60%;
   border-radius: 8px;
   padding: 12px;
   margin: auto;
-
-  border: 1px solid red;
-
-}
-
-.userSettingForm {
-  text-align: left;
-  margin-left: 10px;
-  border: 1px solid #ebeef5;
-  padding: 16px;
-  border-radius: 8px;
-  width: 100%;
-
 }
 
 .userImageStyle {
-  height: 220px;
+  height: 250px;
   width: 300px;
   text-align: center;
   border: 1px solid #ebeef5;
@@ -168,14 +129,12 @@ export default {
   border-radius: 8px;
 }
 
-/deep/ .proviceStyle .el-form-item__content {
-  display: flex;
-}
-
-.userImageSpan {
-  line-height: 32px;
-  margin-bottom: 12px;
-  font-weight: 500;
+.userSettingInformation {
+  background-color: #fff;
+  width: 50%;
+  border-radius: 8px;
+  padding: 12px;
+  margin: auto;
 }
 
 </style>

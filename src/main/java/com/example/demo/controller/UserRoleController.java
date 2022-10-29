@@ -7,55 +7,55 @@ import javax.annotation.Resource;
 import java.util.List;
 import com.example.demo.common.Result;
 
-import com.example.demo.service.IRoleMenuService;
-import com.example.demo.entity.RoleMenu;
+import com.example.demo.service.IUserRoleService;
+import com.example.demo.entity.UserRole;
 
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 角色菜单关系表 前端控制器
+ *  前端控制器
  * </p>
  *
  * @author 作者
- * @since 2022-10-08
+ * @since 2022-10-29
  */
 @RestController
-@RequestMapping("/roleMenu")
-public class RoleMenuController {
+@RequestMapping("/userRole")
+public class UserRoleController {
 
         @Resource
-        private IRoleMenuService roleMenuService;
+        private IUserRoleService userRoleService;
 
 
         // 新增或者更新
         @PostMapping
-        public Result save(@RequestBody RoleMenu roleMenu) {
-                return Result.success(roleMenuService.saveOrUpdate(roleMenu));
+        public Result save(@RequestBody UserRole userRole) {
+                return Result.success(userRoleService.saveOrUpdate(userRole));
         }
 
         // 根据id删除
         @DeleteMapping("/{id}")
         public Result delete(@PathVariable Integer id) {
-                return Result.success(roleMenuService.removeById(id));
+                return Result.success(userRoleService.removeById(id));
         }
 
         // 以id来删除多条数据     数据是 [1, 2, 3] 这样的
         @PostMapping("/delete/batch")
         public Result deleteBatch(@RequestBody List<Integer> list) {
-                return Result.success(roleMenuService.removeByIds(list));
+                return Result.success(userRoleService.removeByIds(list));
         }
 
         // 获取所有数据
         @GetMapping
         public Result findAll() {
-                return Result.success(roleMenuService.list());
+                return Result.success(userRoleService.list());
         }
 
         // 根据id查询数据
         @GetMapping("/{id}")
         public Result findOne(@PathVariable Integer id) {
-                return Result.success(roleMenuService.getById(id));
+                return Result.success(userRoleService.getById(id));
         }
 
         // 分页查询     limit第一个参数 = (pageNum - 1) * pageSize
@@ -63,10 +63,10 @@ public class RoleMenuController {
         public Result findPage(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
                                         @RequestParam(defaultValue = "false") Boolean desc) {
-                QueryWrapper<RoleMenu> queryWrapper = new QueryWrapper<>();
+                QueryWrapper<UserRole> queryWrapper = new QueryWrapper<>();
                 if(desc) queryWrapper.orderByDesc("id"); // 是否根据id排序
 
-                return Result.success(roleMenuService.page(new Page<>(pageNum, pageSize), queryWrapper));
+                return Result.success(userRoleService.page(new Page<>(pageNum, pageSize), queryWrapper));
         }
 
 }

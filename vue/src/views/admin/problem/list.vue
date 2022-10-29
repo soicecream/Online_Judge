@@ -118,7 +118,7 @@
     </el-table>
 
     <!--   底部分页选项的选择 -->
-    <div class="demo-pagination-block">
+    <div class="mt-10">
       <el-pagination
           :currentPage="pageNum" :page-size="pageSize"
           :page-sizes="[5, 10, 15, 20]" :total="total"
@@ -589,14 +589,5 @@ export default {
 </script>
 
 <style scoped>
-
-.demo-pagination-block {
-  margin-top: 10px;
-}
-
-.box-card {
-  width: 480px;
-  margin: auto;
-}
 
 </style>

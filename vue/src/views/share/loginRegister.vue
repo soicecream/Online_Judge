@@ -169,7 +169,6 @@ export default {
               // 存储用户信息到浏览器中
               localStorage.setItem("user", JSON.stringify(res.data))
               // localStorage.setItem("user", '{"id":' + data.id + ',"headPortrait":' + data.headPortrait + ',"token":"' + data.token + '"}')
-              localStorage.setItem("menus", JSON.stringify(res.data.menus))
 
               // 动态设置当前用户的路由
               setRoutes()

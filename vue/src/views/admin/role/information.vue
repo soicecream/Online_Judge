@@ -33,7 +33,7 @@
 
     </div>
 
-    <!-- 角色信息 -->
+    <!-- 信息 -->
     <el-table :data="tableData" border stripe @selection-change="handlerSelectionChange">
       <el-table-column type="selection" align="center"/>
       <el-table-column prop="id" label="id" align="center" width="80"/>
@@ -67,7 +67,7 @@
     </el-table>
 
     <!--   底部分页选项的选择 -->
-    <div class="demo-pagination-block">
+    <div class="mt-10">
       <el-pagination
           :currentPage="pageNum" :page-size="pageSize"
           :page-sizes="[5, 10, 15, 20]" :total="total"
@@ -76,7 +76,7 @@
       />
     </div>
 
-    <!-- 添加用户角色的弹窗 -->
+    <!-- 添加弹窗 -->
     <el-dialog title="添加角色信息" :visible.sync="dialogFormVisible" width="30%">
 
       <el-form :model="form" :rules="form_rules" ref="user_form" label-width="100px">
@@ -94,7 +94,7 @@
       </div>
     </el-dialog>
 
-    <!-- 修改用户角色的弹窗 -->
+    <!-- 修改弹窗 -->
     <el-dialog title="修改角色信息" :visible.sync="dialogFormVisible_update" width="30%">
 
       <el-form label-width="100px" :model="form_update" :rules="form_update_rules" ref="user_update_form">
@@ -138,7 +138,7 @@
 
 <script>
 export default {
-  name: "list",
+  name: "information",
 
   data() {
     return {
@@ -431,9 +431,5 @@ export default {
 </script>
 
 <style scoped>
-
-.demo-pagination-block {
-  margin-top: 10px;
-}
 
 </style>

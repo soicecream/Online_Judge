@@ -7,6 +7,16 @@
 .mrl-5{
     margin: 0px 5px;
 }
+.mt-5 {
+    margin-top: 5px;
+}
+.mb-5 {
+    margin-bottom: 5px;
+}
+.mtb-5 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
 
 .ml-10 {
     margin-left: 10px;
@@ -16,6 +26,16 @@
 }
 .mrl-10{
     margin: 0px 10px;
+}
+.mt-10 {
+    margin-top: 10px;
+}
+.mb-10 {
+    margin-bottom: 10px;
+}
+.mtb-10 {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .pd-10 {

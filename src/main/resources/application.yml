@@ -1,5 +1,5 @@
 server:
-#  ip:
+  ip: localhost
   port: 9090
   tomcat:
     max-http-form-post-size: -1
@@ -9,6 +9,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/onlinejudge?serverTimezone=GMT%2b8
+#    url: jdbc:mysql://38.54.56.234:3306/onlinejudge?serverTimezone=GMT%2b8
     username: root
     password:
   mvc:
@@ -34,3 +35,4 @@ mybatis-plus:
 files:
   upload:
     path: D:\毕设\demo\files\
+#    path: /www/wwwroot/shuimujiabei.xyz/files

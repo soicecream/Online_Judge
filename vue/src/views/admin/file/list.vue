@@ -18,15 +18,11 @@
 
     <!--    操作-->
     <div style="margin: 10px 0">
-<!--          action="http://localhost:9090/files/upload"-->
-<!--          action="https://jsonplaceholder.typicode.com/posts/"-->
       <el-upload
           action=""
           :show-file-list="false"
           :http-request="handlerFileUploadImport"
           :on-success="handlerFileUploadImportSuccess" :on-error="handlerFileUploadImportError"
-
-
           style="display: inline-block;" class="mr-10">
         <el-button type="primary"> 上传文件 <i class="el-icon-folder-add"></i></el-button>
       </el-upload>
@@ -106,7 +102,7 @@
     </el-table>
 
     <!--   底部分页选项的选择 -->
-    <div class="demo-pagination-block">
+    <div class="mt-10">
       <el-pagination
           :currentPage="pageNum" :page-size="pageSize"
           :page-sizes="[5, 10, 15, 20]" :total="total"
@@ -367,14 +363,5 @@ export default {
 </script>
 
 <style scoped>
-
-.demo-pagination-block {
-  margin-top: 10px;
-}
-
-.box-card {
-  width: 480px;
-  margin: auto;
-}
 
 </style>
