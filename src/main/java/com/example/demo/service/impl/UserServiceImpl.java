@@ -1,19 +1,18 @@
 package com.example.demo.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.demo.common.Constants;
 import com.example.demo.controller.dto.UserDto;
-import com.example.demo.entity.Menu;
-import com.example.demo.entity.Role;
-import com.example.demo.entity.RoleMenu;
-import com.example.demo.entity.User;
+import com.example.demo.entity.*;
 import com.example.demo.exception.ServiceException;
 import com.example.demo.mapper.RoleMapper;
 import com.example.demo.mapper.RoleMenuMapper;
 import com.example.demo.mapper.UserMapper;
+import com.example.demo.mapper.UserRoleMapper;
 import com.example.demo.service.IMenuService;
 import com.example.demo.service.IUserService;
 import com.example.demo.utils.TokenUtils;
@@ -21,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
     private static final Log LOG = Log.get();
-    
+
     @Resource
     private RoleMapper roleMapper;
 
@@ -46,13 +47,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Resource
     private IMenuService menuService;
 
+    @Resource
+    private UserRoleMapper userRoleMapper;
+
     //    登录用户
     @Override
     public UserDto login(UserDto userDto) {
-        User one = getUserInfo(userDto);
-        if (one != null) {
-            if (!one.getEnable()) throw new ServiceException(Constants.CODE_600, "用户不可用");
-            else {
+        String username = userDto.getUsername();
+        String password = userDto.getPassword();
+        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
+            throw new ServiceException(Constants.CODE_400, "参数错误");
+        }
+
+        User one = getUserInfo(username);
+        if (one != null && one.getPassword().equals(password)) {
+            if (!one.getEnable()) {
+                throw new ServiceException(Constants.CODE_600, "用户不可用");
+            } else {
                 BeanUtil.copyProperties(one, userDto, true); // 从数据库查询用户信息(one 复制到 userDto中)
 //                设置token
                 String token = TokenUtils.getToken(one.getId().toString(), one.getPassword());
@@ -62,7 +73,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
                 // 设置用户的菜单列表
 //                if(!role.equals(Constants.ROLE_USER))
-                    userDto.setMenus(getRoleMenus(role));
+                userDto.setMenus(getRoleMenus(role));
 
                 return userDto;
             }
@@ -74,7 +85,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     //    注册用户
     @Override
     public User register(UserDto userDto) {
-        User one = getUserInfo(userDto);
+        String username = userDto.getUsername();
+        String password = userDto.getPassword();
+        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
+            throw new ServiceException(Constants.CODE_400, "参数错误");
+        }
+
+        User one = getUserInfo(username);
         if (one == null) {
             one = new User();
             BeanUtil.copyProperties(userDto, one, true);
@@ -88,18 +105,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     // 修改密码
     @Override
     public Boolean updatePassword(UserDto userDto) {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", userDto.getUsername());
-
-        User one;
-        try {
-            one = getOne(queryWrapper);
-        } catch (Exception e) {
-            LOG.error(e);
-            throw new ServiceException(Constants.CODE_500, "系统错误");
+        String username = userDto.getUsername();
+        String password = userDto.getPassword();
+        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
+            throw new ServiceException(Constants.CODE_400, "参数错误");
         }
 
-        if (one != null) {
+        User one = getUserInfo(username);
+        if (one != null && one.getPassword().equals(password)) {
             one.setPassword(userDto.getPassword());
             saveOrUpdate(one);
             return true;
@@ -111,19 +124,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     // 重置密码
     @Override
     public Boolean resetPassword(UserDto userDto) {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", userDto.getUsername());
-
-        User one;
-        try {
-            one = getOne(queryWrapper);
-        } catch (Exception e) {
-            LOG.error(e);
-            throw new ServiceException(Constants.CODE_500, "系统错误");
+        String username = userDto.getUsername();
+        String password = userDto.getPassword();
+        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
+            throw new ServiceException(Constants.CODE_400, "参数错误");
         }
 
+        User one = getUserInfo(username);
         if (one != null) {
-            one.setPassword("123456");
+            QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
+            userRoleQueryWrapper.eq("user_username", one.getUsername());
+            UserRole userRole = userRoleMapper.selectOne(userRoleQueryWrapper);
+            if (userRole != null && userRole.getId() == 1) {
+                throw new ServiceException(Constants.CODE_600, "不能修改超级管理员密码");
+            }
+
+            one.setPassword(userDto.getPassword());
             saveOrUpdate(one);
             return true;
         } else {
@@ -131,11 +147,55 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
     }
 
+    // 添加一个用户
+    @Override
+    public Boolean addOneUser(UserDto userDto) {
+        String username = userDto.getUsername();
+        String password = userDto.getPassword();
+        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
+            throw new ServiceException(Constants.CODE_400, "参数错误");
+        }
+
+        User one = getUserInfo(username);
+        if (one == null) {
+            one = new User();
+            BeanUtil.copyProperties(userDto, one, true);
+            if (StrUtil.isBlank(one.getNickname()))
+                one.setNickname(userDto.getUsername());
+            if (StrUtil.isBlank(one.getNickname()))
+                one.setNickname(userDto.getUsername());
+            save(one);
+        } else {
+            throw new ServiceException(Constants.CODE_600, "用户已存在");
+        }
+
+        return true;
+    }
+
+    // 添加用户列表
+    @Override
+    public Boolean addListUser(Collection <UserDto> userDtoList) {
+        List<User> list = new ArrayList<>();
+
+        for (UserDto i : userDtoList) {
+            User check = getUserInfo(i.getUsername());
+            if (check != null) {
+                continue;
+            }
+
+            User user = new User();
+            BeanUtil.copyProperties(i, user, true);
+            list.add(user);
+        }
+        saveBatch(list);
+
+        return true;
+    }
+
     // 从数据库查询用户信息
-    private User getUserInfo(UserDto userDto) {
+    private User getUserInfo(String username) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", userDto.getUsername());
-        queryWrapper.eq("password", userDto.getPassword());
+        queryWrapper.eq("username", username);
         User one;
         try {
             one = getOne(queryWrapper); // 从数据库查询用户信息
@@ -147,7 +207,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     // 获取当前角色的菜单列表
     private List<Menu> getRoleMenus(String role) {
-        QueryWrapper<Role> queryWrapper = new QueryWrapper<>(); queryWrapper.eq("role_key", role);
+        QueryWrapper<Role> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("role_key", role);
         Integer roleId = roleMapper.selectOne(queryWrapper).getId();
 
         QueryWrapper<RoleMenu> queryWrapper1 = new QueryWrapper<>();
@@ -160,8 +221,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 最后筛选完之后的list
         List<Menu> roleMenus = new ArrayList<>();
         // 筛选当前用户角色的菜单
-        for(Menu menu: menus) {
-            if(menuIds.contains(menu.getId())) {
+        for (Menu menu : menus) {
+            if (menuIds.contains(menu.getId())) {
                 roleMenus.add(menu);
             }
             List<Menu> children = menu.getChildren();

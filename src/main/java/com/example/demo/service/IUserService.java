@@ -4,6 +4,8 @@ import com.example.demo.controller.dto.UserDto;
 import com.example.demo.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.Collection;
+
 /**
  * <p>
  *  服务类
@@ -21,4 +23,8 @@ public interface IUserService extends IService<User> {
     Boolean updatePassword(UserDto userDto);
 
     Boolean resetPassword(UserDto userDto);
+
+    Boolean addOneUser(UserDto userDto);
+
+    Boolean addListUser(Collection<UserDto> userDtoList);
 }

@@ -2,10 +2,11 @@
   <div>
     <!-- 搜索栏 -->
     <div class="pd-10">
-      <el-input placeholder="请输入角色名称" v-model="search_message.name" suffix-icon="el-icon-user" style="width: 180px;"/>
-      <el-input placeholder="请输入角色描述" v-model="search_message.description" suffix-icon="el-icon-user"
+      <el-input placeholder="请输入角色名称" v-model="search_message.name" clearable suffix-icon="el-icon-user"
+                style="width: 180px;"/>
+      <el-input placeholder="请输入角色描述" v-model="search_message.description" clearable suffix-icon="el-icon-user"
                 style="width: 180px;" class="mrl-5"/>
-      <el-input placeholder="请输入角色唯一标识" v-model="search_message.roleKey" suffix-icon="el-icon-user"
+      <el-input placeholder="请输入角色唯一标识" v-model="search_message.roleKey" clearable suffix-icon="el-icon-user"
                 style="width: 180px;" class="mrl-5"/>
       <el-button type="primary" @click="search"> 搜索</el-button>
       <el-button type="warning" @click="reset"> 重置</el-button>
@@ -66,14 +67,12 @@
 
     </el-table>
 
-    <!--   底部分页选项的选择 -->
+    <!--   分页选项的选择 -->
     <div class="mt-10">
-      <el-pagination
-          :currentPage="pageNum" :page-size="pageSize"
-          :page-sizes="[5, 10, 15, 20]" :total="total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handlerSizeChange" @current-change="handlerCurrentChange"
-      />
+      <el-pagination :currentPage="pageNum" :page-size="pageSize"
+                     :page-sizes="[5, 10, 15, 20]" :total="total"
+                     layout="total, sizes, prev, pager, next, jumper"
+                     @size-change="handlerSizeChange" @current-change="handlerCurrentChange"/>
     </div>
 
     <!-- 添加弹窗 -->
@@ -81,10 +80,10 @@
 
       <el-form :model="form" :rules="form_rules" ref="user_form" label-width="100px">
         <el-form-item label="角色名称" prop="name">
-          <el-input v-model="form.name"/>
+          <el-input v-model="form.name" clearable/>
         </el-form-item>
         <el-form-item label="角色描述" prop="description">
-          <el-input v-model="form.description"/>
+          <el-input v-model="form.description" clearable/>
         </el-form-item>
       </el-form>
 
@@ -99,10 +98,10 @@
 
       <el-form label-width="100px" :model="form_update" :rules="form_update_rules" ref="user_update_form">
         <el-form-item label="角色名称" prop="name">
-          <el-input v-model="form_update.name"/>
+          <el-input v-model="form_update.name" clearable/>
         </el-form-item>
         <el-form-item label="角色描述" prop="description">
-          <el-input v-model="form_update.description"/>
+          <el-input v-model="form_update.description" clearable/>
         </el-form-item>
       </el-form>
 
@@ -115,13 +114,11 @@
     <!-- 分配角色管理菜单的弹窗 -->
     <el-dialog title="菜单分配" :visible.sync="dialogFormVisible_menu" width="30%">
 
-      <el-tree
-          show-checkbox
-          node-key="id" default-expand-all
-          :data="MenuData" :props="props"
-          :default-expanded-keys="menu_expends" :default-checked-keys="menu_checks"
-          ref="menu_tree"
-      >
+      <el-tree show-checkbox
+               node-key="id" default-expand-all
+               :data="MenuData" :props="props"
+               :default-expanded-keys="menu_expends" :default-checked-keys="menu_checks"
+               ref="menu_tree">
         <span class="custom-tree-node" slot-scope="{node, data}">
           <span> <i :class="data.icon"/> {{ data.name }}</span>
         </span>

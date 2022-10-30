@@ -3,21 +3,18 @@
 
     <!-- 搜索栏 -->
     <div class="pd-10">
-      <el-input style="width: 150px;" placeholder="请输入用户名" suffix-icon="el-icon-user"
-                v-model="search_message.username"/>
-      <el-input style="width: 150px;" placeholder="请输入姓名" suffix-icon="el-icon-user" class="ml-5"
-                v-model="search_message.realname"/>
-      <el-select v-model="search_message.sex" placeholder="请选择性别" style="width: 150px;" class="ml-5">
+      <el-input placeholder="请输入用户名" v-model="search_message.username" clearable style="width: 150px;" suffix-icon="el-icon-user"/>
+      <el-input placeholder="请输入姓名" v-model="search_message.realname" clearable suffix-icon="el-icon-user" style="width: 150px;" class="ml-5"/>
+      <el-select placeholder="请选择性别" v-model="search_message.sex" clearable style="width: 150px;" class="ml-5">
         <el-option label="男" value="1"></el-option>
         <el-option label="女" value="0"></el-option>
       </el-select>
-      <el-input style="width: 200px;" placeholder="请输入地址" suffix-icon="el-icon-position" class="mrl-5"
-                v-model="search_message.address"/>
-      <el-select v-model="search_message.enable" placeholder="请选择用户状态" style="width: 150px;" class="mrl-5">
+      <el-input placeholder="请输入地址" v-model="search_message.address" clearable suffix-icon="el-icon-position" class="mrl-5" style="width: 200px;"/>
+      <el-select v-model="search_message.enable" placeholder="请选择用户状态" clearable style="width: 150px;" class="mrl-5">
         <el-option label="启用" value="1"></el-option>
         <el-option label="禁用" value="0"></el-option>
       </el-select>
-      <el-select v-model="search_message.isRank" placeholder="请选择用户是否参加排名" style="width: 200px;" class="mrl-5">
+      <el-select v-model="search_message.isRank" placeholder="请选择用户是否参加排名" clearable style="width: 200px;" class="mrl-5">
         <el-option label="参加" value="1"></el-option>
         <el-option label="退出" value="0"></el-option>
       </el-select>
@@ -159,39 +156,21 @@
     <!-- 添加弹窗 -->
     <el-dialog title="添加用户信息" :visible.sync="dialogFormVisible" width="30%">
       <el-form :model="form" :rules="form_rules" ref="user_form" label-width="100px">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="form.username"/>
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="form.password"/>
-        </el-form-item>
-        <el-form-item label="姓名">
-          <el-input v-model="form.realname"/>
-        </el-form-item>
-        <el-form-item label="昵称" prop="nickname">
-          <el-input v-model="form.nickname"/>
-        </el-form-item>
+        <el-form-item label="用户名" prop="username"><el-input v-model="form.username" clearable/></el-form-item>
+        <el-form-item label="密码" prop="password"><el-input v-model="form.password" clearable/></el-form-item>
+        <el-form-item label="姓名"><el-input v-model="form.realname" clearable/></el-form-item>
+        <el-form-item label="昵称" prop="nickname"><el-input v-model="form.nickname" clearable/></el-form-item>
         <el-form-item label="性别">
-          <el-select v-model="form.sex" placeholder="请选择性别">
+          <el-select v-model="form.sex" placeholder="请选择性别" clearable>
             <el-option label="男" value="1"/>
             <el-option label="女" value="0"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="电话" prop="phone">
-          <el-input v-model="form.phone"/>
-        </el-form-item>
-        <el-form-item label="邮箱">
-          <el-input v-model="form.email"/>
-        </el-form-item>
-        <el-form-item label="学校">
-          <el-input v-model="form.school"/>
-        </el-form-item>
-        <el-form-item label="地址">
-          <el-input v-model="form.address"/>
-        </el-form-item>
-        <el-form-item label="介绍">
-          <el-input v-model="form.introduction" type="textarea"/>
-        </el-form-item>
+        <el-form-item label="电话" prop="phone"><el-input v-model="form.phone" clearable/></el-form-item>
+        <el-form-item label="邮箱"><el-input v-model="form.email" clearable/></el-form-item>
+        <el-form-item label="学校"><el-input v-model="form.school" clearable/></el-form-item>
+        <el-form-item label="地址"><el-input v-model="form.address" clearable/></el-form-item>
+        <el-form-item label="介绍"><el-input v-model="form.introduction" type="textarea" clearable/></el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="handlerAdd_close">取 消</el-button>
@@ -205,36 +184,20 @@
         <el-form-item label="用户名" prop="username">
           <el-input v-model="form_update.username" class="input_not_input"/>
         </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="form_update.password"/>
-        </el-form-item>
-        <el-form-item label="姓名">
-          <el-input v-model="form_update.realname"/>
-        </el-form-item>
-        <el-form-item label="昵称" prop="nickname">
-          <el-input v-model="form_update.nickname"/>
-        </el-form-item>
+<!--        <el-form-item label="密码" prop="password"><el-input v-model="form_update.password" clearable/></el-form-item>-->
+        <el-form-item label="姓名"><el-input v-model="form_update.realname" clearable/></el-form-item>
+        <el-form-item label="昵称" prop="nickname"><el-input v-model="form_update.nickname" clearable/></el-form-item>
         <el-form-item label="性别">
-          <el-select v-model="form_update.sex" placeholder="请选择性别">
+          <el-select v-model="form_update.sex" placeholder="请选择性别" clearable>
             <el-option label="男" :value="1"/>
             <el-option label="女" :value="0"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="电话" prop="phone">
-          <el-input v-model="form_update.phone"/>
-        </el-form-item>
-        <el-form-item label="邮箱">
-          <el-input v-model="form_update.email"/>
-        </el-form-item>
-        <el-form-item label="学校">
-          <el-input v-model="form_update.school"/>
-        </el-form-item>
-        <el-form-item label="地址">
-          <el-input v-model="form_update.address"/>
-        </el-form-item>
-        <el-form-item label="介绍">
-          <el-input v-model="form_update.introduction" type="textarea"/>
-        </el-form-item>
+        <el-form-item label="电话" prop="phone"><el-input v-model="form_update.phone" clearable/></el-form-item>
+        <el-form-item label="邮箱"><el-input v-model="form_update.email" clearable/></el-form-item>
+        <el-form-item label="学校"><el-input v-model="form_update.school" clearable/></el-form-item>
+        <el-form-item label="地址"><el-input v-model="form_update.address" clearable/></el-form-item>
+        <el-form-item label="介绍"><el-input v-model="form_update.introduction" type="textarea" clearable/></el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="handlerEdit_close">取 消</el-button>
@@ -252,7 +215,8 @@
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
           <div class="el-upload__tip" slot="tip">只能上传xls/xlsx文件</div>
-          <div class="el-upload__tip" slot="tip">上传的表格中要有username或用户名字段</div>
+          <div class="el-upload__tip" slot="tip">上传的表格中必须要有 "username" 或 "用户名" 字段</div>
+          <div class="el-upload__tip" slot="tip">密码默认为 "zime"+用户名后六位 </div>
         </el-upload>
       </div>
       <span slot="footer">
@@ -490,7 +454,14 @@ export default {
     // 重置用户的密码
     handlerEdit_password(row) {
       row.password = "123456"
-      this.update_information(row)
+      this.request.post("/user/resetPassword", row).then(res => {
+        if (res.code === "200") {
+          this.$message.success("用户密码修改成功")
+        } else {
+          this.$message.error(res.message)
+          return false
+        }
+      })
     },
 
 
@@ -584,12 +555,12 @@ export default {
       // 将对象数据 变成 id数组
       // [{}, {}, {}] => [1, 2, 3 ]
       let ids = this.multipleSelection.map(v => v.id)
-      console.log(ids)
 
       this.request.post("/user/delete/batch", ids).then(res => {
         if (res.code === '200') {
           this.$message.success("删除成功")
 
+          this.pageNum = 1
           this.load_user()
         } else
           this.$message.error("删除失败")

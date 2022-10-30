@@ -1,14 +1,14 @@
 <template>
   <div>
     <el-card shadow="hover" style="width: 30%; margin: 2% auto auto;">
-      <div slot="header"><span> 用户权限添加 </span></div>
+      <div slot="header"><span> 权限添加 </span></div>
       <el-form :model="role" status-icon :rules="role_rules" ref="roleRuleForm">
         <el-form-item prop="userUsername">
-          <el-input v-model="role.userUsername" prefix-icon="el-icon-user" placeholder="用户名"/>
+          <el-input v-model="role.userUsername" placeholder="用户名" clearable prefix-icon="el-icon-user"/>
         </el-form-item>
 
         <el-form-item prop="roleId">
-          <el-select v-model="role.roleId" placeholder="请选择角色权限" filterable style="width: 100%;">
+          <el-select v-model="role.roleId" placeholder="请选择角色权限" filterable clearable style="width: 100%;">
             <el-option v-for="item in roleList" :key="item.id" :label="item.description" :value="item.id">
               {{ item.description }}
             </el-option>
@@ -23,10 +23,10 @@
     </el-card>
 
     <el-card shadow="hover" style="width: 30%; margin: 2% auto auto;">
-      <div slot="header"><span> 用户添加超级权限 </span></div>
+      <div slot="header"><span> 添加超级权限 </span></div>
       <el-form :model="supper_admin" status-icon :rules="supper_admin_rules" ref="superAdminRuleForms">
         <el-form-item prop="userUsername">
-          <el-input v-model="supper_admin.userUsername" prefix-icon="el-icon-user" placeholder="用户名"/>
+          <el-input v-model="supper_admin.userUsername" placeholder="用户名" clearable prefix-icon="el-icon-user"/>
         </el-form-item>
 
         <el-form-item>
@@ -37,10 +37,10 @@
     </el-card>
 
     <el-card shadow="hover" style="width: 30%; margin: 2% auto auto;">
-      <div slot="header"><span> 用户添加权限 </span></div>
+      <div slot="header"><span> 添加普通权限 </span></div>
       <el-form :model="admin" status-icon :rules="admin_rules" ref="adminRuleForms">
         <el-form-item prop="userUsername">
-          <el-input v-model="admin.userUsername" prefix-icon="el-icon-user" placeholder="用户名"/>
+          <el-input v-model="admin.userUsername" placeholder="用户名" clearable prefix-icon="el-icon-user"/>
         </el-form-item>
 
         <el-form-item>
@@ -177,11 +177,11 @@ export default {
         this.$refs.roleRuleForm.resetFields()
     },
     resetSuperAdmin() {
-      if(this.$refs.superAdminRuleForms !== undefined)
+      if (this.$refs.superAdminRuleForms !== undefined)
         this.$refs.superAdminRuleForms.resetFields()
     },
     resetAdmin() {
-      if(this.$refs.adminRuleForms !== undefined)
+      if (this.$refs.adminRuleForms !== undefined)
         this.$refs.adminRuleForms.resetFields()
     },
 

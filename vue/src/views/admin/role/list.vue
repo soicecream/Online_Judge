@@ -2,9 +2,9 @@
   <div>
     <!-- 搜索栏 -->
     <div class="pd-10">
-      <el-input placeholder="请输入用户名" v-model="search_message.userUsername" suffix-icon="el-icon-user" style="width: 180px;"/>
-      <el-input placeholder="请输入用户姓名" v-model="search_message.userRealname" suffix-icon="el-icon-user" style="width: 180px;" class="mrl-5"/>
-      <el-select v-model="search_message.roleId" placeholder="请选择角色权限" filterable style="width: 180px;" class="mrl-5">
+      <el-input placeholder="请输入用户名" v-model="search_message.userUsername" clearable suffix-icon="el-icon-user" style="width: 180px;"/>
+      <el-input placeholder="请输入用户姓名" v-model="search_message.userRealname" clearable suffix-icon="el-icon-user" style="width: 180px;" class="mrl-5"/>
+      <el-select v-model="search_message.roleId" placeholder="请选择角色权限" filterable clearable style="width: 180px;" class="mrl-5">
         <el-option v-for="item in roleList" :key="item.id" :label="item.description" :value="item.id">
           {{ item.description }}
         </el-option>
@@ -34,6 +34,16 @@
       <el-button type="primary" @click="reverse_order" class="ml-10"> {{ 'id ' + reverse_order_value }}<i
           :class="reverse_order_btncls"/></el-button>
 
+    </div>
+
+    <!--   分页选项的选择 -->
+    <div class="mtb-10">
+      <el-pagination
+          :currentPage="pageNum" :page-size="pageSize"
+          :page-sizes="[5, 10, 15, 20]" :total="total"
+          layout="total, sizes, prev, pager, next, jumper"
+          @size-change="handlerSizeChange" @current-change="handlerCurrentChange"
+      />
     </div>
 
     <!-- 信息 -->
@@ -71,8 +81,8 @@
 
     </el-table>
 
-    <!--   底部分页选项的选择 -->
-    <div class="mt10">
+    <!--   分页选项的选择 -->
+    <div class="mtb-10">
       <el-pagination
           :currentPage="pageNum" :page-size="pageSize"
           :page-sizes="[5, 10, 15, 20]" :total="total"
@@ -85,9 +95,7 @@
     <el-dialog title="添加权限信息" :visible.sync="dialogFormVisible" width="30%">
 
       <el-form :model="form" :rules="form_rules" ref="user_form" label-width="100px">
-        <el-form-item label="用户名" prop="userUsername">
-          <el-input v-model="form.userUsername"/>
-        </el-form-item>
+        <el-form-item label="用户名" prop="userUsername"><el-input v-model="form.userUsername" clearable/></el-form-item>
         <el-form-item label="角色权限" prop="roleId">
           <el-select v-model="form.roleId" placeholder="请选择" filterable clearable style="width: 100%;">
             <el-option v-for="item in roleList" :key="item.id" :label="item.description" :value="item.id">
@@ -107,9 +115,7 @@
     <el-dialog title="修改角色信息" :visible.sync="dialogFormVisible_update" width="30%">
 
       <el-form label-width="100px" :model="form_update" :rules="form_update_rules" ref="user_update_form">
-        <el-form-item label="用户名" prop="userid">
-          <el-input v-model="form_update.userUsername" class="input_not_input"/>
-        </el-form-item>
+        <el-form-item label="用户名" prop="userid"><el-input v-model="form_update.userUsername" class="input_not_input"/></el-form-item>
         <el-form-item label="角色权限" prop="roleId">
           <el-select v-model="form_update.roleId" placeholder="请选择角色权限" filterable clearable style="width: 100%;">
             <el-option v-for="item in roleList" :key="item.id" :label="item.description" :value="item.id">

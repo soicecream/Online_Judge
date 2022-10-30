@@ -2,16 +2,14 @@
   <div>
 
     <!-- 操作 -->
-    <div style="margin: 10px 0">
+    <div class="mb-10">
       <el-button @click="handlerAdd()" type="primary"> 新增菜单 <i class="el-icon-circle-plus"/></el-button>
 
       <!--      批量删除-->
-      <el-popconfirm
-          confirm-button-text="确定" cancel-button-text="我再想想"
-          icon="el-icon-info" icon-color="#ff0000"
-          title="您确定批量删除这些数据吗?" class="mrl-10"
-          @confirm="handlerDelBatch"
-      >
+      <el-popconfirm confirm-button-text="确定" cancel-button-text="我再想想"
+                     icon="el-icon-info" icon-color="#ff0000"
+                     title="您确定批量删除这些数据吗?" class="mrl-10"
+                     @confirm="handlerDelBatch">
         <template #reference>
           <el-button type="danger" slot="reference"> 批量删除 <i class="el-icon-remove"/></el-button>
         </template>
@@ -43,12 +41,10 @@
           <el-button type="success" @click="handlerEdit(scope.row)"> 编辑</el-button>
 
           <!--        删除该角色-->
-          <el-popconfirm
-              confirm-button-text='确定' cancel-button-text='我再想想'
-              icon="el-icon-info" icon-color="#ff0000"
-              title="您确定删除吗？" class="ml-10"
-              @confirm="handlerDelete(scope.row.id)"
-          >
+          <el-popconfirm confirm-button-text='确定' cancel-button-text='我再想想'
+                         icon="el-icon-info" icon-color="#ff0000"
+                         title="您确定删除吗？" class="ml-10"
+                         @confirm="handlerDelete(scope.row.id)">
             <template #reference>
               <el-button type="danger" slot="reference"> 删除</el-button>
             </template>
@@ -64,10 +60,10 @@
 
       <el-form :model="form" :rules="form_rules" ref="user_form" label-width="100px">
         <el-form-item label="菜单名称" prop="name">
-          <el-input v-model="form.name"/>
+          <el-input v-model="form.name" clearable/>
         </el-form-item>
         <el-form-item label="菜单路径" prop="path">
-          <el-input v-model="form.path"/>
+          <el-input v-model="form.path" clearable/>
         </el-form-item>
 
         <el-form-item label="菜单图标" prop="icon">
@@ -78,8 +74,12 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="菜单描述" prop="description"><el-input v-model="form.description"/></el-form-item>
-        <el-form-item label="页面路径" prop="pagePath"><el-input v-model="form.pagePath"/></el-form-item>
+        <el-form-item label="菜单描述" prop="description">
+          <el-input v-model="form.description" clearable/>
+        </el-form-item>
+        <el-form-item label="页面路径" prop="pagePath">
+          <el-input v-model="form.pagePath" clearable/>
+        </el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -93,10 +93,10 @@
 
       <el-form label-width="100px" :model="form_update" :rules="form_update_rules" ref="user_update_form">
         <el-form-item label="菜单名称" prop="name">
-          <el-input v-model="form_update.name"/>
+          <el-input v-model="form_update.name" clearable/>
         </el-form-item>
         <el-form-item label="菜单路径" prop="path">
-          <el-input v-model="form_update.path"/>
+          <el-input v-model="form_update.path" clearable/>
         </el-form-item>
 
         <el-form-item label="菜单图标" prop="icon">
@@ -107,8 +107,12 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="菜单描述" prop="description"><el-input v-model="form_update.description"/></el-form-item>
-        <el-form-item label="页面路径" prop="pagePath"><el-input v-model="form_update.pagePath"/></el-form-item>
+        <el-form-item label="菜单描述" prop="description">
+          <el-input v-model="form_update.description" clearable/>
+        </el-form-item>
+        <el-form-item label="页面路径" prop="pagePath">
+          <el-input v-model="form_update.pagePath" clearable/>
+        </el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">

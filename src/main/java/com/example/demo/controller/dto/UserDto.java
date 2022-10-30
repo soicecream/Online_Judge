@@ -33,6 +33,8 @@ public class UserDto {
 
     private String token; // token
 
+    private String userListText; // 用户列表
+
     private String role;
     private List<Menu> menus;
 

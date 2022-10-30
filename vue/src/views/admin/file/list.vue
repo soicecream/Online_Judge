@@ -4,11 +4,11 @@
 
     <!-- 搜索栏 -->
     <div class="pd-10">
-      <el-input style="width: 150px;" placeholder="请输入文件名" suffix-icon="el-icon-user"
-                v-model="search_message.name"/>
-      <el-input style="width: 150px;" placeholder="请输入文件类型" suffix-icon="el-icon-user" class="ml-5"
-                v-model="search_message.type"/>
-      <el-select v-model="search_message.enable" placeholder="请选择文件状态" style="width: 150px;" class="mrl-5">
+      <el-input v-model="search_message.name" placeholder="请输入文件名" clearable suffix-icon="el-icon-user"
+                style="width: 150px;"/>
+      <el-input v-model="search_message.type" placeholder="请输入文件类型" clearable suffix-icon="el-icon-user"
+                style="width: 150px;" class="ml-5"/>
+      <el-select v-model="search_message.enable" placeholder="请选择文件状态" clearable style="width: 150px;" class="mrl-5">
         <el-option label="启用" value="1"></el-option>
         <el-option label="禁用" value="0"></el-option>
       </el-select>
@@ -18,12 +18,11 @@
 
     <!--    操作-->
     <div style="margin: 10px 0">
-      <el-upload
-          action=""
-          :show-file-list="false"
-          :http-request="handlerFileUploadImport"
-          :on-success="handlerFileUploadImportSuccess" :on-error="handlerFileUploadImportError"
-          style="display: inline-block;" class="mr-10">
+      <el-upload action=""
+                 :show-file-list="false"
+                 :http-request="handlerFileUploadImport"
+                 :on-success="handlerFileUploadImportSuccess" :on-error="handlerFileUploadImportError"
+                 style="display: inline-block;" class="mr-10">
         <el-button type="primary"> 上传文件 <i class="el-icon-folder-add"></i></el-button>
       </el-upload>
 
@@ -49,6 +48,16 @@
 
     </div>
 
+    <!--   分页选项的选择 -->
+    <div class="mt-10">
+      <el-pagination
+          :currentPage="pageNum" :page-size="pageSize"
+          :page-sizes="[5, 10, 15, 20]" :total="total"
+          layout="total, sizes, prev, pager, next, jumper"
+          @size-change="handlerSizeChange" @current-change="handlerCurrentChange"
+      />
+    </div>
+
     <!-- 信息 -->
     <el-table :data="tableData" border stripe
               @selection-change="handleSelectionChange"
@@ -60,7 +69,9 @@
       <el-table-column prop="size" label="文件大小(KB)" width="130"/>
       <el-table-column label="预览" width="200" align="center">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.type == 'png' || scope.row.type == 'jpeg' || scope.row.type === 'jpg'" @click="previewPicture(scope.row.url)" type="primary">预览</el-button>
+          <el-button v-if="scope.row.type == 'png' || scope.row.type == 'jpeg' || scope.row.type === 'jpg'"
+                     @click="previewPicture(scope.row.url)" type="primary">预览
+          </el-button>
         </template>
       </el-table-column>
       <el-table-column label="下载" width="200" align="center">
@@ -79,7 +90,7 @@
       <el-table-column fixed="right" label="操作" width="400" align="center">
         <template #default="scope">
 
-          <el-button type="success" @click="handlerEdit(scope.row)"> 重命名 </el-button>
+          <el-button type="success" @click="handlerEdit(scope.row)"> 重命名</el-button>
 
           <!--        删除用户-->
           <el-popconfirm
@@ -101,7 +112,7 @@
 
     </el-table>
 
-    <!--   底部分页选项的选择 -->
+    <!--   分页选项的选择 -->
     <div class="mt-10">
       <el-pagination
           :currentPage="pageNum" :page-size="pageSize"

@@ -10,6 +10,7 @@ import com.example.demo.common.Constants;
 import com.example.demo.common.Result;
 import com.example.demo.controller.dto.UserDto;
 import com.example.demo.entity.User;
+import com.example.demo.exception.ServiceException;
 import com.example.demo.service.IUserService;
 import com.example.demo.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +21,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.TreeSet;
 
 /**
  * <p>
@@ -39,48 +42,62 @@ public class UserController {
     @Resource
     private IUserService userService;
 
-
     // 登录用户
     @PostMapping("/login")
     public Result login(@RequestBody UserDto userDto) {
-        String username = userDto.getUsername();
-        String password = userDto.getPassword();
-        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
-            return Result.error(Constants.CODE_400, "参数错误");
-        }
         return Result.success(userService.login(userDto));
     }
 
     // 注册用户
     @PostMapping("/register")
     public Result register(@RequestBody UserDto userDto) {
-        String username = userDto.getUsername();
-        String password = userDto.getPassword();
-        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
-            return Result.error(Constants.CODE_400, "参数错误");
-        }
         return Result.success(userService.register(userDto));
     }
 
     // 修改用户密码
     @PostMapping("/upadtePassword")
     public Result updatePassword(@RequestBody UserDto userDto) {
-        String username = userDto.getUsername();
-        String password = userDto.getPassword();
-        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
-            return Result.error(Constants.CODE_400, "参数错误");
-        }
         return Result.success(userService.updatePassword(userDto));
     }
 
-    // 重置用户密码
+    // 修改用户密码
     @PostMapping("/resetPassword")
     public Result resetPassword(@RequestBody UserDto userDto) {
-        String username = userDto.getUsername();
-        if (StrUtil.isBlank(username)) {
-            return Result.error(Constants.CODE_400, "参数错误");
-        }
         return Result.success(userService.resetPassword(userDto));
+    }
+
+    // 添加一个用户
+    @PostMapping("/addOneUser")
+    public Result addOneUser(@RequestBody UserDto userDto) {
+        return Result.success(userService.addOneUser(userDto));
+    }
+
+    // 添加用户列表
+    @PostMapping("/addListUser")
+    public Result addListUser(@RequestBody UserDto userDto) {
+        String text = userDto.getUserListText();
+        if (StrUtil.isBlank(text)) {
+            throw new ServiceException(Constants.CODE_400, "参数错误");
+        }
+
+        String s[] = text.split("\n");
+        List<UserDto> list = new ArrayList<>();
+        TreeSet<String> tr = new TreeSet<>();
+        for (String item : s) {
+            int n = item.length();
+            if (n < 6 || !tr.add(item)) {
+                continue;
+            }
+
+            UserDto user = new UserDto();
+            user.setUsername(item);
+            user.setPassword("zime" + item.substring(n - 6));
+            user.setRealname(item);
+            user.setNickname(item);
+            list.add(user);
+        }
+
+        return Result.success(userService.addListUser(list));
     }
 
 
@@ -92,13 +109,13 @@ public class UserController {
 
     // 根据id查询数据
     @GetMapping("/{id}")
-    public Result findOne(@PathVariable Integer id) {
+    public Result findOneById(@PathVariable Integer id) {
         return Result.success(userService.getById(id));
     }
 
     // 根据username查询数据
     @GetMapping("/username/{username}")
-    public Result findOne(@PathVariable String username) {
+    public Result findOneByUsername(@PathVariable String username) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", username);
         return Result.success(userService.getOne(queryWrapper));
@@ -138,7 +155,6 @@ public class UserController {
     public Result saveBath(@RequestBody Collection<User> list) {
         return Result.success(userService.saveOrUpdateBatch(list));
     }
-
 
     // 根据id删除
     @DeleteMapping("/{id}")
@@ -236,9 +252,9 @@ public class UserController {
         reader.addHeaderAlias("是否参加排名", "isRank");
         reader.addHeaderAlias("假删除", "isDelete");
 
-        List<User> list = reader.readAll(User.class);
 
-        for (User i : list) {
+        List<UserDto> list = reader.readAll(UserDto.class);
+        for (UserDto i : list) {
             // 如果用户的密码为空就设一个初始值
             if (StrUtil.isBlank(i.getUsername())) {
                 return Result.error("400", "请在excel表中添加字段为用户名或者username的字段");
@@ -248,14 +264,15 @@ public class UserController {
                 String username = i.getUsername();
                 i.setPassword("zime" + username.substring(username.length() - 6));
             }
-            // 若昵称不存在 设置初始昵称
             if (StrUtil.isBlank(i.getNickname())) {
                 i.setNickname(i.getUsername());
             }
+            if (StrUtil.isBlank(i.getRealname())) {
+                i.setRealname(i.getUsername());
+            }
         }
-        userService.saveOrUpdateBatch(list);
 
-        return Result.success(true);
+        return Result.success(userService.addListUser(list));
     }
 
 }

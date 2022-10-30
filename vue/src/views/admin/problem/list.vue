@@ -3,17 +3,19 @@
 
     <!-- 搜索栏 -->
     <div class="pd-10">
-      <el-input style="width: 150px;" placeholder="请输入题目id" suffix-icon="el-icon-user" v-model="search_message.id"/>
-      <el-input style="width: 150px;" placeholder="请输入题目标题" suffix-icon="el-icon-user" class="ml-5" v-model="search_message.title"/>
+      <el-input v-model="search_message.id" placeholder="请输入题目id" clearable suffix-icon="el-icon-user"
+                style="width: 150px;"/>
+      <el-input v-model="search_message.title" placeholder="请输入题目标题" clearable suffix-icon="el-icon-user" class="ml-5"
+                style="width: 150px;"/>
 
-      <el-select v-model="search_message.difficulty" placeholder="请选择题目难度" style="width: 150px;" class="ml-5">
+      <el-select v-model="search_message.difficulty" placeholder="请选择题目难度" clearable style="width: 150px;" class="ml-5">
         <el-option label="未知" value="0"/>
         <el-option label="简单" value="1"/>
         <el-option label="中等" value="2"/>
         <el-option label="困难" value="3"/>
       </el-select>
 
-      <el-select v-model="search_message.auth" placeholder="请选择题目状态" style="width: 150px;" class="ml-5">
+      <el-select v-model="search_message.auth" placeholder="请选择题目状态" clearable style="width: 150px;" class="ml-5">
         <el-option label="启用" value="1"/>
         <el-option label="禁用" value="0"/>
       </el-select>
@@ -27,30 +29,28 @@
       <el-button @click="handlerAdd" type="primary"> 新增题目 <i class="el-icon-circle-plus"/></el-button>
 
       <!--      批量删除-->
-      <el-popconfirm
-          confirm-button-text="确定" cancel-button-text="我再想想"
-          icon="el-icon-info" icon-color="#ff0000"
-          title="您确定批量删除这些数据吗?" class="ml-10"
-          @confirm="handlerDelBatch"
-
-      >
+      <el-popconfirm confirm-button-text="确定" cancel-button-text="我再想想"
+                     icon="el-icon-info" icon-color="#ff0000"
+                     title="您确定批量删除这些数据吗?" class="mrl-10"
+                     @confirm="handlerDelBatch">
         <template #reference>
           <el-button type="danger" slot="reference"> 批量删除 <i class="el-icon-remove"/></el-button>
         </template>
       </el-popconfirm>
 
       <!--      导入-->
-<!--      <el-upload action="" :show-file-list="false" accept="xlsx"-->
-<!--                 :http-request="handlerExcelImport"-->
-<!--                 :on-success="handlerExcelImportSuccess" :on-error="handlerExcelImportError"-->
-<!--                 style="display: inline-block;" class="mrl-10">-->
-<!--        <el-button type="primary"> 导入用户 <i class="el-icon-folder-add"></i></el-button>-->
-<!--      </el-upload>-->
-<!--      <el-button type="primary" @click="exportFile" class="ml-10"> 导出题目 <i class="el-icon-folder-checked"></i>-->
-<!--      </el-button>-->
+      <!--      <el-upload action="" :show-file-list="false" accept="xlsx"-->
+      <!--                 :http-request="handlerExcelImport"-->
+      <!--                 :on-success="handlerExcelImportSuccess" :on-error="handlerExcelImportError"-->
+      <!--                 style="display: inline-block;" class="mrl-10">-->
+      <!--        <el-button type="primary"> 导入用户 <i class="el-icon-folder-add"></i></el-button>-->
+      <!--      </el-upload>-->
+      <!--      <el-button type="primary" @click="exportFile" class="ml-10"> 导出题目 <i class="el-icon-folder-checked"></i>-->
+      <!--      </el-button>-->
 
       <!--      显示顺序-->
-      <el-button type="primary" @click="reverse_order" class="ml-10"> {{ 'id ' + reverse_order_value }}<i :class="reverse_order_btncls"/></el-button>
+      <el-button type="primary" @click="reverse_order" class="ml-10"> {{ 'id ' + reverse_order_value }}<i
+          :class="reverse_order_btncls"/></el-button>
 
       <el-button type="primary" @click="enable_start" class="ml-10"> 启用 <i class="el-icon-success"/></el-button>
       <el-button type="primary" @click="enable_end" class="ml-10"> 禁用 <i class="el-icon-error"/></el-button>
@@ -77,7 +77,7 @@
       <!--    难度-->
       <el-table-column label="难度" width="100" align="center">
         <template #default="scope">
-<!--          ----------------------------------------     ============================================= ------------------------------------------------------------     -->
+          <!--          ----------------------------------------     ============================================= ------------------------------------------------------------     -->
           <el-tag>
             {{ scope.row.difficulty }}
           </el-tag>
@@ -87,7 +87,8 @@
       <!--    状态-->
       <el-table-column label="状态" width="70" align="center">
         <template #default="scope">
-          <el-switch v-model="scope.row.auth" @change="update_information(scope.row)" active-color="#13ce66" inactive-color="#ff4949"/>
+          <el-switch v-model="scope.row.auth" @change="update_information(scope.row)" active-color="#13ce66"
+                     inactive-color="#ff4949"/>
         </template>
       </el-table-column>
 
@@ -558,7 +559,7 @@ export default {
 
     // 导入用户信息
     handlerExcelImport(param) {
-      let formData  = new FormData()
+      let formData = new FormData()
       formData.append("file", param.file)
 
       this.request.post("/problem/import", formData).then(res => {
