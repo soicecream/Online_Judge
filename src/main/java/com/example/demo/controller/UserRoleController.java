@@ -27,11 +27,21 @@ public class UserRoleController {
         @Resource
         private IUserRoleService userRoleService;
 
-
         // 新增或者更新
         @PostMapping
         public Result save(@RequestBody UserRole userRole) {
                 return Result.success(userRoleService.saveOrUpdate(userRole));
+        }
+
+        // 新增
+        @PostMapping("/increase")
+        public Result increase(@RequestBody UserRole userRole) {
+                return Result.success(userRoleService.increase(userRole));
+        }
+
+        @PostMapping("/update")
+        public Result updateRole(@RequestBody UserRole userRole) {
+                return Result.success(userRoleService.updateRole(userRole));
         }
 
         // 根据id删除
@@ -61,12 +71,12 @@ public class UserRoleController {
         // 分页查询     limit第一个参数 = (pageNum - 1) * pageSize
         @GetMapping("/page")
         public Result findPage(@RequestParam Integer pageNum,
-                                        @RequestParam Integer pageSize,
-                                        @RequestParam(defaultValue = "false") Boolean desc) {
-                QueryWrapper<UserRole> queryWrapper = new QueryWrapper<>();
-                if(desc) queryWrapper.orderByDesc("id"); // 是否根据id排序
-
-                return Result.success(userRoleService.page(new Page<>(pageNum, pageSize), queryWrapper));
+                               @RequestParam Integer pageSize,
+                               @RequestParam(defaultValue = "") String userUsername,
+                               @RequestParam(defaultValue = "") String userRealname,
+                               @RequestParam(defaultValue = "") Integer roleId,
+                               @RequestParam(defaultValue = "false") Boolean desc) {
+                return Result.success(userRoleService.findPage(new Page<>(pageNum, pageSize), userUsername, userRealname, roleId, desc));
         }
 
 }

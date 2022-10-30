@@ -28,7 +28,7 @@
       </el-popconfirm>
 
       <!--      显示顺序-->
-      <el-button type="primary" @click="reverse_order" class="ml-10"> {{ 'id ' + reverse_order_value }}<i
+      <el-button type="primary" @click="reverse_order" class="ml-10"> {{ '用户id ' + reverse_order_value }}<i
           :class="reverse_order_btncls"/></el-button>
 
     </div>
@@ -153,7 +153,7 @@ export default {
       search_message: {
         name: "",
         description: "",
-        roleKey: "",
+        role: "",
       },
 
       // 显示顺序

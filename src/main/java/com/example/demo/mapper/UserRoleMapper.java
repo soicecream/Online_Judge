@@ -1,5 +1,6 @@
 package com.example.demo.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.entity.UserRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface UserRoleMapper extends BaseMapper<UserRole> {
 
+    Page<UserRole> findPage(Page<UserRole> page, String userUsername, String userRealname, Integer roleId, String desc);
 }

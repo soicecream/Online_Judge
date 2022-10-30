@@ -5,7 +5,7 @@ import {serverIp} from "../../public/config";
 
 const request = axios.create({
     baseURL: `http://${serverIp}:9090`,
-    timeout: 30000
+    timeout: 10000
 })
 
 // request 拦截器

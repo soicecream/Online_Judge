@@ -2,11 +2,14 @@
   <div>
     <!-- 搜索栏 -->
     <div class="pd-10">
-      <el-input placeholder="请输入角色名称" v-model="search_message.name" suffix-icon="el-icon-user" style="width: 180px;"/>
-      <el-input placeholder="请输入角色描述" v-model="search_message.description" suffix-icon="el-icon-user"
-                style="width: 180px;" class="mrl-5"/>
-      <el-input placeholder="请输入角色唯一标识" v-model="search_message.roleKey" suffix-icon="el-icon-user"
-                style="width: 180px;" class="mrl-5"/>
+      <el-input placeholder="请输入用户名" v-model="search_message.userUsername" suffix-icon="el-icon-user" style="width: 180px;"/>
+      <el-input placeholder="请输入用户姓名" v-model="search_message.userRealname" suffix-icon="el-icon-user" style="width: 180px;" class="mrl-5"/>
+      <el-select v-model="search_message.roleId" placeholder="请选择角色权限" filterable style="width: 180px;" class="mrl-5">
+        <el-option v-for="item in roleList" :key="item.id" :label="item.description" :value="item.id">
+          {{ item.description }}
+        </el-option>
+      </el-select>
+
       <el-button type="primary" @click="search"> 搜索</el-button>
       <el-button type="warning" @click="reset"> 重置</el-button>
     </div>
@@ -36,9 +39,14 @@
     <!-- 信息 -->
     <el-table :data="tableData" border stripe @selection-change="handlerSelectionChange">
       <el-table-column type="selection" align="center"/>
-      <el-table-column prop="userid" label="用户id"/>
+      <el-table-column prop="id" label="id" width="50" align="center"/>
       <el-table-column prop="userUsername" label="用户名"/>
-      <el-table-column prop="role" label="权限"/>
+      <el-table-column prop="userRealname" label="用户姓名"/>
+      <el-table-column label="角色权限">
+        <template #default="scope">
+          {{ roleList[scope.row.roleId - 1].description }}
+        </template>
+      </el-table-column>
 
       <!--     操作该角色信息-->
       <el-table-column label="操作" align="center">
@@ -77,10 +85,12 @@
     <el-dialog title="添加权限信息" :visible.sync="dialogFormVisible" width="30%">
 
       <el-form :model="form" :rules="form_rules" ref="user_form" label-width="100px">
-        <el-form-item label="用户id" prop="userid"><el-input v-model="form.userid"/></el-form-item>
-        <el-form-item label="角色权限" prop="role">
-          <el-select v-model="form.role" placeholder="请选择" filterable clearable style="width: 100%;">
-            <el-option v-for="item in roleList" :key="item.id" :label="item.name" :value="item.roleKey">
+        <el-form-item label="用户名" prop="userUsername">
+          <el-input v-model="form.userUsername"/>
+        </el-form-item>
+        <el-form-item label="角色权限" prop="roleId">
+          <el-select v-model="form.roleId" placeholder="请选择" filterable clearable style="width: 100%;">
+            <el-option v-for="item in roleList" :key="item.id" :label="item.description" :value="item.id">
               {{ item.description }}
             </el-option>
           </el-select>
@@ -97,10 +107,12 @@
     <el-dialog title="修改角色信息" :visible.sync="dialogFormVisible_update" width="30%">
 
       <el-form label-width="100px" :model="form_update" :rules="form_update_rules" ref="user_update_form">
-        <el-form-item label="角色名称" prop="userid"><el-input v-model="form_update.userid" class="input_not_input"/></el-form-item>
-        <el-form-item label="角色权限" prop="role">
-          <el-select v-model="form.role" placeholder="请选择" filterable clearable style="width: 100%;">
-            <el-option v-for="item in roleList" :key="item.id" :label="item.name" :value="item.roleKey">
+        <el-form-item label="用户名" prop="userid">
+          <el-input v-model="form_update.userUsername" class="input_not_input"/>
+        </el-form-item>
+        <el-form-item label="角色权限" prop="roleId">
+          <el-select v-model="form_update.roleId" placeholder="请选择角色权限" filterable clearable style="width: 100%;">
+            <el-option v-for="item in roleList" :key="item.id" :label="item.description" :value="item.id">
               {{ item.description }}
             </el-option>
           </el-select>
@@ -132,9 +144,9 @@ export default {
 
       // 搜索的信息
       search_message: {
-        name: "",
-        description: "",
-        roleKey: "",
+        userUsername: "",
+        userRealname: "",
+        roleId: "",
       },
 
       // 显示顺序
@@ -148,13 +160,12 @@ export default {
 
       // 添加角色信息弹窗
       dialogFormVisible: false,
-      form: {},
+      form: {userUsername: "", roleId: ""},
       form_rules: {
-        userid: [
+        userUsername: [
           {required: true, message: '请输入用户id', trigger: 'blur'},
-          {pattern: /^[0-9]*$/, message: "请输入正确的用户id",}
         ],
-        role: [
+        roleId: [
           {required: true, message: '请选权限', trigger: 'change'}
         ],
       },
@@ -163,22 +174,11 @@ export default {
       dialogFormVisible_update: false,
       form_update: {},
       form_update_rules: {
-        role: [
+        roleId: [
           {required: true, message: '请选权限', trigger: 'change'}
         ],
 
       },
-
-      dialogFormVisible_menu: false,
-      MenuData: [],
-      menu_expends: [],
-      menu_checks: [],
-      props: {
-        label: "name",
-      },
-
-      roleId: 0,
-      roleFlag: '',
 
       roleList: [],
 
@@ -187,6 +187,7 @@ export default {
 
   created() {
     this.load_role()
+    this.load_roleList()
 
   },
 
@@ -197,10 +198,10 @@ export default {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          name: this.search_message.name,
-          description: this.search_message.description,
-          roleKey: this.search_message.roleKey,
-          desc: this.reverse_order_desc
+          userUsername: this.search_message.userUsername,
+          userRealname: this.search_message.userRealname,
+          roleId: this.search_message.roleId,
+          desc: this.reverse_order_desc,
         }
       }).then(res => {
         if (res.code === '200') {
@@ -211,7 +212,6 @@ export default {
         }
       })
     },
-
 
     // 加载权限信息
     load_roleList() {
@@ -265,7 +265,6 @@ export default {
       this.dialogFormVisible = true
       if (this.$refs.user_form !== undefined)
         this.$refs.user_form.resetFields()
-      this.load_roleList()
     },
     handlerAdd_close() {
       // 关闭添加的窗口
@@ -276,7 +275,8 @@ export default {
     handlerAdd_ok() {
       this.$refs.user_form.validate((valid) => {
         if (valid) {
-          this.request.post("/userRole", this.form).then(res => {
+          console.log(this.form)
+          this.request.post("/userRole/increase", this.form).then(res => {
             if (res.code === "200") {
               this.$message.success("添加成功")
 
@@ -289,6 +289,7 @@ export default {
               return false
             }
           })
+
         } else {
           this.$message.error("请确认输入")
           return false
@@ -298,7 +299,8 @@ export default {
 
     // 修改角色信息
     update_information(form) {
-      this.request.post("/userRole", form).then(res => {
+      console.log(form)
+      this.request.post("/userRole/update", form).then(res => {
         if (res.code === '200') {
           this.$message.success("修改成功")
 

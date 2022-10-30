@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.log.Log;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.demo.common.Constants;
 import com.example.demo.controller.dto.UserDto;
 import com.example.demo.entity.Menu;
@@ -15,9 +16,7 @@ import com.example.demo.mapper.RoleMenuMapper;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.service.IMenuService;
 import com.example.demo.service.IUserService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.demo.utils.TokenUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -86,7 +85,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return one;
     }
 
-
+    // 修改密码
     @Override
     public Boolean updatePassword(UserDto userDto) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -109,6 +108,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
     }
 
+    // 重置密码
     @Override
     public Boolean resetPassword(UserDto userDto) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -140,7 +140,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         try {
             one = getOne(queryWrapper); // 从数据库查询用户信息
         } catch (Exception e) {
-            LOG.error(e);
             throw new ServiceException(Constants.CODE_500, "系统错误");
         }
         return one;

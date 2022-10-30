@@ -6,10 +6,12 @@ import './assets/gloable.css'
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+Vue.use(ElementUI, { zIndex: 2200 });
 
 import request from "@/utils/requset"
 
-Vue.use(ElementUI, { zIndex: 2200 });
+import Fragment from 'vue-fragment'
+Vue.use(Fragment.Plugin)
 
 Vue.config.productionTip = false
 
