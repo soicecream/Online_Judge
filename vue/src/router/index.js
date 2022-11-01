@@ -75,26 +75,24 @@ export const setRoutes = () => {
         if (!currentRouteNames.includes('admin')) {
             const mangeRoute = {path: '/admin', name: 'admin', component: () => import('../views/admin/admin.vue'), redirect: '/admin/home', children: []}
             const menus = JSON.parse(user).menus
-            menus.forEach(item => {
-                if (item.path) {
-                    let itemMenu = {path: item.path, name: item.name, component: () => import('../views' + item.pagePath + '.vue')}
-                    mangeRoute.children.push(itemMenu)
-                } else if (item.children.length) {
-                    item.children.forEach(item => {
-                        if (item.path) {
-                            let itemMenu = {
-                                path: item.path,
-                                name: item.name,
-                                component: () => import('../views' + item.pagePath + '.vue')
+            if (menus) {
+                menus.forEach(item => {
+                    if (item.path) {
+                        let itemMenu = {path: item.path, name: item.name, component: () => import('../views' + item.pagePath + '.vue')}
+                        mangeRoute.children.push(itemMenu)
+                    } else if (item.children.length) {
+                        item.children.forEach(item => {
+                            if (item.path) {
+                                let itemMenu = {path: item.path, name: item.name, component: () => import('../views' + item.pagePath + '.vue')}
+                                mangeRoute.children.push(itemMenu)
                             }
-                            mangeRoute.children.push(itemMenu)
-                        }
-                    })
-                }
-            })
+                        })
+                    }
+                })
 
-            // 动态添加到现在的路由对象中去
-            router.addRoute(mangeRoute)
+                // 动态添加到现在的路由对象中去
+                router.addRoute(mangeRoute)
+            }
         }
     }
 }
@@ -126,6 +124,5 @@ router.beforeEach((to, from, next) => {
     }
 
 })
-
 
 export default router

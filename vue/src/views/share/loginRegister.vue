@@ -3,7 +3,7 @@
     <div class="contain">
       <div class="big-box" :class="{active:isLogin}">
 
-<!--        登录-->
+        <!--        登录-->
         <div class="big-contain" key="bigContainLogin" v-if="isLogin">
           <div class="btitle">账户登录</div>
           <el-form :model="login_form" :rules="login_form_rules" ref="login_user_form"
@@ -13,7 +13,8 @@
             </el-form-item>
 
             <el-form-item prop="password">
-              <el-input v-model="login_form.password" show-password prefix-icon="el-icon-lock" placeholder="密码"></el-input>
+              <el-input v-model="login_form.password" show-password prefix-icon="el-icon-lock"
+                        placeholder="密码"></el-input>
             </el-form-item>
 
             <el-form-item style="text-align: center">
@@ -22,39 +23,47 @@
           </el-form>
         </div>
 
-<!--        注册-->
+        <!--        注册-->
         <div class="big-contain" key="bigContainRegister" v-else>
           <div class="btitle">创建账户</div>
-          <el-form :model="register_form" :rules="register_form_rules" ref="register_user_form" style="width: 300px; height: 350px; margin-top: 5%;">
+          <el-form :model="register_form" :rules="register_form_rules" ref="register_user_form"
+                   style="width: 300px; height: 350px; margin-top: 5%;">
 
             <el-form-item prop="username">
-              <el-input v-model="register_form.username" class="w-50 m-2" placeholder="用户名"><i slot="prefix" class="el-icon-user"/>
+              <el-input v-model="register_form.username" class="w-50 m-2" placeholder="用户名"><i slot="prefix"
+                                                                                               class="el-icon-user"/>
               </el-input>
             </el-form-item>
 
             <el-form-item prop="nickname">
-              <el-input v-model="register_form.nickname" class="w-50 m-2" placeholder="昵称"><i slot="prefix" class="el-icon-user"/>
+              <el-input v-model="register_form.nickname" class="w-50 m-2" placeholder="昵称"><i slot="prefix"
+                                                                                              class="el-icon-user"/>
               </el-input>
             </el-form-item>
 
             <el-form-item prop="password">
-              <el-input v-model="register_form.password" class="w-50 m-2" placeholder="密码" type="password" show-password><i slot="prefix" class="el-icon-lock"/></el-input>
+              <el-input v-model="register_form.password" class="w-50 m-2" placeholder="密码" type="password"
+                        show-password><i slot="prefix" class="el-icon-lock"/></el-input>
             </el-form-item>
 
             <el-form-item prop="password_again">
-              <el-input v-model="register_form.password_again" class="w-50 m-2" placeholder="再次输入密码" type="password" show-password><i slot="prefix" class="el-icon-lock"/></el-input>
+              <el-input v-model="register_form.password_again" class="w-50 m-2" placeholder="再次输入密码" type="password"
+                        show-password><i slot="prefix" class="el-icon-lock"/></el-input>
             </el-form-item>
 
             <el-form-item prop="phone">
-              <el-input v-model="register_form.phone" class="w-50 m-2" placeholder="电话号码"><i slot="prefix" class="el-icon-phone"/>
+              <el-input v-model="register_form.phone" class="w-50 m-2" placeholder="电话号码"><i slot="prefix"
+                                                                                             class="el-icon-phone"/>
               </el-input>
             </el-form-item>
 
             <el-form-item prop="verification_code">
-              <el-input v-model="register_form.verification_code" placeholder="验证码" style="display: inline-block; width: 50%; vertical-align:top;">
+              <el-input v-model="register_form.verification_code" placeholder="验证码"
+                        style="display: inline-block; width: 50%; vertical-align:top;">
                 <i slot="prefix" class="el-icon-help"/>
               </el-input>
-              <span @click="get_verification_code" style="height: 40px; float: right;"><VerificationCode :identifyCode="identifyCode"/></span>
+              <span @click="get_verification_code" style="height: 40px; float: right;"><VerificationCode
+                  :identifyCode="identifyCode"/></span>
             </el-form-item>
 
             <el-form-item>
@@ -127,7 +136,7 @@ export default {
         phone: [
           {required: true, message: '请填写电话号码', trigger: 'blur'},
           {min: 11, max: 11, message: '请填写11位的电话号码', trigger: 'blur'},
-          {pattern: /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/,message: "请输入正确的电话号码",}
+          {pattern: /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/, message: "请输入正确的电话号码",}
         ],
         verification_code: [
           {required: true, message: '请填写验证码', trigger: 'blur'},
@@ -171,7 +180,9 @@ export default {
               // localStorage.setItem("user", '{"id":' + data.id + ',"headPortrait":' + data.headPortrait + ',"token":"' + data.token + '"}')
 
               // 动态设置当前用户的路由
-              setRoutes()
+              if (res.data.menus) {
+                setRoutes()
+              }
 
               this.$router.push("/")
               this.$message.success("登陆成功")

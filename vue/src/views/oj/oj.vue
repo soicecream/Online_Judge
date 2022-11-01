@@ -19,22 +19,27 @@ export default {
 
   data() {
     return {
-      id: JSON.parse(localStorage.getItem("user")).id,
-
       user: {},
 
-      isAdmin: true,
+      isAdmin: false,
     }
   },
 
   created() {
+    this.check_admin()
     this.getUser()
 
   },
 
   methods: {
+    check_admin() {
+      if(JSON.parse(localStorage.getItem("user")).menus)
+        this.isAdmin = true
+    },
+
     getUser() {
-      this.request.get("user/" + this.id).then(res => {
+      const id = JSON.parse(localStorage.getItem("user")).id
+      this.request.get("user/" + id).then(res => {
         if (res.code === '200') {
           this.user = res.data
         } else {
@@ -42,6 +47,8 @@ export default {
         }
       })
     },
+
+
   },
 
 }

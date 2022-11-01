@@ -69,11 +69,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 String token = TokenUtils.getToken(one.getId().toString(), one.getPassword());
                 userDto.setToken(token);
 
-                String role = one.getRole();
-
-                // 设置用户的菜单列表
-//                if(!role.equals(Constants.ROLE_USER))
-                userDto.setMenus(getRoleMenus(role));
+                // 设置管理员的路由
+                UserRole userRole = getUserRole(username);
+                if(userRole != null) {
+                    userDto.setMenus(getRoleMenus(userRole.getRoleId()));
+                }
 
                 return userDto;
             }
@@ -205,12 +205,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return one;
     }
 
-    // 获取当前角色的菜单列表
-    private List<Menu> getRoleMenus(String role) {
-        QueryWrapper<Role> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("role_key", role);
-        Integer roleId = roleMapper.selectOne(queryWrapper).getId();
+    private UserRole getUserRole(String username) {
+        QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
+        userRoleQueryWrapper.eq("user_username", username);
+        List<UserRole> userRoleList = userRoleMapper.selectList(userRoleQueryWrapper);
 
+        if(userRoleList.size() == 0)
+            return null;
+        return userRoleList.get(0);
+    }
+
+    // 获取当前角色的菜单列表
+    private List<Menu> getRoleMenus(Integer roleId) {
         QueryWrapper<RoleMenu> queryWrapper1 = new QueryWrapper<>();
         queryWrapper1.eq("role_id", roleId);
         List<Integer> menuIds = roleMenuMapper.selectList(queryWrapper1).stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
