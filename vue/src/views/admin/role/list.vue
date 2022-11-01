@@ -16,7 +16,7 @@
 
     <!-- 操作 -->
     <div style="margin: 10px 0">
-      <el-button @click="handlerAdd" type="primary"> 新增用户 <i class="el-icon-circle-plus"/></el-button>
+      <el-button @click="handlerAdd" type="primary"> 新增用户权限 <i class="el-icon-circle-plus"/></el-button>
 
       <!--      批量删除-->
       <el-popconfirm
@@ -92,11 +92,11 @@
     </div>
 
     <!-- 添加的弹窗 -->
-    <el-dialog title="添加权限信息" :visible.sync="dialogFormVisible" width="30%">
+    <el-dialog title="添加用户权限信息" :visible.sync="dialogFormVisible" width="30%">
 
       <el-form :model="form" :rules="form_rules" ref="user_form" label-width="100px">
         <el-form-item label="用户名" prop="userUsername"><el-input v-model="form.userUsername" clearable/></el-form-item>
-        <el-form-item label="角色权限" prop="roleId">
+        <el-form-item label="用户权限" prop="roleId">
           <el-select v-model="form.roleId" placeholder="请选择" filterable clearable style="width: 100%;">
             <el-option v-for="item in roleList" :key="item.id" :label="item.description" :value="item.id">
               {{ item.description }}
@@ -112,11 +112,11 @@
     </el-dialog>
 
     <!-- 修改用户角色的弹窗 -->
-    <el-dialog title="修改角色信息" :visible.sync="dialogFormVisible_update" width="30%">
+    <el-dialog title="修改用户权限信息" :visible.sync="dialogFormVisible_update" width="30%">
 
       <el-form label-width="100px" :model="form_update" :rules="form_update_rules" ref="user_update_form">
         <el-form-item label="用户名" prop="userid"><el-input v-model="form_update.userUsername" class="input_not_input"/></el-form-item>
-        <el-form-item label="角色权限" prop="roleId">
+        <el-form-item label="权限" prop="roleId">
           <el-select v-model="form_update.roleId" placeholder="请选择角色权限" filterable clearable style="width: 100%;">
             <el-option v-for="item in roleList" :key="item.id" :label="item.description" :value="item.id">
               {{ item.description }}

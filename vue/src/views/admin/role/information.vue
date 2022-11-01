@@ -14,7 +14,7 @@
 
     <!-- 操作 -->
     <div style="margin: 10px 0">
-      <el-button @click="handlerAdd" type="primary"> 新增用户 <i class="el-icon-circle-plus"/></el-button>
+      <el-button @click="handlerAdd" type="primary"> 新增权限 <i class="el-icon-circle-plus"/></el-button>
 
       <!--      批量删除-->
       <el-popconfirm
@@ -76,13 +76,13 @@
     </div>
 
     <!-- 添加弹窗 -->
-    <el-dialog title="添加角色信息" :visible.sync="dialogFormVisible" width="30%">
+    <el-dialog title="添加权限信息" :visible.sync="dialogFormVisible" width="30%">
 
       <el-form :model="form" :rules="form_rules" ref="user_form" label-width="100px">
-        <el-form-item label="角色名称" prop="name">
+        <el-form-item label="权限名称" prop="name">
           <el-input v-model="form.name" clearable/>
         </el-form-item>
-        <el-form-item label="角色描述" prop="description">
+        <el-form-item label="权限描述" prop="description">
           <el-input v-model="form.description" clearable/>
         </el-form-item>
       </el-form>
@@ -94,13 +94,13 @@
     </el-dialog>
 
     <!-- 修改弹窗 -->
-    <el-dialog title="修改角色信息" :visible.sync="dialogFormVisible_update" width="30%">
+    <el-dialog title="修改权限信息" :visible.sync="dialogFormVisible_update" width="30%">
 
       <el-form label-width="100px" :model="form_update" :rules="form_update_rules" ref="user_update_form">
-        <el-form-item label="角色名称" prop="name">
+        <el-form-item label="权限名称" prop="name">
           <el-input v-model="form_update.name" clearable/>
         </el-form-item>
-        <el-form-item label="角色描述" prop="description">
+        <el-form-item label="权限描述" prop="description">
           <el-input v-model="form_update.description" clearable/>
         </el-form-item>
       </el-form>

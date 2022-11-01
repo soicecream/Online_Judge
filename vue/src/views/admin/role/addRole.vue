@@ -99,6 +99,10 @@ export default {
   created() {
     this.load_roleList()
 
+    this.resetRole()
+    this.resetSuperAdmin()
+    this.resetAdmin()
+
   },
 
   methods: {
