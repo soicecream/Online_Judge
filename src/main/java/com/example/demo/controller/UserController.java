@@ -159,13 +159,13 @@ public class UserController {
     // 根据id删除
     @DeleteMapping("/{id}")
     public Result delete(@PathVariable Integer id) {
-        return Result.success(userService.removeById(id));
+        return Result.success(userService.MyRemoveById(id));
     }
 
     // 以id来删除多条数据     数据是 [1, 2, 3] 这样的
     @PostMapping("/delete/batch")
     public Result deleteBatch(@RequestBody List<Integer> list) {
-        return Result.success(userService.removeByIds(list));
+        return Result.success(userService.MyRemoveByIds(list));
     }
 
 

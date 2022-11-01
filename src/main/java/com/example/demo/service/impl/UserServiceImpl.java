@@ -39,9 +39,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private static final Log LOG = Log.get();
 
     @Resource
-    private RoleMapper roleMapper;
-
-    @Resource
     private RoleMenuMapper roleMenuMapper;
 
     @Resource
@@ -59,7 +56,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new ServiceException(Constants.CODE_400, "参数错误");
         }
 
-        User one = getUserInfo(username);
+        User one = getUserInfoUsername(username);
         if (one != null && one.getPassword().equals(password)) {
             if (!one.getEnable()) {
                 throw new ServiceException(Constants.CODE_600, "用户不可用");
@@ -70,8 +67,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 userDto.setToken(token);
 
                 // 设置管理员的路由
-                UserRole userRole = getUserRole(username);
-                if(userRole != null) {
+                UserRole userRole = getUserRoleUsername(username);
+                if (userRole != null) {
                     userDto.setMenus(getRoleMenus(userRole.getRoleId()));
                 }
 
@@ -91,7 +88,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new ServiceException(Constants.CODE_400, "参数错误");
         }
 
-        User one = getUserInfo(username);
+        User one = getUserInfoUsername(username);
         if (one == null) {
             one = new User();
             BeanUtil.copyProperties(userDto, one, true);
@@ -111,7 +108,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new ServiceException(Constants.CODE_400, "参数错误");
         }
 
-        User one = getUserInfo(username);
+        User one = getUserInfoUsername(username);
         if (one != null && one.getPassword().equals(password)) {
             one.setPassword(userDto.getPassword());
             saveOrUpdate(one);
@@ -130,7 +127,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new ServiceException(Constants.CODE_400, "参数错误");
         }
 
-        User one = getUserInfo(username);
+        User one = getUserInfoUsername(username);
         if (one != null) {
             QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
             userRoleQueryWrapper.eq("user_username", one.getUsername());
@@ -156,7 +153,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new ServiceException(Constants.CODE_400, "参数错误");
         }
 
-        User one = getUserInfo(username);
+        User one = getUserInfoUsername(username);
         if (one == null) {
             one = new User();
             BeanUtil.copyProperties(userDto, one, true);
@@ -174,11 +171,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     // 添加用户列表
     @Override
-    public Boolean addListUser(Collection <UserDto> userDtoList) {
+    public Boolean addListUser(Collection<UserDto> userDtoList) {
         List<User> list = new ArrayList<>();
 
         for (UserDto i : userDtoList) {
-            User check = getUserInfo(i.getUsername());
+            User check = getUserInfoUsername(i.getUsername());
             if (check != null) {
                 continue;
             }
@@ -192,8 +189,54 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return true;
     }
 
-    // 从数据库查询用户信息
-    private User getUserInfo(String username) {
+    // 删除一个用户
+    @Override
+    public Boolean MyRemoveById(Integer id) {
+        User userInfo = getUserInfoId(id);
+        if (userInfo == null) {
+            throw new ServiceException(Constants.CODE_600, "用户不存在");
+        }
+
+        UserRole userRole = getUserRoleUsername(userInfo.getUsername());
+        if (userRole != null) {
+            QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
+            userRoleQueryWrapper.eq("user_username", userRole.getUserUsername());
+            userRoleMapper.delete(userRoleQueryWrapper);
+        }
+
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.eq("id", id);
+        remove(userQueryWrapper);
+
+        return true;
+    }
+
+    // 删除多个用户
+    @Override
+    public Boolean MyRemoveByIds(List<Integer> list) {
+        for (int id : list) {
+            User userInfo = getUserInfoId(id);
+            if (userInfo == null) {
+                continue;
+            }
+
+            UserRole userRole = getUserRoleUsername(userInfo.getUsername());
+            if (userRole != null) {
+                QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
+                userRoleQueryWrapper.eq("user_username", userRole.getUserUsername());
+                userRoleMapper.delete(userRoleQueryWrapper);
+            }
+
+            QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+            userQueryWrapper.eq("id", id);
+            remove(userQueryWrapper);
+        }
+
+        return true;
+    }
+
+    // 根据id获取用户的信息
+    private User getUserInfoUsername(String username) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", username);
         User one;
@@ -205,14 +248,31 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return one;
     }
 
-    private UserRole getUserRole(String username) {
+    // 根据id获取用户的信息
+    private User getUserInfoId(Integer id) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", id);
+        User one;
+        try {
+            one = getOne(queryWrapper); // 从数据库查询用户信息
+        } catch (Exception e) {
+            throw new ServiceException(Constants.CODE_500, "系统错误");
+        }
+        return one;
+    }
+
+    // 根据username获取用户权限星系
+    private UserRole getUserRoleUsername(String username) {
         QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
         userRoleQueryWrapper.eq("user_username", username);
-        List<UserRole> userRoleList = userRoleMapper.selectList(userRoleQueryWrapper);
 
-        if(userRoleList.size() == 0)
-            return null;
-        return userRoleList.get(0);
+        UserRole userRole;
+        try {
+            userRole = userRoleMapper.selectOne(userRoleQueryWrapper);
+        } catch (Exception e) {
+            throw new ServiceException(Constants.CODE_500, "系统错误");
+        }
+        return userRole;
     }
 
     // 获取当前角色的菜单列表

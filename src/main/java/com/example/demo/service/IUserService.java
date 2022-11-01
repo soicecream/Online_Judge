@@ -5,6 +5,7 @@ import com.example.demo.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * <p>
@@ -27,4 +28,8 @@ public interface IUserService extends IService<User> {
     Boolean addOneUser(UserDto userDto);
 
     Boolean addListUser(Collection<UserDto> userDtoList);
+
+    Boolean MyRemoveById(Integer id);
+
+    Boolean MyRemoveByIds(List<Integer> list);
 }
