@@ -49,8 +49,11 @@
       <!--      </el-button>-->
 
       <!--      显示顺序-->
-      <el-button type="primary" @click="reverse_order" class="ml-10"> {{ 'id ' + reverse_order_value }}<i
-          :class="reverse_order_btncls"/></el-button>
+      <el-button type="primary" @click="reverse_order">
+        {{ 'id ' + (!reverse_order_desc ? '正序' : '倒序') }}
+        <i v-if="!reverse_order_desc" class="el-icon-bottom"/>
+        <i v-else class="el-icon-top"/>
+      </el-button>
 
       <el-button type="primary" @click="enable_start" class="ml-10"> 启用 <i class="el-icon-success"/></el-button>
       <el-button type="primary" @click="enable_end" class="ml-10"> 禁用 <i class="el-icon-error"/></el-button>
@@ -130,12 +133,10 @@
 
     <!--   分页选项的选择 -->
     <div class="mtb-10">
-      <el-pagination
-          :currentPage="pageNum" :page-size="pageSize"
-          :page-sizes="[5, 10, 15, 20]" :total="total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handlerSizeChange" @current-change="handlerCurrentChange"
-      />
+      <el-pagination :currentPage="pageNum" :page-size="pageSize"
+                     :page-sizes="[5, 10, 15, 20]" :total="total"
+                     layout="total, sizes, prev, pager, next, jumper"
+                     @size-change="handlerSizeChange" @current-change="handlerCurrentChange"/>
     </div>
 
     <!-- 添加弹窗 -->
@@ -275,9 +276,7 @@ export default {
       },
 
       // 显示顺序
-      reverse_order_value: "正序",
       reverse_order_desc: false,
-      reverse_order_btncls: 'el-icon-bottom',
 
       // 复选框选中
       multipleSelection: {},
@@ -377,13 +376,6 @@ export default {
 
     // 显示顺序
     reverse_order() {
-      if (this.reverse_order_desc) {
-        this.reverse_order_value = '倒序'
-        this.reverse_order_btncls = 'el-icon-top'
-      } else {
-        this.reverse_order_value = '正序'
-        this.reverse_order_btncls = 'el-icon-bottom'
-      }
       this.reverse_order_desc = !this.reverse_order_desc
       this.load_problem()
     },

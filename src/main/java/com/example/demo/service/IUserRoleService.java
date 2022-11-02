@@ -17,7 +17,7 @@ import java.util.List;
  */
 public interface IUserRoleService extends IService<UserRole> {
 
-    Boolean increase(UserRole userRole);
+    Boolean addRole(UserRole userRole);
 
     Boolean updateRole(UserRole userRole);
 

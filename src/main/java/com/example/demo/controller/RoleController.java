@@ -51,12 +51,6 @@ public class RoleController {
         return Result.success(roleService.removeByIds(list));
     }
 
-    // 获取所有数据
-    @GetMapping
-    public Result findAll() {
-        return Result.success(roleService.list());
-    }
-
     // 根据id查询数据
     @GetMapping("/{id}")
     public Result findOne(@PathVariable Integer id) {

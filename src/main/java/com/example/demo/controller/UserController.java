@@ -54,17 +54,6 @@ public class UserController {
         return Result.success(userService.register(userDto));
     }
 
-    // 修改用户密码
-    @PostMapping("/updatePassword")
-    public Result updatePassword(@RequestBody UserDto userDto) {
-        return Result.success(userService.updatePassword(userDto));
-    }
-
-    // 重置用户密码
-    @PostMapping("/resetPassword")
-    public Result resetPassword(@RequestBody UserDto userDto) {
-        return Result.success(userService.resetPassword(userDto));
-    }
 
     // 添加一个用户
     @PostMapping("/addOneUser")
@@ -100,6 +89,20 @@ public class UserController {
         return Result.success(userService.addListUser(list));
     }
 
+
+    // 根据id删除
+    @DeleteMapping("/{id}")
+    public Result delete(@PathVariable Integer id) {
+        return Result.success(userService.MyRemoveById(id));
+    }
+
+    // 以id列表来删除多条数据     数据是 [1, 2, 3] 这样的
+    @PostMapping("/delete/batch")
+    public Result deleteBatch(@RequestBody List<Integer> list) {
+        return Result.success(userService.MyRemoveByIds(list));
+    }
+
+
     // 更新
     @PostMapping("/update")
     public Result updateUser(@RequestBody User user) {
@@ -111,6 +114,19 @@ public class UserController {
     public Result updateBath(@RequestBody Collection<User> list) {
         return Result.success(userService.updateBatchById(list));
     }
+
+    // 修改用户密码
+    @PostMapping("/updatePassword")
+    public Result updatePassword(@RequestBody UserDto userDto) {
+        return Result.success(userService.updatePassword(userDto));
+    }
+
+    // 重置用户密码
+    @PostMapping("/resetPassword")
+    public Result resetPassword(@RequestBody UserDto userDto) {
+        return Result.success(userService.resetPassword(userDto));
+    }
+
 
     // 根据id查询数据
     @GetMapping("/{id}")
@@ -146,19 +162,6 @@ public class UserController {
         }
 
         return Result.success(userService.page(new Page<>(pageNum, pageSize), queryWrapper));
-    }
-
-
-    // 根据id删除
-    @DeleteMapping("/{id}")
-    public Result delete(@PathVariable Integer id) {
-        return Result.success(userService.MyRemoveById(id));
-    }
-
-    // 以id列表来删除多条数据     数据是 [1, 2, 3] 这样的
-    @PostMapping("/delete/batch")
-    public Result deleteBatch(@RequestBody List<Integer> list) {
-        return Result.success(userService.MyRemoveByIds(list));
     }
 
 

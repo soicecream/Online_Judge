@@ -43,7 +43,11 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
 
     // 添加用户权限
     @Override
-    public Boolean increase(UserRole userRole) {
+    public Boolean addRole(UserRole userRole) {
+        if(userRole.getRoleId() == 3) {
+            return true;
+        }
+
         QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
         userRoleQueryWrapper.eq("user_username", userRole.getUserUsername());
         List<UserRole> userRoleList = userRoleMapper.selectList(userRoleQueryWrapper);
@@ -68,7 +72,6 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
 
     // 修改用户权限
     public Boolean updateRole(UserRole userRole) {
-
         QueryWrapper<UserRole> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_username", userRole.getUserUsername());
 
@@ -77,7 +80,7 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
             return true;
         }
 
-        saveOrUpdate(userRole);
+        updateById(userRole);
         return true;
     }
 

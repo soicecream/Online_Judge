@@ -27,17 +27,19 @@
       </el-upload>
 
       <!--      显示顺序-->
-      <el-button type="primary" @click="reverse_order"> {{ 'id ' + reverse_order_value }}<i
-          :class="reverse_order_btncls"/></el-button>
+      <el-button type="primary" @click="reverse_order">
+        {{ 'id ' + (!reverse_order_desc ? '正序' : '倒序') }}
+        <i v-if="!reverse_order_desc" class="el-icon-bottom"/>
+        <i v-else class="el-icon-top"/>
+      </el-button>
 
-      <el-popconfirm
-          confirm-button-text="确定"
-          cancel-button-text="我再想想"
-          icon="InfoFilled"
-          icon-color="#ff0000"
-          title="您确定批量删除这些数据吗?"
-          @confirm="handlerDeleteBatch"
-          class="mrl-10">
+      <el-popconfirm confirm-button-text="确定"
+                     cancel-button-text="我再想想"
+                     icon="InfoFilled"
+                     icon-color="#ff0000"
+                     title="您确定批量删除这些数据吗?"
+                     @confirm="handlerDeleteBatch"
+                     class="mrl-10">
         <template #reference>
           <el-button type="danger" slot="reference"> 批量删除 <i class="el-icon-remove"/></el-button>
         </template>
@@ -157,9 +159,7 @@ export default {
       search_message: {name: "", type: "", enable: "",},
 
       // 显示顺序
-      reverse_order_value: "正序",
       reverse_order_desc: false,
-      reverse_order_btncls: 'el-icon-bottom',
 
       multipleSelection: [],
       multipleSelection_length: 0,
@@ -231,13 +231,6 @@ export default {
 
     // 显示顺序
     reverse_order() {
-      if (this.reverse_order_desc) {
-        this.reverse_order_value = '倒序'
-        this.reverse_order_btncls = 'el-icon-top'
-      } else {
-        this.reverse_order_value = '正序'
-        this.reverse_order_btncls = 'el-icon-bottom'
-      }
       this.reverse_order_desc = !this.reverse_order_desc
       this.load_file()
     },

@@ -41,8 +41,11 @@
       <el-button type="primary" @click="exportFile"> 导出用户 <i class="el-icon-folder-checked"/></el-button>
 
       <!--      显示顺序-->
-      <el-button type="primary" @click="reverse_order"> {{ 'id ' + reverse_order_value }}<i
-          :class="reverse_order_btncls"/></el-button>
+      <el-button type="primary" @click="reverse_order">
+        {{ 'id ' + (!reverse_order_desc ? '正序' : '倒序') }}
+        <i v-if="!reverse_order_desc" class="el-icon-bottom"/>
+        <i v-else class="el-icon-top"/>
+      </el-button>
 
       <el-button type="primary" @click="enable_start"> 启用 <i class="el-icon-success"/></el-button>
       <el-button type="primary" @click="enable_end"> 禁用 <i class="el-icon-error"/></el-button>
@@ -53,7 +56,7 @@
     </div>
 
     <!--   分页选项的选择 -->
-    <div class="mtb-10">
+    <div class="mt-10">
       <el-pagination
           :currentPage="pageNum" :page-size="pageSize"
           :page-sizes="[5, 10, 15, 20]" :total="total"
@@ -154,7 +157,7 @@
     </el-table>
 
     <!--   分页选项的选择 -->
-    <div class="mtb-10">
+    <div class="mt-10">
       <el-pagination
           :currentPage="pageNum" :page-size="pageSize"
           :page-sizes="[5, 10, 15, 20]" :total="total"
@@ -194,7 +197,7 @@
         <el-form-item label="用户名" prop="username">
           <el-input v-model="form_update.username" class="input_not_input"/>
         </el-form-item>
-<!--        <el-form-item label="密码" prop="password"><el-input v-model="form_update.password" clearable/></el-form-item>-->
+        <!--        <el-form-item label="密码" prop="password"><el-input v-model="form_update.password" clearable/></el-form-item>-->
         <el-form-item label="姓名"><el-input v-model="form_update.realname" clearable/></el-form-item>
         <el-form-item label="昵称" prop="nickname"><el-input v-model="form_update.nickname" clearable/></el-form-item>
         <el-form-item label="性别">
@@ -268,9 +271,7 @@ export default {
       },
 
       // 显示顺序
-      reverse_order_value: "正序",
       reverse_order_desc: false,
-      reverse_order_btncls: 'el-icon-bottom',
 
       // 复选框选中
       multipleSelection: {},
@@ -372,13 +373,6 @@ export default {
 
     // 显示顺序
     reverse_order() {
-      if (this.reverse_order_desc) {
-        this.reverse_order_value = '倒序'
-        this.reverse_order_btncls = 'el-icon-top'
-      } else {
-        this.reverse_order_value = '正序'
-        this.reverse_order_btncls = 'el-icon-bottom'
-      }
       this.reverse_order_desc = !this.reverse_order_desc
       this.load_user()
     },
@@ -399,7 +393,7 @@ export default {
     handlerAdd_ok() {
       this.$refs.user_form.validate((valid) => {
         if (valid) {
-          this.request.post("/user", this.form).then(res => {
+          this.request.post("/user/addOneUser", this.form).then(res => {
             if (res.code === "200") {
               this.$message.success("用户添加成功")
 
@@ -422,7 +416,7 @@ export default {
 
     // 修改信息
     update_information(form) {
-      this.request.post("/user", form).then(res => {
+      this.request.post("/user/update", form).then(res => {
         if (res.code === '200') {
           this.$message.success("修改成功")
 

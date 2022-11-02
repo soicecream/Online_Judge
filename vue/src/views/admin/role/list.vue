@@ -2,9 +2,12 @@
   <div>
     <!-- 搜索栏 -->
     <div class="pd-10">
-      <el-input placeholder="请输入用户名" v-model="search_message.userUsername" clearable suffix-icon="el-icon-user" style="width: 180px;"/>
-      <el-input placeholder="请输入用户姓名" v-model="search_message.userRealname" clearable suffix-icon="el-icon-user" style="width: 180px;" class="mrl-5"/>
-      <el-select v-model="search_message.roleId" placeholder="请选择角色权限" filterable clearable style="width: 180px;" class="mrl-5">
+      <el-input placeholder="请输入用户名" v-model="search_message.userUsername" clearable suffix-icon="el-icon-user"
+                style="width: 180px;"/>
+      <el-input placeholder="请输入用户姓名" v-model="search_message.userRealname" clearable suffix-icon="el-icon-user"
+                style="width: 180px;" class="mrl-5"/>
+      <el-select v-model="search_message.roleId" placeholder="请选择角色权限" filterable clearable style="width: 180px;"
+                 class="mrl-5">
         <el-option v-for="item in roleList" :key="item.id" :label="item.description" :value="item.id">
           {{ item.description }}
         </el-option>
@@ -31,19 +34,20 @@
       </el-popconfirm>
 
       <!--      显示顺序-->
-      <el-button type="primary" @click="reverse_order" class="ml-10"> {{ 'id ' + reverse_order_value }}<i
-          :class="reverse_order_btncls"/></el-button>
+      <el-button type="primary" @click="reverse_order">
+        {{ 'id ' + (!reverse_order_desc ? '正序' : '倒序') }}
+        <i v-if="!reverse_order_desc" class="el-icon-bottom"/>
+        <i v-else class="el-icon-top"/>
+      </el-button>
 
     </div>
 
     <!--   分页选项的选择 -->
     <div class="mtb-10">
-      <el-pagination
-          :currentPage="pageNum" :page-size="pageSize"
-          :page-sizes="[5, 10, 15, 20]" :total="total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handlerSizeChange" @current-change="handlerCurrentChange"
-      />
+      <el-pagination :currentPage="pageNum" :page-size="pageSize"
+                     :page-sizes="[5, 10, 15, 20]" :total="total"
+                     layout="total, sizes, prev, pager, next, jumper"
+                     @size-change="handlerSizeChange" @current-change="handlerCurrentChange"/>
     </div>
 
     <!-- 信息 -->
@@ -95,7 +99,9 @@
     <el-dialog title="添加用户权限信息" :visible.sync="dialogFormVisible" width="30%">
 
       <el-form :model="form" :rules="form_rules" ref="user_form" label-width="100px">
-        <el-form-item label="用户名" prop="userUsername"><el-input v-model="form.userUsername" clearable/></el-form-item>
+        <el-form-item label="用户名" prop="userUsername">
+          <el-input v-model="form.userUsername" clearable/>
+        </el-form-item>
         <el-form-item label="用户权限" prop="roleId">
           <el-select v-model="form.roleId" placeholder="请选择" filterable clearable style="width: 100%;">
             <el-option v-for="item in roleList" :key="item.id" :label="item.description" :value="item.id">
@@ -115,7 +121,9 @@
     <el-dialog title="修改用户权限信息" :visible.sync="dialogFormVisible_update" width="30%">
 
       <el-form label-width="100px" :model="form_update" :rules="form_update_rules" ref="user_update_form">
-        <el-form-item label="用户名" prop="userid"><el-input v-model="form_update.userUsername" class="input_not_input"/></el-form-item>
+        <el-form-item label="用户名" prop="userid">
+          <el-input v-model="form_update.userUsername" class="input_not_input"/>
+        </el-form-item>
         <el-form-item label="权限" prop="roleId">
           <el-select v-model="form_update.roleId" placeholder="请选择角色权限" filterable clearable style="width: 100%;">
             <el-option v-for="item in roleList" :key="item.id" :label="item.description" :value="item.id">
@@ -156,9 +164,7 @@ export default {
       },
 
       // 显示顺序
-      reverse_order_value: "正序",
       reverse_order_desc: false,
-      reverse_order_btncls: 'el-icon-bottom',
 
       // 复选框选中
       multipleSelection: {},
@@ -254,13 +260,6 @@ export default {
 
     // 显示顺序
     reverse_order() {
-      if (this.reverse_order_desc) {
-        this.reverse_order_value = '倒序'
-        this.reverse_order_btncls = 'el-icon-top'
-      } else {
-        this.reverse_order_value = '正序'
-        this.reverse_order_btncls = 'el-icon-bottom'
-      }
       this.reverse_order_desc = !this.reverse_order_desc
       this.load_role()
     },
@@ -282,7 +281,7 @@ export default {
       this.$refs.user_form.validate((valid) => {
         if (valid) {
           console.log(this.form)
-          this.request.post("/userRole/increase", this.form).then(res => {
+          this.request.post("/userRole/addRole", this.form).then(res => {
             if (res.code === "200") {
               this.$message.success("添加成功")
 

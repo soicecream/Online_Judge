@@ -53,6 +53,7 @@ public class ${table.controllerName} {
                 return Result.success(${table.entityPath}Service.saveOrUpdate(${table.entityPath}));
         }
 
+
         // 根据id删除
         @DeleteMapping("/{id}")
         public Result delete(@PathVariable Integer id) {
@@ -65,11 +66,6 @@ public class ${table.controllerName} {
                 return Result.success(${table.entityPath}Service.removeByIds(list));
         }
 
-        // 获取所有数据
-        @GetMapping
-        public Result findAll() {
-                return Result.success(${table.entityPath}Service.list());
-        }
 
         // 根据id查询数据
         @GetMapping("/{id}")

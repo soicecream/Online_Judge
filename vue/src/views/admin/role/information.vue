@@ -29,8 +29,11 @@
       </el-popconfirm>
 
       <!--      显示顺序-->
-      <el-button type="primary" @click="reverse_order" class="ml-10"> {{ '用户id ' + reverse_order_value }}<i
-          :class="reverse_order_btncls"/></el-button>
+      <el-button type="primary" @click="reverse_order">
+        {{ 'id ' + (!reverse_order_desc ? '正序' : '倒序') }}
+        <i v-if="!reverse_order_desc" class="el-icon-bottom"/>
+        <i v-else class="el-icon-top"/>
+      </el-button>
 
     </div>
 
@@ -162,9 +165,7 @@ export default {
       },
 
       // 显示顺序
-      reverse_order_value: "正序",
       reverse_order_desc: false,
-      reverse_order_btncls: 'el-icon-bottom',
 
       // 复选框选中
       multipleSelection: {},
@@ -255,13 +256,6 @@ export default {
 
     // 显示顺序
     reverse_order() {
-      if (this.reverse_order_desc) {
-        this.reverse_order_value = '倒序'
-        this.reverse_order_btncls = 'el-icon-top'
-      } else {
-        this.reverse_order_value = '正序'
-        this.reverse_order_btncls = 'el-icon-bottom'
-      }
       this.reverse_order_desc = !this.reverse_order_desc
       this.load_role()
     },
