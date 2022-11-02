@@ -100,6 +100,18 @@ public class UserController {
         return Result.success(userService.addListUser(list));
     }
 
+    // 更新
+    @PostMapping("/update")
+    public Result updateUser(@RequestBody User user) {
+        return Result.success(userService.updateById(user));
+    }
+
+    // 批量更新
+    @PostMapping("/update/batch")
+    public Result updateBath(@RequestBody Collection<User> list) {
+        return Result.success(userService.updateBatchById(list));
+    }
+
     // 根据id查询数据
     @GetMapping("/{id}")
     public Result findOneById(@PathVariable Integer id) {
@@ -136,12 +148,6 @@ public class UserController {
         return Result.success(userService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
-
-    // 批量新增或者更新
-    @PostMapping("/batch")
-    public Result saveBath(@RequestBody Collection<User> list) {
-        return Result.success(userService.saveOrUpdateBatch(list));
-    }
 
     // 根据id删除
     @DeleteMapping("/{id}")
