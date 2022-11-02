@@ -19,7 +19,7 @@ public interface IUserService extends IService<User> {
 
     UserDto login(UserDto userDto);
 
-    User register(UserDto userDto);
+    Boolean register(UserDto userDto);
 
     Boolean updatePassword(UserDto userDto);
 

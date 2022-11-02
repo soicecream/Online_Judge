@@ -55,12 +55,12 @@ public class UserController {
     }
 
     // 修改用户密码
-    @PostMapping("/upadtePassword")
+    @PostMapping("/updatePassword")
     public Result updatePassword(@RequestBody UserDto userDto) {
         return Result.success(userService.updatePassword(userDto));
     }
 
-    // 修改用户密码
+    // 重置用户密码
     @PostMapping("/resetPassword")
     public Result resetPassword(@RequestBody UserDto userDto) {
         return Result.success(userService.resetPassword(userDto));
@@ -100,13 +100,6 @@ public class UserController {
         return Result.success(userService.addListUser(list));
     }
 
-
-    // 获取所有数据
-    @GetMapping
-    public Result findAll() {
-        return Result.success(userService.list());
-    }
-
     // 根据id查询数据
     @GetMapping("/{id}")
     public Result findOneById(@PathVariable Integer id) {
@@ -144,12 +137,6 @@ public class UserController {
     }
 
 
-    // 新增或者更新
-    @PostMapping
-    public Result save(@RequestBody User user) {
-        return Result.success(userService.saveOrUpdate(user));
-    }
-
     // 批量新增或者更新
     @PostMapping("/batch")
     public Result saveBath(@RequestBody Collection<User> list) {
@@ -162,7 +149,7 @@ public class UserController {
         return Result.success(userService.MyRemoveById(id));
     }
 
-    // 以id来删除多条数据     数据是 [1, 2, 3] 这样的
+    // 以id列表来删除多条数据     数据是 [1, 2, 3] 这样的
     @PostMapping("/delete/batch")
     public Result deleteBatch(@RequestBody List<Integer> list) {
         return Result.success(userService.MyRemoveByIds(list));
@@ -170,7 +157,7 @@ public class UserController {
 
 
     //    https://hutool.cn/docs/#/poi/Excel%E7%94%9F%E6%88%90-ExcelWriter
-    // 导出接口
+    // 导出用户
     @GetMapping("/exportUserList")
     public void exportFile(HttpServletResponse response) throws Exception {
         // 从数据库查询出所有数据
@@ -220,12 +207,7 @@ public class UserController {
 
     }
 
-    /**
-     * excel 导入
-     *
-     * @param file
-     * @throws Exception
-     */
+    // Excel导入用户信息
     @PostMapping("/import/userList")
     public Result importFile(MultipartFile file) throws Exception {
         if (file == null || file.isEmpty()) {

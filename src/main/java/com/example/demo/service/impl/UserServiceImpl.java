@@ -81,7 +81,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     //    注册用户
     @Override
-    public User register(UserDto userDto) {
+    public Boolean register(UserDto userDto) {
         String username = userDto.getUsername();
         String password = userDto.getPassword();
         if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
@@ -96,7 +96,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         } else {
             throw new ServiceException(Constants.CODE_600, "用户已存在");
         }
-        return one;
+        return true;
     }
 
     // 修改密码
