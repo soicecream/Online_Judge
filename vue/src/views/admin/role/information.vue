@@ -34,6 +34,14 @@
 
     </div>
 
+    <!--   分页选项的选择 -->
+    <div class="mtb-10">
+      <el-pagination :currentPage="pageNum" :page-size="pageSize"
+                     :page-sizes="[5, 10, 15, 20]" :total="total"
+                     layout="total, sizes, prev, pager, next, jumper"
+                     @size-change="handlerSizeChange" @current-change="handlerCurrentChange"/>
+    </div>
+
     <!-- 信息 -->
     <el-table :data="tableData" border stripe @selection-change="handlerSelectionChange">
       <el-table-column type="selection" align="center"/>
@@ -68,7 +76,7 @@
     </el-table>
 
     <!--   分页选项的选择 -->
-    <div class="mt-10">
+    <div class="mtb-10">
       <el-pagination :currentPage="pageNum" :page-size="pageSize"
                      :page-sizes="[5, 10, 15, 20]" :total="total"
                      layout="total, sizes, prev, pager, next, jumper"
