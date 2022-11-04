@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -12,6 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -77,10 +79,22 @@ public class User implements Serializable {
     @ApiModelProperty("是否参加排名 (1参加， 0不参加)")
     private Boolean isRank;
 
-    @ApiModelProperty("禁用 (0不停，1停)")
+    @ApiModelProperty("状态 (1启用，0禁用)")
     private Boolean enable;
 
     @ApiModelProperty("假删除 (1删除，0未删除)")
     private Boolean isDelete;
+
+    // 该字段在数据库中是没有的
+    @TableField(exist = false)
+    private String token;
+
+    // 该字段在数据库中是没有的
+    @TableField(exist = false)
+    private String UserListText;
+
+    // 该字段在数据库中是没有的
+    @TableField(exist = false)
+    private List<Menu> menus;
 
 }

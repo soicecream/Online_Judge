@@ -122,7 +122,7 @@ export default {
     addRole() {
       this.$refs.roleRuleForm.validate((valid) => {
         if (valid) {
-          this.request.post("/userRole/increase", this.role).then(res => {
+          this.request.post("/userRole/addRole", this.role).then(res => {
             if (res.code === "200") {
               this.$message.success("用户权限成功")
               this.resetRole()
@@ -140,7 +140,7 @@ export default {
     addSuperAdmin() {
       this.$refs.superAdminRuleForms.validate((valid) => {
         if (valid) {
-          this.request.post("/userRole/increase", this.supper_admin).then(res => {
+          this.request.post("/userRole/addRole", this.supper_admin).then(res => {
             if (res.code === "200") {
               this.$message.success("用户权限成功")
               this.resetSuperAdmin()
@@ -158,7 +158,7 @@ export default {
     addAdmin() {
       this.$refs.adminRuleForms.validate((valid) => {
         if (valid) {
-          this.request.post("/userRole/increase", this.admin).then(res => {
+          this.request.post("/userRole/addRole", this.admin).then(res => {
             if (res.code === "200") {
               this.$message.success("用户权限成功")
               this.resetAdmin()

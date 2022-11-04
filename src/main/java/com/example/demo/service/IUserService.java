@@ -1,8 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.controller.dto.UserDto;
-import com.example.demo.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.demo.entity.User;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,17 +16,17 @@ import java.util.List;
  */
 public interface IUserService extends IService<User> {
 
-    UserDto login(UserDto userDto);
+    User login(User user);
 
-    Boolean register(UserDto userDto);
+    Boolean register(User user);
 
-    Boolean updatePassword(UserDto userDto);
+    Boolean updatePassword(User user);
 
-    Boolean resetPassword(UserDto userDto);
+    Boolean resetPassword(User user);
 
-    Boolean addOneUser(UserDto userDto);
+    Boolean addOneUser(User user);
 
-    Boolean addListUser(Collection<UserDto> userDtoList);
+    Boolean addListUser(Collection<User> user);
 
     Boolean MyRemoveById(Integer id);
 

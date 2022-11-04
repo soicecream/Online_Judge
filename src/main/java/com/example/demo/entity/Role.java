@@ -31,10 +31,10 @@ public class Role implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    @ApiModelProperty("角色名称")
+    @ApiModelProperty("用户权限名称")
     private String name;
 
-    @ApiModelProperty("角色描述")
+    @ApiModelProperty("用户权限描述")
     private String description;
 
     @ApiModelProperty("唯一标识")

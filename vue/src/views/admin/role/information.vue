@@ -100,7 +100,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="handlerAdd_close">取 消</el-button>
-        <el-button type="primary" @click="handlerAdd_ok">确 定</el-button>
+        <el-button @click="handlerAdd_ok" type="primary">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -345,7 +345,6 @@ export default {
       })
 
       this.request.get("/role/roleMenu/" + this.roleId).then(res => {
-
         this.dialogFormVisible_menu = true
 
         this.menu_checks = res.data

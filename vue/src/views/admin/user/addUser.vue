@@ -109,7 +109,7 @@ export default {
           this.request.post("/user/addOneUser", this.userOne).then(res => {
             if (res.code === "200") {
               this.$message.success("添加用户成功")
-              this.UserOneresetForm()
+              this.userOneResetForm()
             } else {
               this.$message.error(res.message)
             }

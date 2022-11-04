@@ -108,16 +108,14 @@
       <!--    状态-->
       <el-table-column label="状态" width="70" align="center">
         <template #default="scope">
-          <el-switch v-model="scope.row.enable" @change="update_information(scope.row)" active-color="#13ce66"
-                     inactive-color="#ff4949"/>
+          <el-switch v-model="scope.row.enable" @change="update_information(scope.row)" active-color="#13ce66" inactive-color="#ff4949"/>
         </template>
       </el-table-column>
 
       <!--    排名-->
       <el-table-column label="排名" width="70" align="center">
         <template #default="scope">
-          <el-switch v-model="scope.row.isRank" @change="update_information(scope.row)" active-color="#13ce66"
-                     inactive-color="#ff4949"/>
+          <el-switch v-model="scope.row.isRank" @change="update_information(scope.row)" active-color="#13ce66" inactive-color="#ff4949"/>
         </template>
       </el-table-column>
 

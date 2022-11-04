@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.common.Constants;
 import com.example.demo.common.Result;
-import com.example.demo.controller.dto.UserDto;
 import com.example.demo.entity.User;
 import com.example.demo.exception.ServiceException;
 import com.example.demo.service.IUserService;
@@ -44,33 +43,33 @@ public class UserController {
 
     // 登录用户
     @PostMapping("/login")
-    public Result login(@RequestBody UserDto userDto) {
-        return Result.success(userService.login(userDto));
+    public Result login(@RequestBody User user) {
+        return Result.success(userService.login(user));
     }
 
     // 注册用户
     @PostMapping("/register")
-    public Result register(@RequestBody UserDto userDto) {
-        return Result.success(userService.register(userDto));
+    public Result register(@RequestBody User user) {
+        return Result.success(userService.register(user));
     }
 
 
     // 添加一个用户
     @PostMapping("/addOneUser")
-    public Result addOneUser(@RequestBody UserDto userDto) {
-        return Result.success(userService.addOneUser(userDto));
+    public Result addOneUser(@RequestBody User user) {
+        return Result.success(userService.addOneUser(user));
     }
 
     // 添加用户列表
     @PostMapping("/addListUser")
-    public Result addListUser(@RequestBody UserDto userDto) {
+    public Result addListUser(@RequestBody User userDto) {
         String text = userDto.getUserListText();
         if (StrUtil.isBlank(text)) {
             throw new ServiceException(Constants.CODE_400, "参数错误");
         }
 
         String s[] = text.split("\n");
-        List<UserDto> list = new ArrayList<>();
+        List<User> list = new ArrayList<>();
         TreeSet<String> tr = new TreeSet<>();
         for (String item : s) {
             int n = item.length();
@@ -78,7 +77,7 @@ public class UserController {
                 continue;
             }
 
-            UserDto user = new UserDto();
+            User user = new User();
             user.setUsername(item);
             user.setPassword("zime" + item.substring(n - 6));
             user.setRealname(item);
@@ -117,14 +116,14 @@ public class UserController {
 
     // 修改用户密码
     @PostMapping("/updatePassword")
-    public Result updatePassword(@RequestBody UserDto userDto) {
-        return Result.success(userService.updatePassword(userDto));
+    public Result updatePassword(@RequestBody User user) {
+        return Result.success(userService.updatePassword(user));
     }
 
     // 重置用户密码
     @PostMapping("/resetPassword")
-    public Result resetPassword(@RequestBody UserDto userDto) {
-        return Result.success(userService.resetPassword(userDto));
+    public Result resetPassword(@RequestBody User user) {
+        return Result.success(userService.resetPassword(user));
     }
 
 
@@ -244,8 +243,8 @@ public class UserController {
         reader.addHeaderAlias("假删除", "isDelete");
 
 
-        List<UserDto> list = reader.readAll(UserDto.class);
-        for (UserDto i : list) {
+        List<User> list = reader.readAll(User.class);
+        for (User i : list) {
             // 如果用户的密码为空就设一个初始值
             if (StrUtil.isBlank(i.getUsername())) {
                 return Result.error("400", "请在excel表中添加字段为用户名或者username的字段");

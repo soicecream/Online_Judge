@@ -22,18 +22,18 @@
               row-key="id" default-expand-all>
       <el-table-column type="selection" align="center"/>
       <el-table-column prop="id" label="id" align="center" width="80"/>
-      <el-table-column prop="name" label="菜单名称"/>
-      <el-table-column prop="path" label="菜单路劲"/>
-      <el-table-column label="菜单图标" align="center">
+      <el-table-column prop="name" label="菜单名称" width="200"/>
+      <el-table-column prop="path" label="菜单路劲" width="300"/>
+      <el-table-column label="菜单图标" align="center" width="80">
         <template #default="scope">
           <i :class="scope.row.icon" style="font-size: 30px;"/>
         </template>
       </el-table-column>
-      <el-table-column prop="description" label="菜单描述"/>
-      <el-table-column prop="pagePath" label="页面路径"/>
+      <el-table-column prop="pagePath" label="页面路径" width="300"/>
+      <el-table-column prop="description" label="菜单描述" width="200"/>
 
       <!--     操作该菜单信息-->
-      <el-table-column label="操作" width="300" align="center">
+      <el-table-column label="操作" width="300" align="center" fixed="right">
         <template #default="scope">
 
           <el-button type="primary" @click="handlerAdd(scope.row.id)"> 新增子菜单</el-button>
@@ -182,7 +182,7 @@ export default {
 
     // 请求图标
     load_icons() {
-      this.request.get("/menu/icons").then(res => {
+      this.request.get("/dict/icons").then(res => {
         if (res.code === '200') {
           this.options = res.data
         } else {
@@ -211,7 +211,6 @@ export default {
     handlerAdd_ok() {
       this.$refs.user_form.validate((valid) => {
         if (valid) {
-          console.log(this.form.id)
           this.request.post("/menu", this.form).then(res => {
             if (res.code === "200") {
               this.$message.success("添加成功")
@@ -296,7 +295,6 @@ export default {
       // 将对象数据 变成 id数组
       // [{}, {}, {}] => [1, 2, 3 ]
       let ids = this.multipleSelection.map(v => v.id)
-      console.log(ids)
 
       this.request.post("/menu/delete/batch", ids).then(res => {
         if (res.code === '200') {

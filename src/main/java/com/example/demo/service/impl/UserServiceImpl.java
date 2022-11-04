@@ -6,10 +6,11 @@ import cn.hutool.log.Log;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.demo.common.Constants;
-import com.example.demo.controller.dto.UserDto;
-import com.example.demo.entity.*;
+import com.example.demo.entity.Menu;
+import com.example.demo.entity.RoleMenu;
+import com.example.demo.entity.User;
+import com.example.demo.entity.UserRole;
 import com.example.demo.exception.ServiceException;
-import com.example.demo.mapper.RoleMapper;
 import com.example.demo.mapper.RoleMenuMapper;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.mapper.UserRoleMapper;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +49,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     //    登录用户
     @Override
-    public UserDto login(UserDto userDto) {
+    public User login(User userDto) {
         String username = userDto.getUsername();
         String password = userDto.getPassword();
         if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
@@ -81,7 +81,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     //    注册用户
     @Override
-    public Boolean register(UserDto userDto) {
+    public Boolean register(User userDto) {
         String username = userDto.getUsername();
         String password = userDto.getPassword();
         if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
@@ -101,7 +101,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     // 修改密码
     @Override
-    public Boolean updatePassword(UserDto userDto) {
+    public Boolean updatePassword(User userDto) {
         String username = userDto.getUsername();
         String password = userDto.getPassword();
         if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
@@ -120,7 +120,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     // 重置密码
     @Override
-    public Boolean resetPassword(UserDto userDto) {
+    public Boolean resetPassword(User userDto) {
         String username = userDto.getUsername();
         String password = userDto.getPassword();
         if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
@@ -132,12 +132,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
             userRoleQueryWrapper.eq("user_username", one.getUsername());
             UserRole userRole = userRoleMapper.selectOne(userRoleQueryWrapper);
-            if (userRole != null && userRole.getId() == 1) {
+            if (userRole != null && userRole.getRoleId() == 1) {
                 throw new ServiceException(Constants.CODE_600, "不能修改超级管理员密码");
             }
 
             one.setPassword(userDto.getPassword());
-            saveOrUpdate(one);
+            updateById(one);
             return true;
         } else {
             throw new ServiceException(Constants.CODE_600, "用户名不存在");
@@ -146,7 +146,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     // 添加一个用户
     @Override
-    public Boolean addOneUser(UserDto userDto) {
+    public Boolean addOneUser(User userDto) {
         String username = userDto.getUsername();
         String password = userDto.getPassword();
         if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
@@ -171,10 +171,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     // 添加用户列表
     @Override
-    public Boolean addListUser(Collection<UserDto> userDtoList) {
+    public Boolean addListUser(Collection<User> userDtoList) {
         List<User> list = new ArrayList<>();
 
-        for (UserDto i : userDtoList) {
+        for (User i : userDtoList) {
             User check = getUserInfoUsername(i.getUsername());
             if (check != null) {
                 continue;

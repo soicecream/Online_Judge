@@ -46,28 +46,12 @@ public class RoleMenuController {
                 return Result.success(roleMenuService.removeByIds(list));
         }
 
-        // 获取所有数据
-        @GetMapping
-        public Result findAll() {
-                return Result.success(roleMenuService.list());
-        }
-
         // 根据id查询数据
         @GetMapping("/{id}")
         public Result findOne(@PathVariable Integer id) {
                 return Result.success(roleMenuService.getById(id));
         }
 
-        // 分页查询     limit第一个参数 = (pageNum - 1) * pageSize
-        @GetMapping("/page")
-        public Result findPage(@RequestParam Integer pageNum,
-                                        @RequestParam Integer pageSize,
-                                        @RequestParam(defaultValue = "false") Boolean desc) {
-                QueryWrapper<RoleMenu> queryWrapper = new QueryWrapper<>();
-                if(desc) queryWrapper.orderByDesc("id"); // 是否根据id排序
-
-                return Result.success(roleMenuService.page(new Page<>(pageNum, pageSize), queryWrapper));
-        }
 
 }
 

@@ -57,6 +57,12 @@ public class RoleController {
         return Result.success(roleService.getById(id));
     }
 
+    // 查询所有
+    @GetMapping
+    public Result findAll() {
+        return Result.success(roleService.list());
+    }
+
     // 分页查询     limit第一个参数 = (pageNum - 1) * pageSize
     @GetMapping("/page")
     public Result findPage(@RequestParam Integer pageNum, @RequestParam Integer pageSize, @RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String description, @RequestParam(defaultValue = "") String roleKey, @RequestParam(defaultValue = "false") Boolean desc) {
@@ -72,7 +78,7 @@ public class RoleController {
     }
 
     /**
-     * 绑定角色和菜单的关系
+     * 绑定用户权限和菜单的关系
      *
      * @param roleId  角色id
      * @param menuIds 菜单id数据
@@ -83,6 +89,7 @@ public class RoleController {
         return Result.success(roleService.saveRoleMenu(roleId, menuIds));
     }
 
+    // 查询用户权限的菜单
     @GetMapping("/roleMenu/{roleId}")
     public Result getRoleMenu(@PathVariable Integer roleId) {
         return Result.success(roleService.getRoleMenu(roleId).stream().map(RoleMenu::getMenuId).collect(Collectors.toList()));

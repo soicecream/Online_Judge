@@ -73,6 +73,12 @@ public class ${table.controllerName} {
                 return Result.success(${table.entityPath}Service.getById(id));
         }
 
+        // 查询所有数据
+        @GetMapping("")
+        public Result findOne() {
+                return Result.success(${table.entityPath}Service.list());
+        }
+
         // 分页查询     limit第一个参数 = (pageNum - 1) * pageSize
         @GetMapping("/page")
         public Result findPage(@RequestParam Integer pageNum,

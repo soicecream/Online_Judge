@@ -34,16 +34,14 @@ public class MenuController {
 
     @Resource
     private IMenuService menuService;
-
-    @Resource
-    private IDictService dictService;
-
+    
 
     // 新增或者更新
     @PostMapping
     public Result save(@RequestBody Menu menu) {
         return Result.success(menuService.saveOrUpdate(menu));
     }
+
 
     // 根据id删除
     @DeleteMapping("/{id}")
@@ -57,36 +55,18 @@ public class MenuController {
         return Result.success(menuService.removeByIds(list));
     }
 
-    // 获取所有数据
-    @GetMapping
-    public Result findAll() {
-        return Result.success(menuService.list());
-    }
 
+    // 获取所有数据的id信息
     @GetMapping("/ids")
     public Result findAllIds() {
         return Result.success(menuService.list().stream().map(Menu::getId));
     }
 
-    // 根据id查询数据
-    @GetMapping("/{id}")
-    public Result findOne(@PathVariable Integer id) {
-        return Result.success(menuService.getById(id));
-    }
 
     // 获取树形接口的菜单数据
     @GetMapping("/findTreeMenus")
-    public Result findMenus(@RequestParam(defaultValue = "") String name) {
+    public Result findMenus() {
         return Result.success(menuService.findMenus());
-    }
-
-
-    // 根据id查询数据
-    @GetMapping("/icons")
-    public Result getIcons() {
-        QueryWrapper<Dict> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("type", Constants.DICT_TYPE_ICON);
-        return Result.success(dictService.list(queryWrapper));
     }
 
 
