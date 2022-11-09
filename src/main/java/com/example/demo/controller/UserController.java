@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
+import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
@@ -12,6 +14,8 @@ import com.example.demo.entity.User;
 import com.example.demo.exception.ServiceException;
 import com.example.demo.service.IUserService;
 import com.example.demo.utils.TokenUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,6 +44,11 @@ public class UserController {
 
     @Resource
     private IUserService userService;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    public static final String PAGE_REDIS_KEY = "FIND_PAGE";
 
     // 登录用户
     @PostMapping("/login")
@@ -101,7 +110,6 @@ public class UserController {
         return Result.success(userService.MyRemoveByIds(list));
     }
 
-
     // 更新
     @PostMapping("/update")
     public Result updateUser(@RequestBody User user) {
@@ -155,12 +163,25 @@ public class UserController {
         if (isRank != null) queryWrapper.eq("is_rank", isRank);
 
         // 获取当前用户信息
-        User currentUser = TokenUtils.getCurrenUser();
-        if (currentUser != null) {
-            System.out.println(" 获取当前用户信息的昵称 ============== " + currentUser.getNickname());
+//        User currentUser = TokenUtils.getCurrenUser();
+//        if (currentUser != null) {
+//            System.out.println(" 获取当前用户信息的昵称 ============== " + currentUser.getNickname());
+//        }
+
+//        1、 从缓存获取数据
+        String jsonStr = stringRedisTemplate.opsForValue().get(PAGE_REDIS_KEY);
+
+        Page<User> userList;
+        if (StrUtil.isBlank(jsonStr)) {
+            userList = userService.page(new Page<>(pageNum, pageSize), queryWrapper);
+            // 存储到redis缓存中
+            stringRedisTemplate.opsForValue().set(PAGE_REDIS_KEY, JSONUtil.toJsonStr(userList));
+        } else {
+            // 从redis缓存中获取数据
+            userList = JSONUtil.toBean(jsonStr, new TypeReference<Page<User>>() {}, true);
         }
 
-        return Result.success(userService.page(new Page<>(pageNum, pageSize), queryWrapper));
+        return Result.success(userList);
     }
 
 
