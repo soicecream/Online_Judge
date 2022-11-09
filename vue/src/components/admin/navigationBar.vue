@@ -28,6 +28,40 @@
       </el-submenu>
     </fragment>
 
+    <!--    &lt;!&ndash;    首页&ndash;&gt;-->
+    <!--    <el-menu-item index="/admin/home"><i class="el-icon-s-help"/><span slot="title"> 首页 </span></el-menu-item>-->
+
+    <!--    &lt;!&ndash;    用户管理&ndash;&gt;-->
+    <!--    <el-submenu index="user">-->
+    <!--      <template slot="title"><i class="el-icon-user-solid"/><span slot="title">用户管理</span></template>-->
+
+    <!--      <el-menu-item index="/admin/user/list"><i class="el-icon-user"/>用户列表</el-menu-item>-->
+    <!--      <el-menu-item index="/admin/user/update_password"><i class="el-icon-edit"/>用户修改密码</el-menu-item>-->
+
+    <!--    </el-submenu>-->
+
+    <!--    <el-submenu index="role">-->
+    <!--      <template slot="title"><i class="el-icon-user-solid"/><span slot="title">权限管理</span></template>-->
+    <!--      <el-menu-item index="/admin/role/information"><i class="el-icon-tickets"/>权限信息</el-menu-item>-->
+    <!--      <el-menu-item index="/admin/role/list"><i class="el-icon-tickets"/>用户权限列表</el-menu-item>-->
+    <!--      <el-menu-item index=""><i class="el-icon-coordinate"/>用户权限添加</el-menu-item>-->
+    <!--    </el-submenu>-->
+
+    <!--    &lt;!&ndash;    问题管理&ndash;&gt;-->
+
+    <!--    &lt;!&ndash;    竞赛管理&ndash;&gt;-->
+
+    <!--    &lt;!&ndash;    系统管理&ndash;&gt;-->
+    <!--    <el-submenu index="system management">-->
+    <!--      <template slot="title"><i class="el-icon-cpu"/><span slot="title">系统管理</span></template>-->
+
+    <!--      <el-menu-item index="/admin/menu/list"><i class="el-icon-receiving"/>菜单管理</el-menu-item>-->
+
+    <!--      <el-menu-item index="/admin/file/list"><i class="el-icon-receiving"/>文件管理</el-menu-item>-->
+
+
+    <!--    </el-submenu>-->
+
     <!-- 返回前台 -->
     <el-menu-item index="/"><i class="el-icon-switch-button"/><span slot="title"> 返回前台 </span></el-menu-item>
 

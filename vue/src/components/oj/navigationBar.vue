@@ -2,7 +2,7 @@
   <div>
 
     <!--  导航栏-->
-    <el-menu :default-active="activeIndex" active-text-color="#409EFF" router class="el-menu-demo" mode="horizontal">
+    <el-menu :default-active="activeIndex" active-text-color="#ff5252cc" router class="el-menu-demo" mode="horizontal">
       <el-menu-item class="zimeLogo">ZIME Online Judge</el-menu-item>
       <el-menu-item index="/home"><i class="el-icon-s-home"/>主页</el-menu-item>
       <el-menu-item index="/problem"><i class="el-icon-s-grid"/>问题</el-menu-item>
