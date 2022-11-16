@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "vue-codemirror-lite": "^1.0.4"
+  }
+}

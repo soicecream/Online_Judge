@@ -178,7 +178,8 @@ public class UserController {
             stringRedisTemplate.opsForValue().set(PAGE_REDIS_KEY, JSONUtil.toJsonStr(userList));
         } else {
             // 从redis缓存中获取数据
-            userList = JSONUtil.toBean(jsonStr, new TypeReference<Page<User>>() {}, true);
+            userList = JSONUtil.toBean(jsonStr, new TypeReference<Page<User>>() {
+            }, true);
         }
 
         return Result.success(userList);

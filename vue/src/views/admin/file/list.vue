@@ -326,9 +326,8 @@ export default {
     handlerFileUploadImport(param) {
       let formData = new FormData()
       formData.append("file", param.file)
-      console.log("res   " + formData.file)
 
-      this.request.post("/files/upload", formData).then(res => {
+      this.request.post("/files/import/file", formData).then(res => {
         if (res.code === '200') {
           this.$message.success("导入成功")
 

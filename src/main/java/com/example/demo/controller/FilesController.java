@@ -44,19 +44,6 @@ public class FilesController {
     private String serverIp;
 
 
-    // 分页查询接口
-    @GetMapping("/page")
-    public Result findPage(@RequestParam Integer pageNum, @RequestParam Integer pageSize, @RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String type, @RequestParam(defaultValue = "") Integer enable, @RequestParam(defaultValue = "false") Boolean desc) {
-        QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
-        if (desc) queryWrapper.orderByDesc("id"); // 是否根据id排序
-
-        if (!"".equals(name)) queryWrapper.like("name", name);
-        if (!"".equals(type)) queryWrapper.like("type", type);
-        if (enable != null) queryWrapper.eq("enable", enable);
-
-        return Result.success(filesService.page(new Page<>(pageNum, pageSize), queryWrapper));
-    }
-
     // 新增或者更新
     @PostMapping
     public Result save(@RequestBody Files files) {
@@ -75,6 +62,34 @@ public class FilesController {
         return Result.success(filesService.removeByIds(list));
     }
 
+    // 分页查询接口
+    @GetMapping("/page")
+    public Result findPage(@RequestParam Integer pageNum, @RequestParam Integer pageSize, @RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String type, @RequestParam(defaultValue = "") Integer enable, @RequestParam(defaultValue = "false") Boolean desc) {
+        QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
+        if (desc) queryWrapper.orderByDesc("id"); // 是否根据id排序
+
+        if (!"".equals(name)) queryWrapper.like("name", name);
+        if (!"".equals(type)) queryWrapper.like("type", type);
+        if (enable != null) queryWrapper.eq("enable", enable);
+
+        return Result.success(filesService.page(new Page<>(pageNum, pageSize), queryWrapper));
+    }
+
+    @GetMapping("/filesId/{id}")
+    public Result findOneFIles(@PathVariable Integer id) {
+        QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", id);
+        return Result.success(filesService.getOne(queryWrapper));
+    }
+
+    //
+    @GetMapping("/mp4")
+    public Result findAllMp4() {
+        QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("type", "mp4");
+        return Result.success(filesService.list(queryWrapper));
+    }
+
 
     /**
      * 文件上传接口
@@ -85,7 +100,6 @@ public class FilesController {
      */
     @PostMapping("/import/file")
     public Result upload(MultipartFile file) throws IOException {
-
         if (file == null || file.isEmpty()) {
             return Result.error(Constants.CODE_400, "请选择文件");
         }
