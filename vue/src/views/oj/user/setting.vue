@@ -17,7 +17,7 @@
 
     <div class="userSettingInformation">
       <el-form :model="form" :rules="form_rules" ref="user_form" label-width="100px">
-        <el-form-item label="用户名" prop="username"><el-input v-model="form.username" class="input_not_input"/></el-form-item>
+        <el-form-item label="用户名" prop="username"><el-input v-model="form.username" class="mouse-hand"/></el-form-item>
         <el-form-item label="姓名"><el-input v-model="form.realname"/></el-form-item>
         <el-form-item label="昵称" prop="nickname"><el-input v-model="form.nickname"/></el-form-item>
         <el-form-item label="性别">

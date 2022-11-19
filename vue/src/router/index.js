@@ -19,6 +19,7 @@ const routes = [
             {path: 'home', name: 'home', component: () => import('@/views/oj/home')},
             {path: 'problem', name: 'problemList', component: () => import('@/views/oj/problem/problemList')},
             {path: 'problem/:id', name: 'problem', component: () => import('@/views/oj/problem/problem')},
+            {path: 'problemTest', name: 'problem', component: () => import('@/views/oj/problem/problem_text')},
             {path: 'video', name: 'video', component: () => import('@/views/oj/video/video')},
             {path: 'information/:id', name: 'userInformation', component: () => import('@/views/oj/user/information')},
             {path: 'setting', name: 'userSetting', component: () => import('@/views/oj/user/setting')},

@@ -186,7 +186,7 @@
     <el-dialog title="修改用户信息" :visible.sync="dialogFormVisible_update" width="30%">
       <el-form label-width="100px" :model="form_update" :rules="form_update_rules" ref="user_update_form">
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="form_update.username" class="input_not_input"/>
+          <el-input v-model="form_update.username" class="mouse-hand"/>
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input v-model="form_update.password"/>

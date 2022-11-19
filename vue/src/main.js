@@ -37,6 +37,9 @@ import 'vxe-table/lib/style.css'
 Vue.use(VXETable)
 Vue.prototype.$VXETable = VXETable
 
+import Clipboard from 'v-clipboard'
+Vue.use(Clipboard)
+
 
 Vue.config.productionTip = false
 

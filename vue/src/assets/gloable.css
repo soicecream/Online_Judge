@@ -42,6 +42,10 @@
     padding: 10px 0;
 }
 
-.input_not_input {
+.input-not-input {
     pointer-events: none;
+}
+
+.mouse-turns-hands {
+    cursor: pointer;
 }

@@ -6,8 +6,8 @@
       <el-menu-item class="zimeLogo">ZIME Online Judge</el-menu-item>
       <el-menu-item index="/home"><i class="el-icon-s-home"/>主页</el-menu-item>
       <el-menu-item index="/problem"><i class="el-icon-s-grid"/>问题</el-menu-item>
-      <el-menu-item index=""><i class="el-icon-monitor"/>竞赛/作业</el-menu-item>
-      <el-menu-item index=""><i class="el-icon-s-order"/>题单</el-menu-item>
+      <el-menu-item index="/problem/1"><i class="el-icon-monitor"/>竞赛/作业</el-menu-item>
+      <el-menu-item index="/problemTest"><i class="el-icon-s-order"/>题单</el-menu-item>
       <el-menu-item index=""><i class="el-icon-s-marketing"/>状态</el-menu-item>
       <el-menu-item index=""><i class="el-icon-s-data"/>排名</el-menu-item>
       <el-menu-item index=""><i class="el-icon-question"/>常见问题</el-menu-item>
@@ -17,10 +17,10 @@
       <!--      操作用户-->
       <el-menu-item-group style="margin-right: 1%; float: right">
         <el-dropdown trigger="click">
-          <el-button type="text" style="display: block;">
+          <el-button type="text" style="display: flex;">
             <el-image v-if="user.headPortrait" :src="user.headPortrait" fit="cover" class="zimeUserImage"/>
             <el-image v-else :src="require('@/assets/img/image/user.png')" class="zimeUserImage"/>
-            <i class="el-icon-caret-bottom" style="margin-top: -10%;"/>
+            <i class="el-icon-caret-bottom" style="margin-top: -20%;"/>
           </el-button>
           <el-dropdown-menu>
             <el-dropdown-item>
