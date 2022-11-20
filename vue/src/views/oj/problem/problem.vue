@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div style="flex: auto;">
+  <div id="main">
+    <div>
       <el-row class="problem-box">
         <el-col :sm="24" :md="12" :lg="12" class="problem-left">
           <el-tabs v-model="activeName" type="border-card">
@@ -129,7 +129,6 @@
                     <p v-html="problemData.problem.hint" class="content-title"/>
                   </div>
 
-
                 </div>
               </div>
             </el-tab-pane>
@@ -218,6 +217,7 @@ export default {
 
       toResetWatch: false,
       toWatchProblem: false,
+      showProblemHorizontalMenu: false,
 
     }
   },
@@ -413,12 +413,13 @@ export default {
 /deep/ .el-tabs__content {
   padding-top: 0px;
   padding-right: 0px;
+  padding-bottom: 0px;
 }
 
 .js-left {
   padding-right: 15px;
-  max-height: 84vh;
-  min-height: 84vh;
+  max-height: 87vh;
+  min-height: 87vh;
   overflow-y: auto;
 }
 

@@ -15,12 +15,12 @@
       <el-menu-item index=""><i class="el-icon-shopping-bag-1"/>商城</el-menu-item>
 
       <!--      操作用户-->
-      <el-menu-item-group style="margin-right: 1%; float: right">
+      <el-menu-item-group class="user-menus">
         <el-dropdown trigger="click">
           <el-button type="text" style="display: flex;">
             <el-image v-if="user.headPortrait" :src="user.headPortrait" fit="cover" class="zimeUserImage"/>
             <el-image v-else :src="require('@/assets/img/image/user.png')" class="zimeUserImage"/>
-            <i class="el-icon-caret-bottom" style="margin-top: -20%;"/>
+            <i class="el-icon-caret-bottom"/>
           </el-button>
           <el-dropdown-menu>
             <el-dropdown-item>
@@ -47,15 +47,9 @@
 </template>
 
 <script>
-import VerificationCode from "@/components/share/verificationCode";
 
 export default {
   name: "navigationBar",
-
-  components: {
-    VerificationCode,
-
-  },
 
   props: {
     user: Object,
@@ -134,5 +128,11 @@ export default {
   margin-top: -25%;
   border-radius: 50%;
 }
+
+.user-menus {
+  margin-right: 1%;
+  float: right;
+}
+
 
 </style>

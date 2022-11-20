@@ -3,7 +3,7 @@
     <el-header>
       <Navigation_bar :user="user" :isAdmin="isAdmin"/>
     </el-header>
-    <el-main>
+    <el-main class="oj-content">
       <router-view @refreshUser="getUser"/>
     </el-main>
   </el-container>
@@ -55,5 +55,9 @@ export default {
 </script>
 
 <style scoped>
+.oj-content {
+  margin-top: 20px;
+  padding: 0 3%;
+}
 
 </style>
