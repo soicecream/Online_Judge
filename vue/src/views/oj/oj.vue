@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-header>
-      <Navigation_bar :user="user" :isAdmin="isAdmin"/>
+      <Navigation_bar :user="user" :isAdmin="isAdmin" ref="navBar"/>
     </el-header>
     <el-main class="oj-content">
       <router-view @refreshUser="getUser"/>
@@ -22,6 +22,7 @@ export default {
       user: {},
 
       isAdmin: false,
+
     }
   },
 
@@ -33,7 +34,7 @@ export default {
 
   methods: {
     check_admin() {
-      if(JSON.parse(localStorage.getItem("user")).menus)
+      if (JSON.parse(localStorage.getItem("user")).menus)
         this.isAdmin = true
     },
 
@@ -47,7 +48,6 @@ export default {
         }
       })
     },
-
 
   },
 

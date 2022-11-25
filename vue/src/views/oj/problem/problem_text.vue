@@ -1,148 +1,112 @@
 <template>
-  <div :class="bodyClass">
-
+  <div class="problem-body">
     <div id="problem-main">
-      <!--problem main-->
-      <el-row class="problem-box">
-        <!--        题目框-->
-        <el-col :sm="24" :md="12" :lg="12" class="problem-left">
-          <el-tabs v-model="activeName" type="border-card" @tab-click="handleClickTab">
+      <el-row class="problem-box" id="problem-box">
 
-            <!--            题目描述-->
+        <!--        题目信息-->
+        <el-col :sm="24" :md="12" :lg="12" class="problem-left" id="problem-left">
+          <el-tabs v-model="activeName" type="border-card">
+
             <el-tab-pane name="problemDetail">
               <span slot="label"><i class="el-icon-receiving"/> 题目描述</span>
-              <div :padding="10" shadow :id="'js-left'+'-'+ $route.name" class="js-left">
 
-                <!--                题目导航-->
-                <div slot="header" class="panel-title">
-                  <span style="font-size: 26px;"> {{ problemData.problem.title }} </span>
+              <div :padding="0" id="js-left" class="js-left">
+                <!--              题目信息-->
+                <div slot="header">
+                  <!--                标题-->
+                  <span style="font-size: 26px;">{{ problemData.problem.title }}</span>
                   <br/>
 
-                  <!--                  标签-->
-                  <span v-if="contestID && !contestEnded">
-                    <el-tag effect="plain" size="small"> 暂无标签 </el-tag>
-                  </span>
-                  <div v-else-if="problemData.tags.length > 0" class="problem-tag">
-                    <el-popover placement="right-start" width="60" trigger="hover">
-                      <el-tag slot="reference" size="small" type="primary" style="cursor: pointer;" effect="plain">
-                        显示标签
-                      </el-tag>
-                      <el-tag v-for="(tag, index) in problemData.tags" :key="index" size="small"
-                              :color="tag.color ? tag.color : '#409eff'" effect="dark"
-                              style="margin-right:5px;margin-top:2px">
+                  <!--                标签-->
+                  <span v-if="!problemData.defunct">
+                  <el-tag effect="plain" size="small" class="mouse-turns-hands">暂无标签</el-tag>
+                </span>
+                  <div class="problem-tag">
+                    <el-popover v-if="problemData.tags.length > 0" placement="right-start" trigger="hover">
+                      <el-tag slot="reference" effect="plain" size="small" class="mouse-turns-hands">显示标签</el-tag>
+                      <el-tag v-for="(tag, i) in problemData.tags" :key="i" :color="tag.color ? tag.color : '#409eff'"
+                              style="margin-right: 5px; margin-top: 2px;" effect="dark" size="small">
                         {{ tag.name }}
                       </el-tag>
                     </el-popover>
-                  </div>
-                  <div v-else-if="problemData.tags.length == 0" class="problem-tag">
-                    <el-tag effect="plain" size="small">显示标签</el-tag>
+                    <el-tag v-else effect="plain" size="small" class="mouse-turns-hands">显示标签</el-tag>
                   </div>
 
-                  <!--                  菜单-->
+                  <!--                菜单-->
                   <div class="problem-menu">
-                    <span v-if="isShowProblemDiscussion">
-                      <el-link type="primary" :underline="false" @click="goProblemDiscussion">
-                        <i class="el-icon-chat-line-round" aria-hidden="true"/>题目讨论
+                    <span>
+                      <el-link @click="problem_statistics" type="primary" :underline="false">
+                        <i class="el-icon-pie-chart"/> 题目统计
                       </el-link>
                     </span>
                     <span>
-                      <el-link type="primary" :underline="false" @click="graphVisible = !graphVisible">
-                        <i class="el-icon-pie-chart" aria-hidden="true"/>题目统计
-                      </el-link>
-                    </span>
-                    <span>
-                      <el-link type="primary" :underline="false" @click="goProblemSubmission">
-                        <i class="el-icon-s-data" aria-hidden="true"/>全部提交
+                      <el-link @click="problem_all_submission" type="primary" :underline="false">
+                        <i class="el-icon-s-data"/> 全部提交
                       </el-link>
                     </span>
                   </div>
 
-                  <!--                  题目限制信息-->
-                  <div class="question-intr">
-                    <!--                    限制-->
-                    <template>
+                  <!--                题目说明-->
+                  <div class="problem-explain">
+                    <!--                  限制-->
+                    <div>
+                    <span>
+                      时间限制: C/C++ {{ problemData.problem.timeLimit }}Ms,
+                      其他语言: {{ problemData.problem.timeLimit * 2 }}Ms
+                    </span>
+                      <br>
                       <span>
-                         时间限制: C/C++{{ problemData.problem.timeLimit }}MS，
-                         其他语言: {{ problemData.problem.timeLimit * 2 }}MS
-                      </span>
-                      <br/>
-                      <span>
-                        内存限制 ：C/C++{{ problemData.problem.memoryLimit }}MB，
-                        其他语言：{{ problemData.problem.memoryLimit * 2 }}MB</span>
-                      <br/>
-                    </template>
+                      内存限制: C/C++ {{ problemData.problem.memoryLimit }}Ms,
+                      其他语言: {{ problemData.problem.memoryLimit * 2 }}Ms
+                    </span>
+                      <br>
+                    </div>
 
-                    <!--                    难度-->
-                    <template v-if="problemData.problem.difficulty != null">
-                      <span>
-                        难度：
-                        <span class="el-tag el-tag--small" :style="getLevelColor(problemData.problem.difficulty)">
-                          简单
-                        </span>
-                      </span>
-                      <br/>
-                    </template>
+                    <!--                  难度-->
+                    <div v-if="problemData.problem.difficulty !== null">
+                      难度:
+                      <!--                    <el-tag :color="problemData.problem.difficulty">{{ problemData.problem.difficulty }}</el-tag>-->
+                      <el-tag>{{ problemData.problem.difficulty }}</el-tag>
+                    </div>
 
-                    <!--                    作者-->
-                    <template v-if="problemData.problem.author">
-                      <span>出题人：
-                        <!--                        <el-link type="info" class="author-name" @click="goUserHome(problemData.problem.author)">-->
-                          {{ problemData.problem.author }}
-                        <!--                        </el-link>-->
-                      </span>
-                      <br/>
-                    </template>
-
+                    <!--                  作者-->
+                    <div v-if="problemData.problem.author">
+                      出题人:
+                      <span class="author-name">{{ problemData.problem.author }}</span>
+                    </div>
                   </div>
+
                 </div>
 
-                <!--                题目内容-->
-                <div id="problem-content">
-                  <!--                  描述-->
-                  <template v-if="problemData.problem.description">
-                    <p class="title">描述</p>
-                    <template v-if="groupID">
-                      <p class="content markdown-body" v-dompurify-html="problemData.problem.description" v-katex
-                         v-highlight/>
-                    </template>
-                    <template v-else>
-                      <p class="content markdown-body" v-html="problemData.problem.description" v-katex v-highlight/>
-                    </template>
-                  </template>
+                <!--              题目内容-->
+                <div class="problem-content">
+                  <!--                描述-->
+                  <div>
+                    <p class="title">题目描述</p>
+                    <p v-html="problemData.problem.description" class="content-title"/>
+                  </div>
 
-                  <!--                  输入-->
-                  <template v-if="problemData.problem.input">
-                    <p class="title">输入</p>
-                    <template v-if="groupID">
-                      <p class="content markdown-body" v-dompurify-html="problemData.problem.input" v-katex
-                         v-highlight/>
-                    </template>
-                    <template v-else>
-                      <p class="content markdown-body" v-html="problemData.problem.input" v-katex v-highlight/>
-                    </template>
-                  </template>
+                  <!--                输入-->
+                  <div v-if="problemData.problem.input">
+                    <p class="title">输入描述</p>
+                    <p v-html="problemData.problem.input" class="content-title"/>
+                  </div>
 
-                  <!--                  输出-->
-                  <template v-if="problemData.problem.output">
-                    <p class="title">输出 </p>
-                    <template v-if="groupID">
-                      <p class="content markdown-body" v-dompurify-html="problemData.problem.output" v-katex
-                         v-highlight/>
-                    </template>
-                    <template v-else>
-                      <p class="content markdown-body" v-html="problemData.problem.output" v-katex v-highlight/>
-                    </template>
-                  </template>
+                  <!--                输出-->
+                  <div v-if="problemData.problem.output">
+                    <p class="title">输出描述</p>
+                    <p v-html="problemData.problem.output" class="content-title"/>
+                  </div>
 
-                  <!--                  样例-->
-                  <template v-if="problemData.problem.examples">
+                  <!--                样例-->
+                  <div v-if="problemData.problem.examples">
                     <div v-for="(example, index) of problemData.problem.examples" :key="index">
                       <div class="flex-container example">
                         <div class="example-input">
                           <p class="title">
                             样例输入 {{ index + 1 }}
-                            <a class="copy" v-clipboard:copy="example.input" v-clipboard:success="onCopy"
-                               v-clipboard:error="onCopyError">
+                            <a class="copy" v-clipboard:copy="example.input"
+                               v-clipboard:success="copy_expamle_success" v-clipboard:error="copy_expamle_error">
                               <i class="el-icon-document-copy"/>
                             </a>
                           </p>
@@ -151,160 +115,39 @@
                         <div class="example-output">
                           <p class="title">
                             样例输出 {{ index + 1 }}
-                            <a class="copy" v-clipboard:copy="example.output" v-clipboard:success="onCopy"
-                               v-clipboard:error="onCopyError">
+                            <a class="copy" v-clipboard:copy="example.output"
+                               v-clipboard:success="copy_expamle_success" v-clipboard:error="copy_expamle_error">
                               <i class="el-icon-document-copy"/>
                             </a>
                           </p>
-                          <pre>{{ example.output }}</pre>
+                          <pre> {{ example.output }}</pre>
                         </div>
                       </div>
                     </div>
-                  </template>
-
-                  <!--                  提示-->
-                  <template v-if="problemData.problem.hint">
-                    <p class="title">提示</p>
-                    <el-card dis-hover>
-                      <template v-if="groupID">
-                        <p class="hint-content markdown-body" v-dompurify-html="problemData.problem.hint" v-katex
-                           v-highlight/>
-                      </template>
-                      <template v-else>
-                        <p class="hint-content markdown-body" v-html="problemData.problem.hint" v-katex v-highlight/>
-                      </template>
-                    </el-card>
-                  </template>
-
-                </div>
-
-              </div>
-            </el-tab-pane>
-
-            <!--            我的提交-->
-            <el-tab-pane name="mySubmission">
-              <span slot="label"><i class="el-icon-time"/> 我的提交 </span>
-              <template v-if="!isAuthenticated">
-                <div style="margin:20px 0px; margin-left:-20px;" id="js-submission">
-                  <el-alert title="m.Please_login_first" type="warning" center :closable="false"
-                            description="m.Login_to_view_your_submission_history" show-icon/>
-                </div>
-              </template>
-              <template v-else>
-                <div style="margin-right:10px;" id="js-submission">
-
-                  <div>
-                    <!--                    <vxe-table align="center" :data="mySubmissions" stripe auto-resize border="inner"-->
-                    <!--                             :loading="loadingTable">-->
-                    <!--                    <vxe-table-column title="'m.Submit_Time'" min-width="96">-->
-                    <!--                      <template v-slot="{ row }">-->
-                    <!--                        <span>-->
-                    <!--                          <el-tooltip content="row.submitTime | localtime" placement="top">-->
-                    <!--                            <span> row.submitTime | fromNow </span>-->
-                    <!--                          </el-tooltip>-->
-                    <!--                        </span>-->
-                    <!--                      </template>-->
-                    <!--                    </vxe-table-column>-->
-                    <!--                    <vxe-table-column field="status" title="m.Status" min-width="160">-->
-                    <!--                      <template v-slot="{ row }">-->
-                    <!--                        <span :class="getStatusColor(row.status)">{{ JUDGE_STATUS[row.status].name }}</span>-->
-                    <!--                      </template>-->
-                    <!--                    </vxe-table-column>-->
-                    <!--                    <vxe-table-column title="m.Time" min-width="96">-->
-                    <!--                      <template v-slot="{ row }">-->
-                    <!--                        <span>{{ row.time }}</span>-->
-                    <!--                      </template>-->
-                    <!--                    </vxe-table-column>-->
-                    <!--                    <vxe-table-column title="m.Memory" min-width="96">-->
-                    <!--                      <template v-slot="{ row }">-->
-                    <!--                        <span>{{ row.memory }}</span>-->
-                    <!--                      </template>-->
-                    <!--                    </vxe-table-column>-->
-                    <!--                    <vxe-table-column title="m.Score" min-width="64" v-if="problemData.problem.type == 1">-->
-                    <!--                      <template v-slot="{ row }">-->
-                    <!--                        <template v-if="contestID && row.score != null">-->
-                    <!--                          <el-tag effect="plain" size="medium" :type="JUDGE_STATUS[row.status]['type']">-->
-                    <!--                            {{ row.score }}-->
-                    <!--                          </el-tag>-->
-                    <!--                        </template>-->
-                    <!--                        <template v-else-if="row.score != null">-->
-                    <!--                          <el-tooltip placement="top">-->
-                    <!--                            <div slot="content">-->
-                    <!--                              m.Problem_Score：-->
-                    <!--                              {{ row.score != null ? row.score : 'm.Unknown' }}-->
-                    <!--                              <br/>-->
-                    <!--                              m.OI_Rank_Score：-->
-                    <!--                              {{ row.oiRankScore != null ? row.oiRankScore : 'm.Unknown' }}-->
-                    <!--                              <br/>-->
-                    <!--                              m.OI_Rank_Calculation_Rule：(score * 0.1 + difficulty * 2)-->
-                    <!--                            </div>-->
-                    <!--                            <el-tag effect="plain" size="medium" :type="JUDGE_STATUS[row.status]['type']">-->
-                    <!--                              {{ row.score }}-->
-                    <!--                            </el-tag>-->
-                    <!--                          </el-tooltip>-->
-                    <!--                        </template>-->
-                    <!--                        <template v-else-if="row.status == JUDGE_STATUS_RESERVE['Pending'] ||-->
-                    <!--                                  row.status == JUDGE_STATUS_RESERVE['Compiling'] ||-->
-                    <!--                                  row.status == JUDGE_STATUS_RESERVE['Judging'] ">-->
-                    <!--                          <el-tag effect="plain" size="medium" :type="JUDGE_STATUS[row.status]['type']">-->
-                    <!--                            <i class="el-icon-loading"/>-->
-                    <!--                          </el-tag>-->
-                    <!--                        </template>-->
-                    <!--                        <template v-else>-->
-                    <!--                          <el-tag effect="plain" size="medium" :type="JUDGE_STATUS[row.status]['type']">&#45;&#45;</el-tag>-->
-                    <!--                        </template>-->
-                    <!--                      </template>-->
-                    <!--                    </vxe-table-column>-->
-                    <!--                    <vxe-table-column field="language" title="m.Language" show-overflow min-width="130">-->
-                    <!--                      <template v-slot="{ row }">-->
-                    <!--                        <el-tooltip class="item" effect="dark" content="m.View_submission_details"-->
-                    <!--                                    placement="top">-->
-                    <!--                          <el-button type="text" @click="showSubmitDetail(row)">{{ row.language }}</el-button>-->
-                    <!--                        </el-tooltip>-->
-                    <!--                      </template>-->
-                    <!--                    </vxe-table-column>-->
-                    <!--                  </vxe-table>-->
                   </div>
 
-                  <span>Pagination</span>
-                </div>
-              </template>
-            </el-tab-pane>
+                  <!--                提示-->
+                  <div v-if="problemData.problem.hint">
+                    <p class="title"> 提示 </p>
+                    <p v-html="problemData.problem.hint" class="content-title"/>
+                  </div>
 
-            <!--            问题讨论-->
-            <el-tab-pane name="extraFile" v-if="userExtraFile">
-              <span slot="label">
-                <i class="fa fa-file-code-o"> 问题讨论</i>
-              </span>
-              <div id="js-extraFile">
-                <el-divider/>
-                <div>
-                  <el-tag :key="index" v-for="(value, key, index) in userExtraFile" class="extra-file"
-                          :disable-transitions="false" @click="showExtraFileContent(key, value)">
-                    <i class="fa fa-file-code-o"> {{ key }}</i>
-                  </el-tag>
-                </div>
-                <el-divider/>
-
-                <div class="markdown-body" v-if="fileContent">
-                  <h3>
-                    {{ fileName }}
-                    <el-button type="primary" icon="el-icon-download" size="small" circle @click="downloadExtraFile"
-                               class="file-download"/>
-                  </h3>
-                  <pre v-highlight="fileContent">
-                    <span>code</span>
-                  </pre>
                 </div>
               </div>
             </el-tab-pane>
 
+            <el-tab-pane label="我的提交">
+              <div id="js-submission">
+
+              </div>
+            </el-tab-pane>
+
+            <el-tab-pane label="问题讨论"></el-tab-pane>
           </el-tabs>
         </el-col>
 
         <!--        调节窗口大小-->
-        <div class="problem-resize hidden-sm-and-down" :id="'js-center'+'-'+ $route.name"
-             title="收缩侧边栏">
+        <div class="problem-resize" title="收缩侧边栏" id="js-center">
           <span>⋮</span>
           <span>
             <el-tooltip v-if="!toResetWatch" :content="toWatchProblem ? '查看题目内容' : '只看题目内容' " placement="right">
@@ -319,126 +162,37 @@
         </div>
 
         <!--        代码-->
-        <el-col :sm="24" :md="12" :lg="12" class="problem-right">
+        <el-col :sm="24" :md="12" :lg="12" class="problem-right" id="problem-right">
           <el-card :padding="10" id="submit-code" shadow="always" class="submit-detail">
-            <!--            <CodeMirror-->
-            <!--                :value.sync="code"-->
-            <!--                :languages="problemData.languages"-->
-            <!--                :language.sync="language"-->
-            <!--                :theme.sync="theme"-->
-            <!--                :height.sync="height"-->
-            <!--                :fontSize.sync="fontSize"-->
-            <!--                :tabSize.sync="tabSize"-->
-            <!--                @resetCode="onResetToTemplate"-->
-            <!--                @changeTheme="onChangeTheme"-->
-            <!--                @changeLang="onChangeLang"-->
-            <!--                @getUserLastAccepetedCode="getUserLastAccepetedCode"-->
-            <!--                @switchFocusMode="switchFocusMode"-->
-            <!--                :openFocusMode.sync="openFocusMode"-->
-            <!--                :openTestCaseDrawer.sync="openTestCaseDrawer"-->
-            <!--                :problemTestCase="problemData.problem.examples"-->
-            <!--                :pid="problemData.problem.id"-->
-            <!--                :type="problemType"-->
-            <!--                :isAuthenticated="isAuthenticated"-->
-            <!--                :isRemoteJudge="problemData.problem.isRemote"/>-->
-
-            <div>code-mirror</div>
-
+            <CodeMirror :value.sync="code" :languages="problemData.languages" :language.sync="language"
+                        :theme.sync="theme" :height.sync="height" :fontSize.sync="fontSize" :tabSize.sync="tabSize"
+                        @resetCode="onResetToTemplate" @changeTheme="onChangeTheme" @changeLang="onChangeLang"
+                        @getUserLastAccepetedCode="getUserLastAccepetedCode" @switchFocusMode="switchFocusMode"
+                        :openFocusMode.sync="openFocusMode" :openTestCaseDrawer.sync="openTestCaseDrawer"
+                        :problemTestCase="problemData.problem.examples" :pid="problemData.problem.id"
+                        :type="problemType" :isAuthenticated="isAuthenticated"
+                        :isRemoteJudge="problemData.problem.isRemote"/>
             <div id="js-right-bottom">
               <el-row>
-                <div>
-                  <!--                <el-col :sm="24" :md="10" :lg="10" style="margin-top:4px;">-->
-                  <!--                  <div v-if="!isAuthenticated">-->
-                  <!--                    <el-alert type="info" show-icon effect="dark" :closable="false">-->
-                  <!--                      'm.Please_login_first'-->
-                  <!--                    </el-alert>-->
-                  <!--                  </div>-->
-                  <!--                  <div class="status" v-if="statusVisible">-->
-                  <!--                    <template v-if="result.status == JUDGE_STATUS_RESERVE['sf']">-->
-                  <!--                      <span>'m.Status':</span>-->
-                  <!--                      <el-tag effect="dark" :color="submissionStatus.color" @click.native="reSubmit(submissionId)">-->
-                  <!--                        <i class="el-icon-refresh"/>-->
-                  <!--                        {{ submissionStatus.text }}-->
-                  <!--                      </el-tag>-->
-                  <!--                    </template>-->
-                  <!--                    <template v-else-if="result.status == JUDGE_STATUS_RESERVE['snr']">-->
-                  <!--                      <el-alert type="warning" show-icon effect="dark" :closable="false">-->
-                  <!--                        'm.Submitted_Not_Result'-->
-                  <!--                      </el-alert>-->
-                  <!--                    </template>-->
-                  <!--                    <template v-else-if=" !this.contestID ||-->
-                  <!--                                (this.contestID && ContestRealTimePermission && this.contestRuleType == RULE_TYPE.OI) ||-->
-                  <!--                                (this.contestID && this.contestRuleType == RULE_TYPE.ACM) ">-->
-                  <!--                      <span style="font-size: 14px;font-weight: bolder;">m.Status:</span>-->
-                  <!--                      <el-tooltip class="item" effect="dark" content="'m.View_submission_details'" placement="top">-->
-                  <!--                        <el-tag effect="dark" class="submission-status" :color="submissionStatus.color"-->
-                  <!--                                @click.native="submissionRoute">-->
-                  <!--                          <template v-if="this.result.status == JUDGE_STATUS_RESERVE['Pending'] ||-->
-                  <!--                                                  this.result.status == JUDGE_STATUS_RESERVE['Compiling'] ||-->
-                  <!--                                                  this.result.status == JUDGE_STATUS_RESERVE['Judging'] ||-->
-                  <!--                                                  this.result.status == JUDGE_STATUS_RESERVE['Submitting']">-->
-                  <!--                            <i class="el-icon-loading"/> {{ submissionStatus.text }}-->
-                  <!--                          </template>-->
-                  <!--                          <template v-else-if="this.result.status == JUDGE_STATUS_RESERVE.ac">-->
-                  <!--                            <i class="el-icon-success"> {{ submissionStatus.text }}</i>-->
-                  <!--                          </template>-->
-                  <!--                          <template v-else-if="this.result.status == JUDGE_STATUS_RESERVE.pa">-->
-                  <!--                            <i class="el-icon-remove"> {{ submissionStatus.text }}</i>-->
-                  <!--                          </template>-->
-                  <!--                          <template v-else>-->
-                  <!--                            <i class="el-icon-error"> {{ submissionStatus.text }}</i>-->
-                  <!--                          </template>-->
-                  <!--                        </el-tag>-->
-                  <!--                      </el-tooltip>-->
-                  <!--                    </template>-->
+                <el-col :sm="24" :md="10" :lg="10" style="margin-top:4px;">
 
-                  <!--                    <template-->
-                  <!--                        v-else-if="this.contestID && !ContestRealTimePermission && this.contestRuleType == RULE_TYPE.OI">-->
-                  <!--                      <el-alert type="success" show-icon effect="dark" :closable="false">-->
-                  <!--                        'm.Submitted_successfully'-->
-                  <!--                      </el-alert>-->
-                  <!--                    </template>-->
-                  <!--                  </div>-->
-
-                  <!--                  <div-->
-                  <!--                      v-else-if="(!this.contestID || this.contestRuleType==RULE_TYPE.ACM) && problemData.myStatus==JUDGE_STATUS_RESERVE.ac">-->
-                  <!--                    <el-alert type="success" show-icon effect="dark" :closable="false">-->
-                  <!--                      'm.You_have_solved_the_problem'-->
-                  <!--                    </el-alert>-->
-                  <!--                  </div>-->
-                  <!--                  <div-->
-                  <!--                      v-else-if="this.contestID && !ContestRealTimePermission && this.contestRuleType == RULE_TYPE.OI && submissionExists ">-->
-                  <!--                    <el-alert type="success" show-icon effect="dark" :closable="false">-->
-                  <!--                      'm.You_have_submitted_a_solution'-->
-                  <!--                    </el-alert>-->
-                  <!--                  </div>-->
-                  <!--                  <div v-if="contestEnded">-->
-                  <!--                    <el-alert type="warning" show-icon effect="dark" :closable="false">-->
-                  <!--                      'm.Contest_has_ended'-->
-                  <!--                    </el-alert>-->
-                  <!--                  </div>-->
-                  <!--                </el-col>-->
-                </div>
-
-                <el-col :sm="24" :md="10" :lg="10" style="margin-top:4px;"/>
+                </el-col>
 
                 <el-col :sm="24" :md="14" :lg="14" style="margin-top:4px;">
-                  <template v-if="captchaRequired">
-                    <div class="captcha-container">
-                      <el-tooltip v-if="captchaRequired" content="Click to refresh" placement="top">
-                        <img :src="captchaSrc" @click="getCaptchaSrc"/>
-                      </el-tooltip>
-                      <el-input v-model="captchaCode" class="captcha-code"/>
-                    </div>
-                  </template>
                   <el-button type="primary" icon="el-icon-edit-outline" size="small" :loading="submitting"
-                             @click.native="submitCode" :disabled="problemSubmitDisabled || submitted" class="fl-right">
-                    提交
+                             @click.native="submitCode" :disabled="submitted" class="fl-right">
+                    <span v-if="submitting">提交中</span>
+                    <span v-else>提交测评</span>
                   </el-button>
-
-                  <el-tag type="success" :class="openTestCaseDrawer ? 'tj-btn active' : 'tj-btn non-active'"
+                  <el-tag type="success" :class="openTestCaseDrawer?'tj-btn active':'tj-btn non-active'"
                           @click.native="openTestJudgeDrawer" effect="plain">
-                    <i class="el-icon-s-promotion" style="font-size: 12px; margin-top: 10px;"/>
+                    <svg t="1653665263421" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                         xmlns="http://www.w3.org/2000/svg" p-id="1656" width="12" height="12"
+                         style="vertical-align: middle;">
+                      <path
+                          d="M1022.06544 583.40119c0 11.0558-4.034896 20.61962-12.111852 28.696576-8.077979 8.077979-17.639752 12.117992-28.690436 12.117992L838.446445 624.215758c0 72.690556-14.235213 134.320195-42.718941 184.89915l132.615367 133.26312c8.076956 8.065699 12.117992 17.634636 12.117992 28.690436 0 11.050684-4.034896 20.614503-12.117992 28.691459-7.653307 8.065699-17.209964 12.106736-28.690436 12.106736-11.475356 0-21.040199-4.041036-28.690436-12.106736L744.717737 874.15318c-2.124384 2.118244-5.308913 4.88424-9.558703 8.283664-4.259 3.3984-13.180184 9.463536-26.78504 18.171871-13.598716 8.715499-27.415396 16.473183-41.439808 23.276123-14.029528 6.797823-31.462572 12.966313-52.289923 18.49319-20.827351 5.517667-41.446971 8.28571-61.842487 8.28571L552.801776 379.38668l-81.611739 0 0 571.277058c-21.668509 0-43.250036-2.874467-64.707744-8.615215-21.473057-5.734608-39.960107-12.749372-55.476499-21.039175-15.518438-8.289804-29.541827-16.572444-42.077328-24.867364-12.541641-8.290827-21.781072-15.193027-27.739784-20.714787l-9.558703-8.93244L154.95056 998.479767c-8.500605 8.921183-18.699897 13.386892-30.606065 13.386892-10.201339 0-19.335371-3.40454-27.409257-10.202363-8.079002-7.652284-12.437264-17.10968-13.080923-28.372188-0.633427-11.263531 2.659573-21.143553 9.893324-29.647227l128.787178-144.727219c-24.650423-48.464805-36.980239-106.699114-36.980239-174.710091L42.738895 624.207571c-11.057847 0-20.61655-4.041036-28.690436-12.111852-8.079002-8.082072-12.120039-17.640776-12.120039-28.696576 0-11.050684 4.041036-20.61962 12.120039-28.689413 8.073886-8.072863 17.632589-12.107759 28.690436-12.107759l142.81466 0L185.553555 355.156836l-110.302175-110.302175c-8.074909-8.077979-12.113899-17.640776-12.113899-28.691459 0-11.04966 4.044106-20.61962 12.113899-28.690436 8.071839-8.076956 17.638729-12.123109 28.691459-12.123109 11.056823 0 20.612457 4.052293 28.692482 12.123109l110.302175 110.302175 538.128077 0 110.303198-110.302175c8.070816-8.076956 17.632589-12.123109 28.690436-12.123109 11.050684 0 20.617573 4.052293 28.689413 12.123109 8.077979 8.070816 12.119015 17.640776 12.119015 28.690436 0 11.050684-4.041036 20.614503-12.119015 28.691459l-110.302175 110.302175 0 187.448206 142.815683 0c11.0558 0 20.618597 4.034896 28.690436 12.113899 8.076956 8.069793 12.117992 17.638729 12.117992 28.683273l0 0L1022.06544 583.40119 1022.06544 583.40119zM716.021162 216.158085 307.968605 216.158085c0-56.526411 19.871583-104.667851 59.616796-144.414087 39.733956-39.746236 87.88256-59.611679 144.411017-59.611679 56.529481 0 104.678084 19.865443 144.413064 59.611679C696.156742 111.48921 716.021162 159.631674 716.021162 216.158085L716.021162 216.158085 716.021162 216.158085 716.021162 216.158085z"
+                          p-id="1657" :fill="openTestCaseDrawer?'#ffffff':'#67c23a'"></path>
+                    </svg>
                     <span style="vertical-align: middle;">在线测试</span>
                   </el-tag>
                 </el-col>
@@ -446,18 +200,13 @@
             </div>
           </el-card>
         </el-col>
-
       </el-row>
     </div>
 
+
     <!--    题目统计-->
-    <el-dialog :visible.sync="graphVisible" width="400px">
-      <div id="pieChart-detail">
-        <span>ECharts</span>
-      </div>
-      <div slot="footer">
-        <el-button type="ghost" @click="graphVisible = false" size="small">关闭</el-button>
-      </div>
+    <el-dialog :visible.sync="problem_statistics_dialog">
+      <span>ECharts</span>
     </el-dialog>
 
   </div>
@@ -467,19 +216,17 @@
 import CodeMirror from "@/components/share/CodeMirror";
 
 export default {
-  name: "problem_text",
+  name: "problem",
 
   components: {
     CodeMirror,
-
   },
 
   data() {
     return {
-      // 选中的标签页
       activeName: "problemDetail",
 
-
+      problemID: "",
       problemData: {
         problem: {
           title: "a + b",
@@ -491,111 +238,95 @@ export default {
           input: "输两个整数 A, B。",
           output: "输出一个整数表示 A+B。",
           examples: [
-            {input: "1 2", output: "3"},
+            {input: "1 2 564654656546546546546546545646546546546546546", output: "3"},
             {input: "3 4", output: "7"},
           ],
-          hint: "a + b = ??? 我大抵是倦了，横竖瘦不下来，起身盛一碗饭，这忧伤没有由来的，黯黯然看着那两只空碗，一只是我吃的，另一只也是我吃的。我向来是不屑于多吃一碗饭的，而如今却也生出了贪婪的念头，也罢，大概是这饭太香了，减肥索性就不提了我大抵是倦了，横竖瘦不下来，起身盛一碗饭，这忧伤没有由来的，黯黯然看着那两只空碗，一只是我吃的，另一只也是我吃的。我向来是不屑于多吃一碗饭的，而如今却也生出了贪婪的念头，也罢，大概是这饭太香了，减肥索性就不提了",
+          hint: "a + b = ???<br>" +
+              "我大抵是倦了，横竖瘦不下来，起身盛一碗饭，这忧伤没有由来的，黯黯然看着那两只空碗，一只是我吃的，另一只也是我吃的。我向来是不屑于多吃一碗饭的，而如今却也生出了贪婪的念头，也罢，大概是这饭太香了，减肥索性就不提了<br>" +
+              "我大抵是倦了，横竖瘦不下来，起身盛一碗饭，这忧伤没有由来的，黯黯然看着那两只空碗，一只是我吃的，另一只也是我吃的。我向来是不屑于多吃一碗饭的，而如今却也生出了贪婪的念头，也罢，大概是这饭太香了，减肥索性就不提了<br>" +
+              "我大抵是倦了，横竖瘦不下来，起身盛一碗饭，这忧伤没有由来的，黯黯然看着那两只空碗，一只是我吃的，另一只也是我吃的。我向来是不屑于多吃一碗饭的，而如今却也生出了贪婪的念头，也罢，大概是这饭太香了，减肥索性就不提了<br>" +
+              "我大抵是倦了，横竖瘦不下来，起身盛一碗饭，这忧伤没有由来的，黯黯然看着那两只空碗，一只是我吃的，另一只也是我吃的。我向来是不屑于多吃一碗饭的，而如今却也生出了贪婪的念头，也罢，大概是这饭太香了，减肥索性就不提了<br>",
 
         },
+        defunct: true, // 题目是否可用
+
         problemCount: {},
-        tags: [],
-        languages: [],
+        tags: [
+          {color: "", name: "基础",},
+          {color: "", name: "easy",},
+        ],
+        languages: ["c++", "java", "python2", "python3"],
         codeTemplate: {},
         isRemote: true,
       },
+      trainingID: null,
 
 
-      // CodeMirror
-      fontSize: "14px",
-      tabSize: 4,
-      openFocusMode: false,
+      problem_statistics_dialog: false,
 
-
-      // ECharts 弹窗
-      graphVisible: false,
-
-
-      contestEnded: true,
-      isShowProblemDiscussion: true,
-      isAuthenticated: true,
-
-      submissionStatus: {},
-      ContestRealTimePermission: "",
-
-      problemSubmitDisabled: true,
-      contestRuleType: "",
-
-      statusVisible: false,
-      captchaRequired: false,
-
-
-      submissionExists: false,
-      captchaCode: "",
-      captchaSrc: "",
-      contestID: 0,
-      groupID: null,
-      submitting: false,
-      code: "",
-      language: "",
-      theme: "solarized",
-      height: 550,
-      submissionId: "",
-      submitted: false,
-      result: {
-        status: 9,
-      },
-
-      largePie: "",
-      JUDGE_STATUS_RESERVE: {},
-      JUDGE_STATUS: {},
-      RULE_TYPE: {},
       toResetWatch: false,
       toWatchProblem: false,
-      loadingTable: false,
-      mySubmissions: [],
-      loading: false,
-      bodyClass: "",
-      userExtraFile: null,
-      fileContent: "",
-      fileName: "",
+      showProblemHorizontalMenu: false,
+
+
+      language: "c++",
+      code: "",
+
+
+      theme: "solarized",
+      fontSize: "14px",
+      tabSize: 4,
+
+      problemType: "",
+      openFocusMode: false,
       openTestCaseDrawer: false,
-    };
+      isAuthenticated: false,
+
+      height: 500,
+
+
+      submitting: false,
+      submitted: false,
+
+    }
   },
 
-  created() {
-
-  },
   mounted() {
     // 控制窗体大小
     this.dragControllerDiv();
     this.resizeWatchHeight();
+    window.onresize = () => {
+      this.resizeWatchHeight();
+    };
 
   },
+
   methods: {
-    submissionRoute() {
-    },
-    getCaptchaSrc() {
+
+    // 题目统计
+    problem_statistics() {
+      this.problem_statistics_dialog = true
     },
 
-    initProblemCodeAndSetting() {
+    // 题目全部提交
+    problem_all_submission() {
+
     },
-    handleClickTab({name}) {
+
+    //复制样例
+    copy_expamle_success(e) {
+      this.$message.success("复制成功")
     },
-    getMySubmission() {
+    copy_expamle_error(e) {
+      this.$message.error("复制失败")
     },
-    getStatusColor(status) {
-    },
-    submissionTimeFormat(time) {
-    },
-    submissionMemoryFormat(memory) {
-    },
-    showSubmitDetail(row) {
-    },
+
+
     dragControllerDiv() {
-      var resize = document.getElementById("js-center" + "-" + this.$route.name);
-      var left = document.getElementsByClassName("problem-left");
-      var right = document.getElementsByClassName("problem-right");
-      var box = document.getElementsByClassName("problem-box");
+      var resize = document.getElementById("js-center");
+      var left = document.getElementById("problem-left");
+      var right = document.getElementById("problem-right");
+      var box = document.getElementById("problem-box");
       const _this = this;
       // 鼠标按下事件
       resize.onmousedown = function (e) {
@@ -607,7 +338,7 @@ export default {
           resize.left = startX;
           var endX = e.clientX;
           var moveLen = resize.left + (endX - startX); // （endx-startx）=移动的距离。resize.left+移动的距离=左边区域最后的宽度
-          var maxT = box[0].clientWidth - resize.offsetWidth; // 容器宽度 - 左边区域的宽度 = 右边区域的宽度
+          var maxT = box.offsetWidth - resize.offsetWidth; // 容器宽度 - 左边区域的宽度 = 右边区域的宽度
           if (moveLen < 420) {
             moveLen = 0; // 左边区域的最小宽度为420px
             _this.toWatchProblem = true;
@@ -615,15 +346,13 @@ export default {
             _this.toWatchProblem = false;
           }
           if (moveLen > maxT - 580) moveLen = maxT - 580; //右边区域最小宽度为580px
-          resize.style.left = moveLen; // 设置左侧区域的宽度
-          for (let j = 0; j < left.length; j++) {
-            left[j].style.width = moveLen + "px";
-            let tmp = box[0].clientWidth - moveLen - 11;
-            right[j].style.width = tmp + "px";
-            if (tmp > 0) {
-              _this.toResetWatch = false;
-              right[j].style.display = "";
-            }
+          let leftRadio = (moveLen / box.offsetWidth) * 100;
+          resize.style.left = leftRadio + "%";
+          left.style.width = leftRadio + "%"; // 设置左侧区域的宽度
+          right.style.width = (100 - leftRadio) + "%";
+          if (leftRadio < 100) {
+            _this.toResetWatch = false;
+            right.style.display = "";
           }
         };
         // 鼠标松开事件
@@ -644,190 +373,172 @@ export default {
         this.toWatchProblem = false;
         return;
       }
-      var resize = document.getElementsByClassName("problem-resize");
-      var left = document.getElementsByClassName("problem-left");
-      var right = document.getElementsByClassName("problem-right");
-      var box = document.getElementsByClassName("problem-box");
-      for (let i = 0; i < resize.length; i++) {
-        for (let j = 0; j < left.length; j++) {
-          left[j].style.width = box[i].clientWidth - 20 + "px";
-          right[j].style.width = "0px";
-          right[j].style.display = "none";
-        }
-      }
+      var resize = document.getElementById("js-center");
+      var left = document.getElementById("problem-left");
+      var right = document.getElementById("problem-right");
+      var box = document.getElementById("problem-box");
+      resize.style.left = box.clientWidth - 10 + "px";
+      left.style.width = box.clientWidth - 10 + "px";
+      right.style.width = "0px";
+      right.style.display = "none";
       this.toResetWatch = true;
     },
     resetWatch(minLeft = false) {
-      var resize = document.getElementsByClassName("problem-resize");
-      var left = document.getElementsByClassName("problem-left");
-      var right = document.getElementsByClassName("problem-right");
-      var box = document.getElementsByClassName("problem-box");
-      for (let i = 0; i < resize.length; i++) {
-        let leftWidth = 0;
-        if (minLeft) {
-          leftWidth = 431; // 恢复左边最小420px+滑块11px
-        } else {
-          leftWidth = box[i].clientWidth - 580; // 右边最小580px
-        }
-        for (let j = 0; j < left.length; j++) {
-          left[j].style.width = leftWidth - 20 + "px";
-          right[j].style.width = box[i].clientWidth - leftWidth + "px";
-          right[j].style.display = "";
-        }
+      var resize = document.getElementById("js-center");
+      var left = document.getElementById("problem-left");
+      var right = document.getElementById("problem-right");
+      var box = document.getElementById("problem-box");
+      let leftWidth = 0;
+      if (minLeft) {
+        leftWidth = 431; // 恢复左边最小420px+滑块11px
+      } else {
+        leftWidth = box.clientWidth - 580; // 右边最小580px
       }
+      let leftRadio = (leftWidth / box.offsetWidth) * 100;
+      resize.style.left = leftRadio + "%";
+      left.style.width = leftRadio + "%";
+      right.style.width = (100 - leftRadio) + "%";
+      right.style.display = "";
       this.toResetWatch = false;
     },
     resizeWatchHeight() {
       try {
-        let headerHeight = document.getElementById("header").offsetHeight;
-        let headerWidth = document.getElementById("header").offsetWidth;
+        let headerBox = this.$parent.$parent.$parent.$refs.navBar.$el
+        let headerHeight = headerBox.offsetHeight
+        let headerWidth = headerBox.offsetWidth
         let totalHeight = window.innerHeight;
+        let left = document.getElementById("problem-left");
+        let right = document.getElementById("problem-right");
+        if (headerWidth >= 992) {
+          left.style.width = right.style.width = "50%";
+        } else {
+          left.style.width = right.style.width = "100%";
+        }
         let problemLeftHight = totalHeight - (headerHeight + 64);
         if (this.showProblemHorizontalMenu) {
           let footerMenuHeight = document.getElementById("problem-footer").offsetHeight;
           problemLeftHight = problemLeftHight - footerMenuHeight;
         }
-        let jsRHeaderHeight =
-            document.getElementById("js-right-header").offsetHeight;
-        let jsRBottomHeight =
-            document.getElementById("js-right-bottom").offsetHeight;
-        if (jsRBottomHeight < 48) {
-          jsRBottomHeight = 48;
-        }
-        let problemRightHight = problemLeftHight - 95 - (jsRHeaderHeight - 36) - (jsRBottomHeight - 48);
-        if (problemLeftHight < 0) {
-          problemLeftHight = 0;
-        }
-        if (problemRightHight < 0) {
-          problemRightHight = 0;
-        }
+        let jsRHeaderHeight = document.getElementById("js-right-header").offsetHeight;
+        let jsRBottomHeight = Math.max(48, document.getElementById("js-right-bottom").offsetHeight);
+        let problemRightHight = Math.max(0, problemLeftHight - 95 - (jsRHeaderHeight - 36) - (jsRBottomHeight - 48));
         this.height = problemRightHight;
+        problemLeftHight = Math.max(0, problemLeftHight);
         if (this.activeName == "problemDetail") {
           if (headerWidth >= 992) {
-            document.getElementById("js-left" + "-" + this.$route.name).setAttribute("style", "height:" + problemLeftHight + "px !important");
+            document.getElementById("js-left").setAttribute("style", "height:" + problemLeftHight + "px !important");
           } else {
-            document.getElementById("js-left" + "-" + this.$route.name).setAttribute("style", "height: auto");
+            document.getElementById("js-left").setAttribute("style", "height: auto");
           }
         } else if (this.activeName == "mySubmission") {
           document.getElementById("js-submission").setAttribute("style", "height:" + problemLeftHight + "px !important");
         } else if (this.activeName == "extraFile") {
           document.getElementById("js-extraFile").setAttribute("style", "height:" + problemLeftHight + "px !important");
         }
-        document.getElementById("js-center" + "-" + this.$route.name).setAttribute("style", "top:" + problemLeftHight * 0.5 + "px !important");
+        let problem_resize = document.getElementById("js-center")
+        if (headerWidth >= 992) {
+          problem_resize.setAttribute("style", "top:" + problemLeftHight * 0.5 + "px !important; left:" + left.style.width + "; display: inline;");
+        } else {
+          problem_resize.setAttribute("style", "display: none;");
+        }
       } catch (e) {
       }
     },
-    init() {
-    },
-    changePie(problemData) {
-    },
-    goProblemSubmission() {
-    },
-    goProblemDiscussion() {
-    },
-    onChangeLang(newLang) {
-    },
-    onChangeTheme(newTheme) {
-    },
+
+
     onResetToTemplate() {
+
     },
-    getUserLastAccepetedCode() {
+    onChangeTheme() {
+
     },
-    checkSubmissionStatus() {
+    onChangeLang() {
+
     },
+
+    // 提交代码
     submitCode() {
+      if (this.code.trim() === "") {
+        this.$message.error("代码不能为空")
+        return;
+      }
+      if (this.code.length > 65535) {
+        this.$message.error("代码长度不能超过65535")
+        return;
+      }
+
+      this.submissionId = "";
+      this.result = {status: 9};
+      this.submitting = true;
+      let data = {
+        pid: this.problemID, // 如果是比赛题目就为display_id
+        language: this.language,
+        code: this.code,
+        cid: this.contestID,
+        tid: this.trainingID,
+        gid: this.groupID,
+        isRemote: this.isRemote,
+      };
+      if (this.captchaRequired) {
+        data.captcha = this.captchaCode;
+      }
+
     },
-    reSubmit(submitId) {
-    },
-    showExtraFileContent(name, content) {
-    },
-    downloadExtraFile() {
-    },
-    getLevelColor(difficulty) {
-      return "color: red";
-    },
-    getLevelName(difficulty) {
-    },
-    goUserHome(username) {
-    },
-    calcOIRankScore(score, difficulty) {
-    },
-    onCopy(event) {
-    },
-    onCopyError(e) {
-    },
+
     openTestJudgeDrawer() {
+      this.openTestCaseDrawer = !this.openTestCaseDrawer;
     },
-    switchFocusMode(isOpen) {
+
+    getUserLastAccepetedCode() {
+
     },
-    beforeLeaveDo(cid) {
+
+    switchFocusMode() {
+
     },
-    computed: {
-      problemType() {
-        if (this.contestID) {
-          return "contest";
-        } else if (this.groupID) {
-          return "group";
-        } else {
-          return "public";
-        }
-      },
+
+
+  },
+
+  watch: {
+    activeName() {
+      this.resizeWatchHeight();
     },
-    beforeRouteLeave(to, from, next) {
-    },
-    beforeRouteUpdate(to, from, next) {
-    },
-    watch: {
-      $route() {
-        this.initProblemCodeAndSetting();
-        this.init();
-      },
-      isAuthenticated(newVal) {
-        if (newVal === true) {
-          this.init();
-        }
-      },
-      activeName() {
-        this.resizeWatchHeight();
-      },
-    },
-  }
+  },
+
 }
 </script>
-<style>
-.katex .katex-mathml {
-  display: none;
-}
-</style>
 
 <style scoped>
-
-#problem-main {
-  flex: auto;
-}
-
-.problem-menu {
-  float: left;
-}
-
 a {
   color: #3091f2 !important;
 }
 
-.problem-menu span {
-  margin-left: 5px;
+/deep/ .el-tabs--border-card > .el-tabs__content {
+  padding-top: 0px;
+  padding-right: 0px;
+  padding-bottom: 0px;
 }
 
-.el-link {
-  font-size: 16px !important;
+/deep/ .el-card__body, .el-main {
+  padding: 0px 20px;
 }
 
-.author-name {
+#problem-main {
+  height: 100%;
+  width: 100%;
+}
+
+.js-left {
+  padding-right: 15px;
+}
+
+.js-left .author-name {
   font-size: 14px !important;
   color: #909399 !important;
 }
 
-.question-intr {
+.problem-explain {
   margin-top: 30px;
   border-radius: 4px;
   border: 1px solid #ddd;
@@ -839,38 +550,72 @@ a {
   font-size: 14px;
 }
 
-.extra-file {
-  margin: 10px;
-  cursor: pointer;
+.problem-content {
+  margin-top: -20px;
 }
 
-.file-download {
-  vertical-align: bottom;
-  float: right;
-  margin-right: 5px;
+.problem-content .title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 25px 0 8px 0;
+  color: #3091f2;
+}
+
+.problem-content .copy {
+  padding-left: 8px;
+}
+
+.content-title {
+  margin-left: 25px;
+  margin-right: 20px;
+  font-size: 15px;
+}
+
+.flex-container {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-flow: row nowrap;
+}
+
+.example {
+  align-items: stretch;
+}
+
+.example-input, .example-output {
+  width: 50%;
+}
+
+.example pre {
+  flex: 1 1 auto;
+  padding: 5px 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  overflow: auto;
+  background: #f1f1f1;
+  border: 1px dashed #e9eaec;
+  font-size: 1.1em;
+  margin-right: 7%;
 }
 
 .submit-detail {
   height: 100%;
 }
 
-/deep/ .el-tabs--border-card > .el-tabs__content {
-  padding-top: 0px;
-  padding-right: 0px;
-  padding-bottom: 0px;
-}
-
-.js-left {
-  padding-right: 15px;
+.submit-detail /deep/ .el-card__body {
+  padding: 21px 20px 4px 20px;
 }
 
 @media screen and (min-width: 992px) {
-  .js-left {
-    height: 730px !important;
-    overflow-y: auto;
+  .problem-body {
+    margin-left: -2%;
+    margin-right: -2%;
   }
 
-  #js-extraFile {
+  .js-left {
+    height: 730px !important;
     overflow-y: auto;
   }
 
@@ -902,30 +647,35 @@ a {
     margin-left: 10px;
   }
 
-  .question-intr {
+  .problem-explain {
     margin-top: 6px;
   }
 }
 
 @media screen and (min-width: 992px) {
   .problem-box {
-    width: 100%;
     height: 100%;
+    width: 100%;
     overflow: hidden;
   }
 
   .problem-left {
-    width: calc(50% - 13px); /*左侧初始化宽度*/
+    width: 50%;
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
     float: left;
   }
 
+  .problem-right {
+    height: 100%;
+    width: 50%;
+    float: left;
+  }
+
   .problem-resize {
     cursor: col-resize;
-    float: left;
-    position: relative;
+    position: absolute;
     top: 330px;
     background-color: #d6d6d6;
     border-radius: 5px;
@@ -935,6 +685,10 @@ a {
     background-position: center;
     font-size: 32px;
     color: white;
+  }
+
+  .problem-resize:hover {
+    color: #444444;
   }
 
   .problem-resize:hover .right-fold {
@@ -976,16 +730,6 @@ a {
     background: #fff;
   }
 
-  /*拖拽区鼠标悬停样式*/
-  .problem-resize:hover {
-    color: #444444;
-  }
-
-  .problem-right {
-    height: 100%;
-    float: left;
-    width: 50%;
-  }
 }
 
 @media screen and (max-width: 992px) {
@@ -998,135 +742,8 @@ a {
   }
 }
 
-/deep/ .el-card__header {
-  border-bottom: 0px;
-  padding-bottom: 0px;
-}
-
-/deep/ .el-card__body {
-  padding-bottom: 5px !important;
-}
-
-#right-column {
-  flex: none;
-  width: 220px;
-}
-
-#problem-content {
-  margin-top: -20px;
-}
-
-#problem-content .title {
-  font-size: 16px;
-  font-weight: 600;
-  margin: 25px 0 8px 0;
-  color: #3091f2;
-}
-
-#problem-content .copy {
-  padding-left: 8px;
-}
-
-.hint-content {
-  font-size: 15px !important;
-}
-
-p.content {
-  margin-left: 25px;
-  margin-right: 20px;
-  font-size: 15px;
-}
-
-.flex-container {
-  display: flex;
-  width: 100%;
-  max-width: 100%;
-  justify-content: space-around;
-  align-items: flex-start;
-  flex-flow: row nowrap;
-}
-
-.example {
-  align-items: stretch;
-}
-
-.example-input,
-.example-output {
-  width: 50%;
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.example pre {
-  flex: 1 1 auto;
-  align-self: stretch;
-  border-style: solid;
-  background: transparent;
-  padding: 5px 10px;
-  white-space: pre;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  background: #f1f1f1;
-  border: 1px dashed #e9eaec;
-  overflow: auto;
-  font-size: 1.1em;
-  margin-right: 7%;
-}
-
 #submit-code {
   height: auto;
-}
-
-#submit-code .status {
-  float: left;
-}
-
-.submission-status:hover {
-  cursor: pointer;
-}
-
-#submit-code .status span {
-  margin-left: 10px;
-}
-
-.captcha-container {
-  display: inline-block;
-}
-
-.captcha-container .captcha-code {
-  width: auto;
-  margin-top: -20px;
-  margin-left: 20px;
-}
-
-.fl-right {
-  float: right;
-}
-
-/deep/ .el-dialog__body {
-  padding: 10px 10px !important;
-}
-
-#pieChart .echarts {
-  height: 250px;
-  width: 210px;
-}
-
-#pieChart #detail {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-}
-
-/deep/ .echarts {
-  width: 350px;
-  height: 350px;
-}
-
-#pieChart-detail {
-  /* margin-top: 20px; */
-  height: 350px;
 }
 
 .tj-btn {
@@ -1148,4 +765,6 @@ p.content {
   border-color: #67c23a;
   color: #fff;
 }
+
+
 </style>
