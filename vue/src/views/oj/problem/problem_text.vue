@@ -216,7 +216,7 @@
 import CodeMirror from "@/components/share/CodeMirror";
 
 export default {
-  name: "problem",
+  name: "problem_text",
 
   components: {
     CodeMirror,

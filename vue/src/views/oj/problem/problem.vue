@@ -129,7 +129,9 @@
                   <!--                提示-->
                   <div v-if="problemData.problem.hint">
                     <p class="title"> 提示 </p>
-                    <p v-html="problemData.problem.hint" class="content-title"/>
+                    <el-card shadow="always">
+                      <p v-html="problemData.problem.hint" class="content-title"/>
+                    </el-card>
                   </div>
 
                 </div>
