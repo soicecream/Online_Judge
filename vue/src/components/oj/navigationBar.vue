@@ -9,7 +9,7 @@
       <el-menu-item index="/problem/1"><i class="el-icon-monitor"/>竞赛/作业</el-menu-item>
       <el-menu-item index="/problemTest"><i class="el-icon-s-order"/>题单</el-menu-item>
       <el-menu-item index=""><i class="el-icon-s-marketing"/>状态</el-menu-item>
-      <el-menu-item index=""><i class="el-icon-s-data"/>排名</el-menu-item>
+      <el-menu-item index="/admin/problem/problem"><i class="el-icon-s-data"/>排名</el-menu-item>
       <el-menu-item index=""><i class="el-icon-question"/>常见问题</el-menu-item>
       <el-menu-item index=""><i class="el-icon-chat-line-round"/>讨论</el-menu-item>
       <el-menu-item index=""><i class="el-icon-shopping-bag-1"/>商城</el-menu-item>
